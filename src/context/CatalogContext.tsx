@@ -3,13 +3,13 @@ import {
   useCallback,
   useContext,
   useEffect,
-  useMemo,
   useState,
   type ReactNode,
 } from "react";
 import { PRODUCTS, type Product } from "@/data/products";
 import { LOOKBOOK, type LookItem } from "@/data/lookbook";
 import { fetchNameMap, type NameMap } from "@/lib/productNames";
+import { fetchCatalogItems } from "@/lib/catalogApi";
 
 interface CatalogCtx {
   products: Product[];
@@ -23,12 +23,14 @@ const Ctx = createContext<CatalogCtx | null>(null);
 
 export function CatalogProvider({ children }: { children: ReactNode }) {
   const [names, setNames] = useState<NameMap>({});
+  const [lookbook, setLookbook] = useState<LookItem[]>(LOOKBOOK);
   const [loading, setLoading] = useState(true);
 
   const reload = useCallback(async () => {
     setLoading(true);
-    const map = await fetchNameMap();
+    const [map, items] = await Promise.all([fetchNameMap(), fetchCatalogItems()]);
     setNames(map);
+    setLookbook(items);
     setLoading(false);
   }, []);
 
@@ -36,23 +38,10 @@ export function CatalogProvider({ children }: { children: ReactNode }) {
     void reload();
   }, [reload]);
 
-  const products = useMemo(
-    () =>
-      PRODUCTS.map((p) => {
-        const n = names[p.id]?.trim();
-        return n ? { ...p, name: n } : p;
-      }),
-    [names]
-  );
-
-  const lookbook = useMemo(
-    () =>
-      LOOKBOOK.map((p) => {
-        const n = names[p.id]?.trim();
-        return n ? { ...p, name: n } : p;
-      }),
-    [names]
-  );
+  const products = PRODUCTS.map((p) => {
+    const n = names[p.id]?.trim();
+    return n ? { ...p, name: n } : p;
+  });
 
   return (
     <Ctx.Provider value={{ products, lookbook, names, loading, reload }}>
