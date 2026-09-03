@@ -5,7 +5,9 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
+    "prebuild": "node scripts/restore-vite-index.mjs",
     "build": "tsc -b && vite build",
+    "postbuild": "node scripts/publish-hostinger.mjs",
     "lint": "eslint .",
     "preview": "vite preview"
   },
