@@ -11,7 +11,10 @@ export async function fetchCatalogItems(): Promise<LookItem[]> {
     const res = await fetch("/api/catalog.php", { cache: "no-store" });
     if (res.ok && isJsonResponse(res)) {
       const data = (await res.json()) as { items?: LookItem[] };
-      if (Array.isArray(data.items) && data.items.length) return data.items;
+      if (Array.isArray(data.items) && data.items.length) {
+        const ids = new Set(data.items.map((i) => i.id));
+        return [...data.items, ...LOOKBOOK.filter((i) => !ids.has(i.id))];
+      }
     }
   } catch {
     /* local */

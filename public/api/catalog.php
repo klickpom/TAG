@@ -18,17 +18,37 @@ function catalog_file(): string {
   return $inside;
 }
 
+function seed_catalog(): array {
+  $seed = dirname(__DIR__) . '/data/catalog.json';
+  if (!is_file($seed)) return [];
+  $data = json_decode(file_get_contents($seed) ?: '[]', true);
+  return is_array($data) ? $data : [];
+}
+
+function merge_seed_items(array $items): array {
+  $seed = seed_catalog();
+  if (!$seed) return $items;
+  $ids = [];
+  foreach ($items as $row) {
+    if (is_array($row) && isset($row['id'])) $ids[(string)$row['id']] = true;
+  }
+  foreach ($seed as $row) {
+    $id = is_array($row) ? (string)($row['id'] ?? '') : '';
+    if ($id !== '' && empty($ids[$id])) $items[] = $row;
+  }
+  return $items;
+}
+
 function read_catalog(string $file): array {
+  $items = [];
   if (is_file($file)) {
     $data = json_decode(file_get_contents($file) ?: '[]', true);
-    if (is_array($data)) return $data;
+    if (is_array($data)) $items = $data;
   }
+  if (!$items) return seed_catalog();
   $seed = dirname(__DIR__) . '/data/catalog.json';
-  if (is_file($seed)) {
-    $data = json_decode(file_get_contents($seed) ?: '[]', true);
-    if (is_array($data)) return $data;
-  }
-  return [];
+  if (is_file($file) && is_file($seed) && realpath($file) === realpath($seed)) return $items;
+  return merge_seed_items($items);
 }
 
 function auth_ok(): bool {

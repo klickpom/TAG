@@ -203,7 +203,10 @@ function IndexPage({ items, onPick }: { items: LookItem[]; onPick: (i: number) =
               }}
               className="flex w-full items-baseline justify-between gap-3 border-b border-dotted border-[#c6b79a] py-1.5 text-right text-sm font-bold hover:text-[#a8853f]"
             >
-              <span className="min-w-0 truncate">{item.name}</span>
+              <span className="min-w-0 truncate">
+                {item.name}
+                <span className="mr-2 font-semibold text-[#8a7a5c]"> — {item.size}</span>
+              </span>
               <span className="shrink-0 font-display text-[#a8853f]">{String(i + 1).padStart(2, "0")}</span>
             </button>
           </li>
