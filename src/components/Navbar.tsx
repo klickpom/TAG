@@ -1,18 +1,17 @@
 import { useEffect, useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
-import { Menu, ShoppingBag, X } from "lucide-react";
-import { useCart } from "@/context/CartContext";
+import { Menu, MessageCircle, X } from "lucide-react";
+import { WA_LINK } from "./TopBar";
 
 const LINKS = [
   { href: "#home", label: "الرئيسية" },
   { href: "#about", label: "عن المصنع" },
-  { href: "#shop", label: "المتجر" },
+  { href: "#shop", label: "المعرض" },
   { href: "#reviews", label: "آراء العملاء" },
   { href: "#contact", label: "تواصل معنا" },
 ];
 
 export default function Navbar() {
-  const { count, openCart } = useCart();
   const [scrolled, setScrolled] = useState(false);
   const [open, setOpen] = useState(false);
 
@@ -30,7 +29,6 @@ export default function Navbar() {
       }`}
     >
       <div className="mx-auto flex w-full max-w-7xl items-center justify-between gap-2 px-4 py-3">
-        {/* logo */}
         <a href="#home" className="flex min-w-0 flex-1 items-center gap-2 sm:gap-3">
           <img
             src="/images/logo.jpeg"
@@ -47,7 +45,6 @@ export default function Navbar() {
           </div>
         </a>
 
-        {/* desktop links */}
         <nav className="hidden items-center gap-7 lg:flex">
           {LINKS.map((l) => (
             <a
@@ -61,29 +58,15 @@ export default function Navbar() {
         </nav>
 
         <div className="flex shrink-0 items-center gap-1.5 sm:gap-2">
-          {/* cart */}
-          <button
-            onClick={openCart}
+          <a
+            href={WA_LINK}
+            target="_blank"
+            rel="noreferrer"
             className="relative rounded-full bg-[#191920] p-2.5 text-[#e6c987] transition-transform hover:scale-105"
-            aria-label="سلة المشتريات"
+            aria-label="واتساب"
           >
-            <ShoppingBag className="h-5 w-5" />
-            <AnimatePresence>
-              {count > 0 && (
-                <motion.span
-                  key={count}
-                  initial={{ scale: 0 }}
-                  animate={{ scale: 1 }}
-                  exit={{ scale: 0 }}
-                  className="absolute -left-1 -top-1 flex h-5 min-w-5 items-center justify-center rounded-full bg-[#c6a15b] px-1 text-[11px] font-bold text-white"
-                >
-                  {count}
-                </motion.span>
-              )}
-            </AnimatePresence>
-          </button>
-
-          {/* mobile toggle */}
+            <MessageCircle className="h-5 w-5" />
+          </a>
           <button
             onClick={() => setOpen((v) => !v)}
             className="rounded-full border border-[#d9cfba] p-2.5 text-[#191920] lg:hidden"
@@ -94,7 +77,6 @@ export default function Navbar() {
         </div>
       </div>
 
-      {/* mobile menu */}
       <AnimatePresence>
         {open && (
           <motion.nav

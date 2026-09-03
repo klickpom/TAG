@@ -28,7 +28,7 @@ export default function Footer() {
             {[
               ["#home", "الرئيسية"],
               ["#about", "عن المصنع"],
-              ["#shop", "المتجر"],
+              ["#shop", "المعرض"],
               ["#reviews", "آراء العملاء"],
               ["#contact", "تواصل معنا"],
             ].map(([href, label]) => (

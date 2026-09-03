@@ -1,17 +1,17 @@
 import { useMemo, useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
-import { Eye, Search, ShoppingBag, X, Minus, Plus } from "lucide-react";
-import {
-  CATEGORY_LABELS,
-  PRODUCTS,
-  fmt,
-  type Category,
-  type Product,
-} from "@/data/products";
-import { useCart } from "@/context/CartContext";
+import { Eye, MessageCircle, Search, X } from "lucide-react";
+import { CATEGORY_LABELS, type Category, type Product } from "@/data/products";
+import { useCatalog } from "@/context/CatalogContext";
+import { WA_LINK } from "./TopBar";
 
 type Filter = Category | "all";
 const FILTERS: Filter[] = ["all", "clocks", "vases", "sets"];
+
+function waProduct(name: string) {
+  const msg = `السلام عليكم، محتاج تفاصيل عن المنتج: ${name}`;
+  return `${WA_LINK}?text=${encodeURIComponent(msg)}`;
+}
 
 function ProductCard({
   product,
@@ -20,8 +20,6 @@ function ProductCard({
   product: Product;
   onQuickView: (p: Product) => void;
 }) {
-  const { add, openCart } = useCart();
-
   return (
     <motion.article
       layout
@@ -31,7 +29,11 @@ function ProductCard({
       transition={{ duration: 0.35 }}
       className="group min-w-0 overflow-hidden rounded-2xl border border-[#eadfc9] bg-white shadow-sm transition-shadow hover:shadow-xl hover:shadow-[#c6a15b]/10"
     >
-      <div className="relative aspect-square overflow-hidden bg-[#f5efe4]">
+      <button
+        type="button"
+        onClick={() => onQuickView(product)}
+        className="relative aspect-square w-full overflow-hidden bg-[#f5efe4] text-right"
+      >
         <img
           src={product.image}
           alt={product.name}
@@ -43,35 +45,27 @@ function ProductCard({
             {product.badge}
           </span>
         )}
-        <button
-          onClick={() => onQuickView(product)}
-          className="absolute left-3 top-3 rounded-full bg-white/90 p-2 text-[#191920] opacity-0 shadow-md backdrop-blur transition-all hover:bg-white group-hover:opacity-100"
-          aria-label="عرض سريع"
-        >
+        <span className="absolute left-3 top-3 rounded-full bg-white/90 p-2 text-[#191920] opacity-0 shadow-md backdrop-blur transition-all group-hover:opacity-100">
           <Eye className="h-4 w-4" />
-        </button>
-      </div>
+        </span>
+      </button>
 
       <div className="p-4">
         <span className="text-[11px] font-bold text-[#a8853f]">
           {CATEGORY_LABELS[product.category]}
         </span>
-        <h3 className="mt-1 line-clamp-1 text-sm font-bold text-[#191920] sm:text-base">
+        <h3 className="mt-1 line-clamp-2 min-h-[2.5rem] text-sm font-bold text-[#191920] sm:text-base">
           {product.name}
         </h3>
-        <div className="mt-3 flex min-w-0 flex-wrap items-center justify-between gap-2">
-          <span className="shrink-0 text-base font-black text-[#a8853f] sm:text-lg">{fmt(product.price)}</span>
-          <button
-            onClick={() => {
-              add(product.id);
-              openCart();
-            }}
-            className="flex min-w-0 max-w-full shrink items-center gap-1.5 rounded-full bg-[#191920] px-3 py-2 text-[11px] font-bold text-[#e6c987] transition-all hover:scale-105 hover:bg-[#2a2a33] sm:px-4 sm:text-xs"
-          >
-            <ShoppingBag className="h-4 w-4" />
-            أضف للسلة
-          </button>
-        </div>
+        <a
+          href={waProduct(product.name)}
+          target="_blank"
+          rel="noreferrer"
+          className="mt-3 flex w-full items-center justify-center gap-1.5 rounded-full bg-[#191920] px-3 py-2 text-[11px] font-bold text-[#e6c987] transition-all hover:scale-[1.02] hover:bg-[#2a2a33] sm:text-xs"
+        >
+          <MessageCircle className="h-4 w-4" />
+          اسأل على واتساب
+        </a>
       </div>
     </motion.article>
   );
@@ -84,9 +78,6 @@ function QuickView({
   product: Product;
   onClose: () => void;
 }) {
-  const { add, openCart } = useCart();
-  const [qty, setQty] = useState(1);
-
   return (
     <motion.div
       initial={{ opacity: 0 }}
@@ -119,30 +110,15 @@ function QuickView({
           </span>
           <h3 className="mt-2 text-2xl font-black text-[#191920]">{product.name}</h3>
           <p className="mt-4 flex-1 text-sm leading-8 text-[#5d554a]">{product.desc}</p>
-          <div className="mt-4 text-3xl font-black text-[#a8853f]">{fmt(product.price)}</div>
-
-          <div className="mt-5 flex items-center gap-4">
-            <div className="flex items-center gap-3 rounded-full border border-[#eadfc9] px-3 py-1.5">
-              <button onClick={() => setQty((q) => Math.max(1, q - 1))} aria-label="أقل">
-                <Minus className="h-4 w-4" />
-              </button>
-              <span className="w-6 text-center font-bold">{qty}</span>
-              <button onClick={() => setQty((q) => q + 1)} aria-label="أكثر">
-                <Plus className="h-4 w-4" />
-              </button>
-            </div>
-            <button
-              onClick={() => {
-                add(product.id, qty);
-                onClose();
-                openCart();
-              }}
-              className="bg-gold-gradient flex flex-1 items-center justify-center gap-2 rounded-full px-6 py-3 text-sm font-bold text-[#191920] shadow-lg shadow-[#c6a15b]/30 transition-transform hover:scale-[1.03]"
-            >
-              <ShoppingBag className="h-4 w-4" />
-              أضف للسلة
-            </button>
-          </div>
+          <a
+            href={waProduct(product.name)}
+            target="_blank"
+            rel="noreferrer"
+            className="bg-gold-gradient mt-6 flex items-center justify-center gap-2 rounded-full px-6 py-3 text-sm font-bold text-[#191920] shadow-lg shadow-[#c6a15b]/30 transition-transform hover:scale-[1.03]"
+          >
+            <MessageCircle className="h-4 w-4" />
+            اسأل عن المنتج على واتساب
+          </a>
         </div>
       </motion.div>
     </motion.div>
@@ -150,17 +126,18 @@ function QuickView({
 }
 
 export default function Shop() {
+  const { products } = useCatalog();
   const [filter, setFilter] = useState<Filter>("all");
   const [query, setQuery] = useState("");
   const [quick, setQuick] = useState<Product | null>(null);
 
   const list = useMemo(() => {
-    return PRODUCTS.filter((p) => {
+    return products.filter((p) => {
       const okCat = filter === "all" || p.category === filter;
       const okQ = query.trim() === "" || p.name.includes(query.trim());
       return okCat && okQ;
     });
-  }, [filter, query]);
+  }, [filter, query, products]);
 
   return (
     <section id="shop" className="bg-[#faf6ef] py-20">
@@ -172,17 +149,15 @@ export default function Shop() {
           transition={{ duration: 0.6 }}
           className="text-center"
         >
-          <span className="text-sm font-bold tracking-wide text-[#a8853f]">المتجر</span>
+          <span className="text-sm font-bold tracking-wide text-[#a8853f]">المعرض</span>
           <h2 className="mt-3 text-3xl font-black text-[#191920] sm:text-4xl">
             اختار قطعتك <span className="text-gold-gradient">المفضلة</span>
           </h2>
           <p className="mx-auto mt-3 max-w-xl text-sm leading-7 text-[#7a6f60]">
-            كل المنتجات من مصنعنا مباشرة — الأسعار استرشادية وقد تختلف حسب
-            المقاس والتشطيب، اسألنا على واتساب للتأكيد.
+            كل المنتجات من مصنعنا مباشرة — للتفاصيل والطلب كلمنا على واتساب.
           </p>
         </motion.div>
 
-        {/* filters + search */}
         <div className="mt-10 flex flex-col items-center justify-between gap-4 md:flex-row">
           <div className="flex flex-wrap justify-center gap-2">
             {FILTERS.map((f) => (
@@ -210,7 +185,6 @@ export default function Shop() {
           </div>
         </div>
 
-        {/* grid */}
         <motion.div layout className="mt-10 grid min-w-0 grid-cols-1 gap-4 sm:grid-cols-2 sm:gap-5 lg:grid-cols-3 xl:grid-cols-4">
           <AnimatePresence mode="popLayout">
             {list.map((p) => (

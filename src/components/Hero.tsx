@@ -51,8 +51,7 @@ export default function Hero() {
             className="mx-auto mt-5 max-w-xl break-words text-sm leading-7 text-[#cfc7b4] sm:text-base sm:leading-8 md:text-lg lg:mx-0"
           >
             ساعات حائط فاخرة، مزهريات سيراميك، وأطقم ديكور — صناعة مباشرة من
-            المصنع بجودة عالية وأسعار لا تُنافس، مع شحن لكل محافظات مصر ودفع
-            عند الاستلام.
+            المصنع بجودة عالية، مع شحن لكل محافظات مصر ودفع عند الاستلام.
           </motion.p>
 
           <motion.div

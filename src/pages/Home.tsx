@@ -7,7 +7,6 @@ import Shop from "@/components/Shop";
 import Testimonials from "@/components/Testimonials";
 import Contact from "@/components/Contact";
 import Footer from "@/components/Footer";
-import CartDrawer from "@/components/CartDrawer";
 import WhatsAppFloat from "@/components/WhatsAppFloat";
 
 export default function Home() {
@@ -24,7 +23,6 @@ export default function Home() {
         <Contact />
       </main>
       <Footer />
-      <CartDrawer />
       <WhatsAppFloat />
     </div>
   );
