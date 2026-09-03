@@ -29,7 +29,7 @@ function ProductCard({
       animate={{ opacity: 1, y: 0 }}
       exit={{ opacity: 0, scale: 0.92 }}
       transition={{ duration: 0.35 }}
-      className="group overflow-hidden rounded-2xl border border-[#eadfc9] bg-white shadow-sm transition-shadow hover:shadow-xl hover:shadow-[#c6a15b]/10"
+      className="group min-w-0 overflow-hidden rounded-2xl border border-[#eadfc9] bg-white shadow-sm transition-shadow hover:shadow-xl hover:shadow-[#c6a15b]/10"
     >
       <div className="relative aspect-square overflow-hidden bg-[#f5efe4]">
         <img
@@ -59,14 +59,14 @@ function ProductCard({
         <h3 className="mt-1 line-clamp-1 text-sm font-bold text-[#191920] sm:text-base">
           {product.name}
         </h3>
-        <div className="mt-3 flex min-w-0 items-center justify-between gap-2">
+        <div className="mt-3 flex min-w-0 flex-wrap items-center justify-between gap-2">
           <span className="shrink-0 text-base font-black text-[#a8853f] sm:text-lg">{fmt(product.price)}</span>
           <button
             onClick={() => {
               add(product.id);
               openCart();
             }}
-            className="flex shrink-0 items-center gap-1.5 rounded-full bg-[#191920] px-3 py-2 text-[11px] font-bold text-[#e6c987] transition-all hover:scale-105 hover:bg-[#2a2a33] sm:px-4 sm:text-xs"
+            className="flex min-w-0 max-w-full shrink items-center gap-1.5 rounded-full bg-[#191920] px-3 py-2 text-[11px] font-bold text-[#e6c987] transition-all hover:scale-105 hover:bg-[#2a2a33] sm:px-4 sm:text-xs"
           >
             <ShoppingBag className="h-4 w-4" />
             أضف للسلة
@@ -101,7 +101,7 @@ function QuickView({
         exit={{ scale: 0.9, y: 30 }}
         transition={{ type: "spring", damping: 22 }}
         onClick={(e) => e.stopPropagation()}
-        className="grid w-full max-w-3xl overflow-hidden rounded-3xl bg-white shadow-2xl md:grid-cols-2"
+        className="grid w-[min(100%,48rem)] max-h-[90dvh] overflow-y-auto overflow-x-hidden rounded-3xl bg-white shadow-2xl md:grid-cols-2"
       >
         <div className="relative aspect-square bg-[#f5efe4]">
           <img src={product.image} alt={product.name} className="h-full w-full object-cover" />
@@ -211,7 +211,7 @@ export default function Shop() {
         </div>
 
         {/* grid */}
-        <motion.div layout className="mt-10 grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+        <motion.div layout className="mt-10 grid min-w-0 grid-cols-1 gap-4 sm:grid-cols-2 sm:gap-5 lg:grid-cols-3 xl:grid-cols-4">
           <AnimatePresence mode="popLayout">
             {list.map((p) => (
               <ProductCard key={p.id} product={p} onQuickView={setQuick} />

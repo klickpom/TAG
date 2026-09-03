@@ -29,7 +29,7 @@ export default function Navbar() {
         scrolled ? "glass shadow-lg shadow-black/5" : "bg-[#faf6ef]/60"
       }`}
     >
-      <div className="mx-auto flex max-w-7xl items-center justify-between gap-2 px-3 py-3 sm:px-4">
+      <div className="mx-auto flex w-full max-w-7xl items-center justify-between gap-2 px-4 py-3">
         {/* logo */}
         <a href="#home" className="flex min-w-0 flex-1 items-center gap-2 sm:gap-3">
           <img

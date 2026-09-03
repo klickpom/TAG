@@ -10,7 +10,7 @@ export const TIKTOK_LINK = "https://www.tiktok.com";
 export default function TopBar() {
   return (
     <div className="bg-[#191920] text-[#e9e2d4] text-[11px] sm:text-sm">
-      <div className="mx-auto flex max-w-7xl items-center justify-between gap-2 px-3 py-2 sm:gap-3 sm:px-4">
+      <div className="mx-auto flex w-full max-w-7xl items-center justify-between gap-2 px-4 py-2 sm:gap-3">
         <div className="flex min-w-0 items-center gap-1.5 sm:gap-2">
           <Truck className="h-3.5 w-3.5 shrink-0 text-[#c6a15b] sm:h-4 sm:w-4" />
           <span className="truncate">

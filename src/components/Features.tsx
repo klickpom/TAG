@@ -19,7 +19,7 @@ export default function Features() {
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true, margin: "-60px" }}
             transition={{ duration: 0.5, delay: i * 0.08 }}
-            className="group rounded-2xl border border-[#eadfc9] bg-white p-6 shadow-sm transition-all hover:-translate-y-1.5 hover:shadow-xl hover:shadow-[#c6a15b]/10"
+            className="group min-w-0 rounded-2xl border border-[#eadfc9] bg-white p-5 shadow-sm transition-all hover:-translate-y-1.5 hover:shadow-xl hover:shadow-[#c6a15b]/10 sm:p-6"
           >
             <div className="bg-gold-gradient flex h-12 w-12 items-center justify-center rounded-xl text-white shadow-md shadow-[#c6a15b]/30 transition-transform group-hover:scale-110">
               <f.icon className="h-6 w-6" />

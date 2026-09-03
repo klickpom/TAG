@@ -80,7 +80,7 @@ export default function Hero() {
         </div>
 
         {/* floating crown */}
-        <div className="relative mx-auto hidden w-full max-w-md overflow-hidden sm:block md:overflow-visible lg:max-w-lg">
+        <div className="relative mx-auto hidden w-full max-w-sm overflow-hidden sm:block md:max-w-md lg:max-w-lg">
           <motion.div
             initial={{ opacity: 0, scale: 0.85 }}
             animate={{ opacity: 1, scale: 1 }}
@@ -97,7 +97,7 @@ export default function Hero() {
           <motion.div
             animate={{ rotate: 360 }}
             transition={{ duration: 30, repeat: Infinity, ease: "linear" }}
-            className="absolute -right-6 -top-6 h-24 w-24 rounded-full border-2 border-dashed border-[#c6a15b]/50"
+            className="pointer-events-none absolute right-3 top-3 h-16 w-16 rounded-full border-2 border-dashed border-[#c6a15b]/50 md:h-20 md:w-20 lg:h-24 lg:w-24"
           />
         </div>
       </div>
@@ -117,7 +117,7 @@ export default function Hero() {
               <div className="font-display text-3xl font-bold text-[#e6c987]" dir="ltr">
                 {s.value}
               </div>
-              <div className="mt-1 text-xs font-semibold text-[#cfc7b4] sm:text-sm">
+              <div className="mt-1 px-1 text-[11px] font-semibold leading-5 text-[#cfc7b4] sm:text-sm">
                 {s.label}
               </div>
             </motion.div>

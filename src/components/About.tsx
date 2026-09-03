@@ -18,7 +18,7 @@ export default function About() {
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true, margin: "-80px" }}
           transition={{ duration: 0.7 }}
-          className="relative"
+          className="relative min-w-0 pb-8"
         >
           <div className="overflow-hidden rounded-[2rem] shadow-2xl shadow-[#191920]/15 ring-1 ring-[#c6a15b]/30">
             <img
