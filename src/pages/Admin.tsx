@@ -48,7 +48,7 @@ export default function Admin() {
   useEffect(() => {
     if (!authed) return;
     setDraft(defaultDraft(names));
-    setItems(lookbook.map((x) => ({ ...x })));
+    setItems(lookbook.map((x) => ({ ...x, price: x.price ?? "" })));
   }, [authed, names, lookbook]);
 
   const dirtyNames = useMemo(() => {
@@ -76,7 +76,7 @@ export default function Admin() {
       .map((item, index) => ({ item, index }))
       .filter(({ item }) => {
         const okKind = kindFilter === "all" || item.kind === kindFilter;
-        return okKind && (!q || item.name.includes(q) || item.size.includes(q));
+        return okKind && (!q || item.name.includes(q) || item.size.includes(q) || (item.price ?? "").includes(q));
       });
   }, [items, kindFilter, query]);
 
@@ -147,6 +147,7 @@ export default function Admin() {
         id: newId(),
         name: "قطعة جديدة",
         size: "مقاس — سم",
+        price: "",
         kind: "clocks",
         image: "/images/lookbook/lb-01.png",
       },
@@ -395,6 +396,15 @@ export default function Admin() {
                     <input
                       value={item.size}
                       onChange={(e) => updateItem(index, { size: e.target.value })}
+                      className="mt-1 w-full rounded-xl border border-[#eadfc9] px-3 py-2 text-sm font-bold text-[#191920] outline-none focus:border-[#c6a15b]"
+                    />
+                  </label>
+                  <label className="text-[11px] font-bold text-[#7a6f60]">
+                    السعر
+                    <input
+                      value={item.price ?? ""}
+                      onChange={(e) => updateItem(index, { price: e.target.value })}
+                      placeholder="مثال: 55 جنيه"
                       className="mt-1 w-full rounded-xl border border-[#eadfc9] px-3 py-2 text-sm font-bold text-[#191920] outline-none focus:border-[#c6a15b]"
                     />
                   </label>

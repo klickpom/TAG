@@ -6,8 +6,9 @@ import { LOOK_LABELS, type LookItem } from "@/data/lookbook";
 import { useCatalog } from "@/context/CatalogContext";
 import { WA_LINK } from "@/components/TopBar";
 
-function waItem(name: string, size: string) {
-  return `${WA_LINK}?text=${encodeURIComponent(`السلام عليكم، محتاج تفاصيل من كتالوج تاج عن: ${name} — ${size}`)}`;
+function waItem(name: string, size: string, price: string) {
+  const extra = price ? ` — السعر ${price}` : "";
+  return `${WA_LINK}?text=${encodeURIComponent(`السلام عليكم، محتاج تفاصيل من كتالوج تاج عن: ${name} — ${size}${extra}`)}`;
 }
 
 type Leaf =
@@ -206,6 +207,7 @@ function IndexPage({ items, onPick }: { items: LookItem[]; onPick: (i: number) =
               <span className="min-w-0 truncate">
                 {item.name}
                 <span className="mr-2 font-semibold text-[#8a7a5c]"> — {item.size}</span>
+                {item.price ? <span className="mr-2 font-black text-[#a8853f]"> — {item.price}</span> : null}
               </span>
               <span className="shrink-0 font-display text-[#a8853f]">{String(i + 1).padStart(2, "0")}</span>
             </button>
@@ -229,10 +231,13 @@ function ProductSpread({ item, no, total }: { item: LookItem; no: number; total:
           <div className="mt-6 inline-block border border-[#c6a15b] px-4 py-2 text-sm font-bold text-[#6b542e]">
             {item.size}
           </div>
+          {item.price ? (
+            <p className="mt-5 font-display text-3xl font-bold text-[#a8853f]">{item.price}</p>
+          ) : null}
         </div>
         <div className="flex items-end justify-between gap-3">
           <a
-            href={waItem(item.name, item.size)}
+            href={waItem(item.name, item.size, item.price)}
             target="_blank"
             rel="noreferrer"
             onPointerUp={(e) => e.stopPropagation()}

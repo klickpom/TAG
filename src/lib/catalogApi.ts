@@ -6,15 +6,23 @@ function isJsonResponse(res: Response) {
   return (res.headers.get("content-type") || "").includes("json");
 }
 
+function mergeCatalog(saved: LookItem[]): LookItem[] {
+  const fb = new Map(LOOKBOOK.map((i) => [i.id, i]));
+  const ids = new Set(saved.map((i) => i.id));
+  const merged = saved.map((s) => {
+    const f = fb.get(s.id);
+    const price = (s.price || f?.price || "").trim();
+    return f ? { ...f, ...s, price } : { ...s, price };
+  });
+  return [...merged, ...LOOKBOOK.filter((i) => !ids.has(i.id))];
+}
+
 export async function fetchCatalogItems(): Promise<LookItem[]> {
   try {
     const res = await fetch("/api/catalog.php", { cache: "no-store" });
     if (res.ok && isJsonResponse(res)) {
       const data = (await res.json()) as { items?: LookItem[] };
-      if (Array.isArray(data.items) && data.items.length) {
-        const ids = new Set(data.items.map((i) => i.id));
-        return [...data.items, ...LOOKBOOK.filter((i) => !ids.has(i.id))];
-      }
+      if (Array.isArray(data.items) && data.items.length) return mergeCatalog(data.items);
     }
   } catch {
     /* local */
@@ -23,7 +31,7 @@ export async function fetchCatalogItems(): Promise<LookItem[]> {
     const raw = localStorage.getItem(LOCAL_KEY);
     if (raw) {
       const parsed = JSON.parse(raw) as LookItem[];
-      if (Array.isArray(parsed) && parsed.length) return parsed;
+      if (Array.isArray(parsed) && parsed.length) return mergeCatalog(parsed);
     }
   } catch {
     /* ignore */

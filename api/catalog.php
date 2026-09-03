@@ -28,10 +28,22 @@ function seed_catalog(): array {
 function merge_seed_items(array $items): array {
   $seed = seed_catalog();
   if (!$seed) return $items;
-  $ids = [];
-  foreach ($items as $row) {
-    if (is_array($row) && isset($row['id'])) $ids[(string)$row['id']] = true;
+  $byId = [];
+  foreach ($seed as $row) {
+    if (is_array($row) && isset($row['id'])) $byId[(string)$row['id']] = $row;
   }
+  $ids = [];
+  foreach ($items as &$row) {
+    if (!is_array($row)) continue;
+    $id = (string)($row['id'] ?? '');
+    $ids[$id] = true;
+    if ($id !== '' && isset($byId[$id])) {
+      if (trim((string)($row['price'] ?? '')) === '' && !empty($byId[$id]['price'])) {
+        $row['price'] = $byId[$id]['price'];
+      }
+    }
+  }
+  unset($row);
   foreach ($seed as $row) {
     $id = is_array($row) ? (string)($row['id'] ?? '') : '';
     if ($id !== '' && empty($ids[$id])) $items[] = $row;
@@ -136,9 +148,10 @@ foreach ($items as $row) {
   $image = trim((string)($row['image'] ?? ''));
   $kind = ($row['kind'] ?? '') === 'clocks' ? 'clocks' : 'pots';
   $size = trim(mb_substr((string)($row['size'] ?? ''), 0, 80));
+  $price = trim(mb_substr((string)($row['price'] ?? ''), 0, 40));
   if ($id === '' || $name === '' || $image === '') continue;
   if (!preg_match('#^(/images/|https?://)#', $image)) continue;
-  $clean[] = compact('id', 'name', 'image', 'kind', 'size');
+  $clean[] = compact('id', 'name', 'image', 'kind', 'size', 'price');
 }
 
 $file = catalog_file();
