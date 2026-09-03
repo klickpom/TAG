@@ -9,7 +9,17 @@ if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
 
 require __DIR__ . '/config.php';
 
-$file = dirname(__DIR__) . '/data/product-names.json';
+function names_file(): string {
+  $outside = dirname(__DIR__, 2) . '/taj-product-names.json';
+  $inside = dirname(__DIR__) . '/data/product-names.json';
+  $outerDir = dirname($outside);
+  if (is_dir($outerDir) && (is_writable($outerDir) || is_writable($outside))) {
+    return $outside;
+  }
+  return $inside;
+}
+
+$file = names_file();
 
 function read_names(string $file): array {
   if (!is_file($file)) return [];
