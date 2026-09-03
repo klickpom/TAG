@@ -59,14 +59,14 @@ function ProductCard({
         <h3 className="mt-1 line-clamp-1 text-sm font-bold text-[#191920] sm:text-base">
           {product.name}
         </h3>
-        <div className="mt-3 flex items-center justify-between gap-2">
-          <span className="text-lg font-black text-[#a8853f]">{fmt(product.price)}</span>
+        <div className="mt-3 flex min-w-0 items-center justify-between gap-2">
+          <span className="shrink-0 text-base font-black text-[#a8853f] sm:text-lg">{fmt(product.price)}</span>
           <button
             onClick={() => {
               add(product.id);
               openCart();
             }}
-            className="flex items-center gap-1.5 rounded-full bg-[#191920] px-4 py-2 text-xs font-bold text-[#e6c987] transition-all hover:scale-105 hover:bg-[#2a2a33]"
+            className="flex shrink-0 items-center gap-1.5 rounded-full bg-[#191920] px-3 py-2 text-[11px] font-bold text-[#e6c987] transition-all hover:scale-105 hover:bg-[#2a2a33] sm:px-4 sm:text-xs"
           >
             <ShoppingBag className="h-4 w-4" />
             أضف للسلة

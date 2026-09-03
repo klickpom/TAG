@@ -18,17 +18,17 @@ export default function Hero() {
         style={{ backgroundImage: "url(/images/products/cover.jpg)" }}
       />
       <div className="absolute inset-0 bg-gradient-to-l from-[#191920] via-[#191920]/85 to-[#191920]/40" />
-      <div className="absolute -left-32 -top-32 h-96 w-96 rounded-full bg-[#c6a15b]/20 blur-3xl" />
-      <div className="absolute -bottom-24 right-1/4 h-72 w-72 rounded-full bg-[#e6c987]/10 blur-3xl" />
+      <div className="absolute -left-32 -top-32 hidden h-96 w-96 rounded-full bg-[#c6a15b]/20 blur-3xl sm:block" />
+      <div className="absolute -bottom-24 right-1/4 hidden h-72 w-72 rounded-full bg-[#e6c987]/10 blur-3xl sm:block" />
 
-      <div className="relative mx-auto grid max-w-7xl items-center gap-10 px-4 pb-16 pt-14 sm:pt-20 lg:grid-cols-2 lg:pb-24 lg:pt-24">
+      <div className="relative mx-auto grid w-full max-w-7xl items-center gap-8 px-4 pb-14 pt-10 sm:gap-10 sm:pb-16 sm:pt-20 lg:grid-cols-2 lg:pb-24 lg:pt-24">
         {/* text */}
-        <div className="text-center lg:text-right">
+        <div className="min-w-0 text-center lg:text-right">
           <motion.span
             initial={{ opacity: 0, y: 16 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5 }}
-            className="inline-block rounded-full border border-[#c6a15b]/40 bg-[#c6a15b]/10 px-4 py-1.5 text-xs font-bold text-[#e6c987] sm:text-sm"
+            className="inline-block max-w-full rounded-full border border-[#c6a15b]/40 bg-[#c6a15b]/10 px-3 py-1.5 text-[11px] font-bold text-[#e6c987] sm:px-4 sm:text-sm"
           >
             مصنع تاج — طنطا، الغربية
           </motion.span>
@@ -37,7 +37,7 @@ export default function Hero() {
             initial={{ opacity: 0, y: 24 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6, delay: 0.1 }}
-            className="mt-5 text-4xl font-black leading-[1.25] text-white sm:text-5xl lg:text-6xl"
+            className="mt-5 text-[2rem] font-black leading-[1.3] text-white sm:text-5xl lg:text-6xl"
           >
             فخامة تليق
             <br />
@@ -48,7 +48,7 @@ export default function Hero() {
             initial={{ opacity: 0, y: 24 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6, delay: 0.2 }}
-            className="mx-auto mt-5 max-w-xl text-base leading-8 text-[#cfc7b4] sm:text-lg lg:mx-0"
+            className="mx-auto mt-5 max-w-xl break-words text-sm leading-7 text-[#cfc7b4] sm:text-base sm:leading-8 md:text-lg lg:mx-0"
           >
             ساعات حائط فاخرة، مزهريات سيراميك، وأطقم ديكور — صناعة مباشرة من
             المصنع بجودة عالية وأسعار لا تُنافس، مع شحن لكل محافظات مصر ودفع
@@ -59,11 +59,11 @@ export default function Hero() {
             initial={{ opacity: 0, y: 24 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6, delay: 0.3 }}
-            className="mt-8 flex flex-wrap items-center justify-center gap-4 lg:justify-start"
+            className="mt-7 flex w-full flex-col items-stretch justify-center gap-3 sm:mt-8 sm:flex-row sm:flex-wrap sm:items-center sm:gap-4 lg:justify-start"
           >
             <a
               href="#shop"
-              className="bg-gold-gradient rounded-full px-8 py-3.5 text-base font-bold text-[#191920] shadow-lg shadow-[#c6a15b]/30 transition-transform hover:scale-105"
+              className="bg-gold-gradient rounded-full px-6 py-3 text-center text-sm font-bold text-[#191920] shadow-lg shadow-[#c6a15b]/30 transition-transform hover:scale-105 sm:px-8 sm:py-3.5 sm:text-base"
             >
               تسوّق الآن
             </a>
@@ -71,16 +71,16 @@ export default function Hero() {
               href={WA_LINK}
               target="_blank"
               rel="noreferrer"
-              className="flex items-center gap-2 rounded-full border border-[#c6a15b]/50 px-7 py-3.5 text-base font-bold text-[#e6c987] transition-colors hover:bg-[#c6a15b]/10"
+              className="flex items-center justify-center gap-2 rounded-full border border-[#c6a15b]/50 px-6 py-3 text-sm font-bold text-[#e6c987] transition-colors hover:bg-[#c6a15b]/10 sm:px-7 sm:py-3.5 sm:text-base"
             >
-              <MessageCircle className="h-5 w-5" />
+              <MessageCircle className="h-5 w-5 shrink-0" />
               اطلب عبر واتساب
             </a>
           </motion.div>
         </div>
 
         {/* floating crown */}
-        <div className="relative mx-auto hidden w-full max-w-md sm:block lg:max-w-lg">
+        <div className="relative mx-auto hidden w-full max-w-md overflow-hidden sm:block md:overflow-visible lg:max-w-lg">
           <motion.div
             initial={{ opacity: 0, scale: 0.85 }}
             animate={{ opacity: 1, scale: 1 }}
@@ -103,7 +103,7 @@ export default function Hero() {
       </div>
 
       {/* stats */}
-      <div className="relative border-t border-white/10 bg-black/25 backdrop-blur-sm">
+      <div className="relative border-t border-white/10 bg-black/25 pb-16 backdrop-blur-sm sm:pb-0">
         <div className="mx-auto grid max-w-7xl grid-cols-2 gap-6 px-4 py-7 sm:grid-cols-4">
           {STATS.map((s, i) => (
             <motion.div

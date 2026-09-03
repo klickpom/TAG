@@ -71,10 +71,13 @@
   }
   html {
     scroll-behavior: smooth;
+    overflow-x: clip;
   }
   body {
     @apply bg-background text-foreground;
     font-family: "Cairo", system-ui, sans-serif;
+    overflow-x: clip;
+    max-width: 100%;
   }
   ::selection {
     background: #c6a15b;

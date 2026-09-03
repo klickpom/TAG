@@ -29,19 +29,19 @@ export default function Navbar() {
         scrolled ? "glass shadow-lg shadow-black/5" : "bg-[#faf6ef]/60"
       }`}
     >
-      <div className="mx-auto flex max-w-7xl items-center justify-between px-4 py-3">
+      <div className="mx-auto flex max-w-7xl items-center justify-between gap-2 px-3 py-3 sm:px-4">
         {/* logo */}
-        <a href="#home" className="flex items-center gap-3">
+        <a href="#home" className="flex min-w-0 flex-1 items-center gap-2 sm:gap-3">
           <img
             src="/images/logo.jpeg"
             alt="TAJ"
-            className="h-11 w-11 rounded-full object-cover ring-2 ring-[#c6a15b]/60"
+            className="h-9 w-9 shrink-0 rounded-full object-cover ring-2 ring-[#c6a15b]/60 sm:h-11 sm:w-11"
           />
-          <div className="leading-tight">
-            <span className="font-display text-xl font-bold tracking-[0.25em] text-[#191920]">
+          <div className="min-w-0 leading-tight">
+            <span className="font-display text-lg font-bold tracking-[0.12em] text-[#191920] sm:text-xl sm:tracking-[0.25em]">
               TAJ
             </span>
-            <span className="block text-[11px] font-semibold text-[#7a6f60]">
+            <span className="mt-0.5 block truncate text-[10px] font-semibold text-[#7a6f60] sm:text-[11px] md:whitespace-normal">
               مصنع تاج لساعات الحائط والديكور
             </span>
           </div>
@@ -60,7 +60,7 @@ export default function Navbar() {
           ))}
         </nav>
 
-        <div className="flex items-center gap-2">
+        <div className="flex shrink-0 items-center gap-1.5 sm:gap-2">
           {/* cart */}
           <button
             onClick={openCart}

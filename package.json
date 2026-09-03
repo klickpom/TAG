@@ -4,7 +4,7 @@
   "version": "0.0.0",
   "type": "module",
   "scripts": {
-    "dev": "vite",
+    "dev": "node scripts/restore-vite-index.mjs && vite",
     "prebuild": "node scripts/restore-vite-index.mjs",
     "build": "tsc -b && vite build",
     "postbuild": "node scripts/publish-hostinger.mjs",

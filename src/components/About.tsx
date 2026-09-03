@@ -10,12 +10,12 @@ const POINTS = [
 
 export default function About() {
   return (
-    <section id="about" className="bg-[#f5efe4] py-20">
+    <section id="about" className="overflow-x-clip bg-[#f5efe4] py-16 sm:py-20">
       <div className="mx-auto grid max-w-7xl items-center gap-12 px-4 lg:grid-cols-2">
         {/* image */}
         <motion.div
-          initial={{ opacity: 0, x: 60 }}
-          whileInView={{ opacity: 1, x: 0 }}
+          initial={{ opacity: 0, y: 28 }}
+          whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true, margin: "-80px" }}
           transition={{ duration: 0.7 }}
           className="relative"
@@ -27,7 +27,7 @@ export default function About() {
               className="h-full w-full object-cover transition-transform duration-700 hover:scale-105"
             />
           </div>
-          <div className="bg-gold-gradient absolute -bottom-6 right-6 rounded-2xl px-6 py-4 text-center shadow-xl shadow-[#c6a15b]/30">
+          <div className="bg-gold-gradient absolute -bottom-4 right-4 rounded-2xl px-5 py-3 text-center shadow-xl shadow-[#c6a15b]/30 sm:-bottom-6 sm:right-6 sm:px-6 sm:py-4">
             <div className="font-display text-3xl font-bold text-[#191920]" dir="ltr">TAJ</div>
             <div className="text-xs font-bold text-[#191920]/80">صناعة بحب في طنطا</div>
           </div>
@@ -35,8 +35,8 @@ export default function About() {
 
         {/* text */}
         <motion.div
-          initial={{ opacity: 0, x: -60 }}
-          whileInView={{ opacity: 1, x: 0 }}
+          initial={{ opacity: 0, y: 28 }}
+          whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true, margin: "-80px" }}
           transition={{ duration: 0.7 }}
         >
@@ -54,7 +54,7 @@ export default function About() {
             {POINTS.map((p, i) => (
               <motion.li
                 key={p}
-                initial={{ opacity: 0, x: -24 }}
+                initial={{ opacity: 0, y: 12 }}
                 whileInView={{ opacity: 1, x: 0 }}
                 viewport={{ once: true }}
                 transition={{ duration: 0.4, delay: i * 0.08 }}
