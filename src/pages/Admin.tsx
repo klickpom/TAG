@@ -2,6 +2,7 @@ import { useEffect, useMemo, useState } from "react";
 import { Link } from "react-router";
 import { LogOut, RotateCcw, Save, Search, Shield } from "lucide-react";
 import { CATEGORY_LABELS, PRODUCTS, type Category } from "@/data/products";
+import { LOOK_LABELS, LOOKBOOK } from "@/data/lookbook";
 import { loginAdmin, saveNameMap, type NameMap } from "@/lib/productNames";
 import { useCatalog } from "@/context/CatalogContext";
 
@@ -10,6 +11,7 @@ const SESSION_KEY = "taj-admin-pass";
 function defaultDraft(names: NameMap): NameMap {
   const init: NameMap = {};
   for (const p of PRODUCTS) init[p.id] = names[p.id]?.trim() || p.name;
+  for (const p of LOOKBOOK) init[p.id] = names[p.id]?.trim() || p.name;
   return init;
 }
 
@@ -20,6 +22,7 @@ export default function Admin() {
   const [loginError, setLoginError] = useState("");
   const [logging, setLogging] = useState(false);
   const [draft, setDraft] = useState<NameMap>({});
+  const [board, setBoard] = useState<"site" | "lookbook">("lookbook");
   const [filter, setFilter] = useState<Category | "all">("all");
   const [query, setQuery] = useState("");
   const [saving, setSaving] = useState(false);
@@ -31,7 +34,8 @@ export default function Admin() {
   }, [authed, names]);
 
   const dirtyCount = useMemo(() => {
-    return PRODUCTS.filter((p) => {
+    const rows = [...PRODUCTS, ...LOOKBOOK];
+    return rows.filter((p) => {
       const now = (draft[p.id] ?? p.name).trim();
       const saved = (names[p.id]?.trim() || p.name).trim();
       return now !== saved;
@@ -39,13 +43,20 @@ export default function Admin() {
   }, [draft, names]);
 
   const list = useMemo(() => {
+    if (board === "lookbook") {
+      return LOOKBOOK.filter((p) => {
+        const name = draft[p.id] ?? p.name;
+        const q = query.trim();
+        return !q || name.includes(q) || p.name.includes(q);
+      });
+    }
     return PRODUCTS.filter((p) => {
       const name = draft[p.id] ?? p.name;
       const okCat = filter === "all" || p.category === filter;
       const q = query.trim();
       return okCat && (!q || name.includes(q) || p.name.includes(q));
     });
-  }, [filter, query, draft]);
+  }, [filter, query, draft, board]);
 
   const onLogin = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -74,6 +85,10 @@ export default function Admin() {
     setMsg("");
     const payload: NameMap = {};
     for (const p of PRODUCTS) {
+      const n = (draft[p.id] ?? p.name).trim();
+      if (n && n !== p.name) payload[p.id] = n;
+    }
+    for (const p of LOOKBOOK) {
       const n = (draft[p.id] ?? p.name).trim();
       if (n && n !== p.name) payload[p.id] = n;
     }
@@ -123,6 +138,9 @@ export default function Admin() {
           <Link to="/" className="mt-4 block text-center text-xs font-semibold text-[#a8853f]">
             الرجوع للموقع
           </Link>
+          <Link to="/catalog" className="mt-2 block text-center text-xs font-semibold text-[#7a6f60]">
+            فتح الكتالوج
+          </Link>
         </form>
       </div>
     );
@@ -135,7 +153,7 @@ export default function Admin() {
           <div>
             <h1 className="text-lg font-black text-[#191920]">أسماء المنتجات</h1>
             <p className="text-xs text-[#7a6f60]">
-              {PRODUCTS.length} منتج — {dirtyCount} تعديل غير محفوظ
+              {PRODUCTS.length + LOOKBOOK.length} منتج — {dirtyCount} تعديل غير محفوظ
             </p>
           </div>
           <div className="flex flex-wrap gap-2">
@@ -175,9 +193,27 @@ export default function Admin() {
           </p>
         )}
 
+        <div className="mb-4 flex gap-2">
+          <button
+            type="button"
+            onClick={() => setBoard("lookbook")}
+            className={`rounded-full px-4 py-2 text-xs font-bold ${board === "lookbook" ? "bg-[#191920] text-[#e6c987]" : "border border-[#eadfc9] bg-white"}`}
+          >
+            الكتالوج
+          </button>
+          <button
+            type="button"
+            onClick={() => setBoard("site")}
+            className={`rounded-full px-4 py-2 text-xs font-bold ${board === "site" ? "bg-[#191920] text-[#e6c987]" : "border border-[#eadfc9] bg-white"}`}
+          >
+            معرض الموقع
+          </button>
+        </div>
+
         <div className="flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
           <div className="flex flex-wrap gap-2">
-            {(["all", "clocks", "vases", "sets"] as const).map((f) => (
+            {board === "site" &&
+              (["all", "clocks", "vases", "sets"] as const).map((f) => (
               <button
                 key={f}
                 type="button"
@@ -215,7 +251,7 @@ export default function Admin() {
                 <img src={p.image} alt="" className="h-20 w-20 shrink-0 rounded-xl object-cover" />
                 <div className="min-w-0 flex-1">
                   <div className="flex items-center gap-2 text-[11px] font-bold text-[#a8853f]">
-                    {CATEGORY_LABELS[p.category]}
+                    {"kind" in p ? LOOK_LABELS[p.kind] : CATEGORY_LABELS[p.category]}
                     {changed && (
                       <span className="rounded-full bg-[#c6a15b]/15 px-2 py-0.5 text-[#a8853f]">معدّل</span>
                     )}

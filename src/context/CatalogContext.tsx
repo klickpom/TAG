@@ -8,10 +8,12 @@ import {
   type ReactNode,
 } from "react";
 import { PRODUCTS, type Product } from "@/data/products";
+import { LOOKBOOK, type LookItem } from "@/data/lookbook";
 import { fetchNameMap, type NameMap } from "@/lib/productNames";
 
 interface CatalogCtx {
   products: Product[];
+  lookbook: LookItem[];
   names: NameMap;
   loading: boolean;
   reload: () => Promise<void>;
@@ -43,8 +45,17 @@ export function CatalogProvider({ children }: { children: ReactNode }) {
     [names]
   );
 
+  const lookbook = useMemo(
+    () =>
+      LOOKBOOK.map((p) => {
+        const n = names[p.id]?.trim();
+        return n ? { ...p, name: n } : p;
+      }),
+    [names]
+  );
+
   return (
-    <Ctx.Provider value={{ products, names, loading, reload }}>
+    <Ctx.Provider value={{ products, lookbook, names, loading, reload }}>
       {children}
     </Ctx.Provider>
   );
