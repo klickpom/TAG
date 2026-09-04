@@ -18,7 +18,7 @@ export const LOOK_LABELS: Record<LookKind | "all", string> = {
 const photo = (file: string) => `/images/products/${file}.jpg`;
 
 export function isCustomerScreenshot(url: string) {
-  return /\/images\/lookbook\/lb-\d{2}(?:-\d{2})?\.png$/i.test(url.trim());
+  return /\/images\/lookbook\//i.test(url.trim());
 }
 
 export function sortCatalogItems(items: LookItem[]): LookItem[] {

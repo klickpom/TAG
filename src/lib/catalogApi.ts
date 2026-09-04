@@ -9,7 +9,7 @@ function isJsonResponse(res: Response) {
 function usableImage(url: string) {
   const value = url.trim();
   if (isCustomerScreenshot(value)) return false;
-  return /^(https?:\/\/|\/images\/products\/|\/images\/lookbook\/lb-\d{8}|\/api\/media\.php)/.test(value);
+  return /^(https?:\/\/|\/images\/products\/|\/images\/catalog\/|\/api\/media\.php)/.test(value);
 }
 
 function mergeCatalog(saved: LookItem[]): LookItem[] {

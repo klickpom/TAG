@@ -31,7 +31,7 @@ function durable_upload_dir(): string {
 }
 
 function public_upload_dir(): string {
-  $dir = dirname(__DIR__) . '/images/lookbook';
+  $dir = dirname(__DIR__) . '/images/catalog';
   if (!is_dir($dir)) @mkdir($dir, 0755, true);
   return $dir;
 }
@@ -50,7 +50,7 @@ function image_filename(string $image): string {
 }
 
 function is_customer_screenshot(string $image): bool {
-  return (bool)preg_match('#/images/lookbook/lb-\d{2}(?:-\d{2})?\.png$#i', $image);
+  return strpos($image, '/images/lookbook/') !== false;
 }
 
 function heal_images(array $items): array {
@@ -85,7 +85,7 @@ function heal_images(array $items): array {
       @copy($dur, $pub);
     }
     if (is_file($pub)) {
-      $row['image'] = '/images/lookbook/' . $file;
+      $row['image'] = '/images/catalog/' . $file;
       continue;
     }
     if (is_file($dur)) {
@@ -230,7 +230,7 @@ if (!empty($_FILES['image'])) {
   }
   @copy($durable, $public);
   $url = is_file($public)
-    ? '/images/lookbook/' . $name
+    ? '/images/catalog/' . $name
     : '/api/media.php?f=' . rawurlencode($name);
   header('Content-Type: application/json; charset=utf-8');
   echo json_encode(['ok' => true, 'url' => $url]);
@@ -268,7 +268,7 @@ foreach ($items as $row) {
   $price = trim(mb_substr((string)($row['price'] ?? ''), 0, 40));
   if ($id === '' || $name === '' || $image === '') continue;
   if (strpos($image, 'blob:') === 0 || strpos($image, 'data:') === 0) continue;
-  if (preg_match('#/images/lookbook/lb-\d{2}(?:-\d{2})?\.png$#i', $image)) continue;
+  if (strpos($image, '/images/lookbook/') !== false) continue;
   if (!preg_match('#^(/images/|/api/media\.php\?f=|https?://)#', $image)) continue;
   $clean[] = compact('id', 'name', 'image', 'kind', 'size', 'price');
 }
