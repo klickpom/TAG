@@ -1,5 +1,6 @@
 import { motion } from "framer-motion";
 import { ArrowDown, MessageCircle } from "lucide-react";
+import { FEATURED } from "@/lib/site";
 import { WA_LINK } from "./TopBar";
 
 const STATS = [
@@ -12,17 +13,16 @@ const STATS = [
 export default function Hero() {
   return (
     <section id="home" className="relative overflow-hidden bg-[#191920]">
-      {/* background */}
-      <div
-        className="absolute inset-0 bg-cover bg-center opacity-40"
-        style={{ backgroundImage: "url(/images/products/cover.jpg)" }}
-      />
-      <div className="absolute inset-0 bg-gradient-to-l from-[#191920] via-[#191920]/85 to-[#191920]/40" />
+      <div className="absolute inset-0 grid grid-cols-4 gap-px opacity-[0.22] sm:grid-cols-4">
+        {FEATURED.mosaic.map((src) => (
+          <img key={src} src={src} alt="" className="h-full w-full object-cover object-top" />
+        ))}
+      </div>
+      <div className="absolute inset-0 bg-gradient-to-l from-[#191920] via-[#191920]/88 to-[#191920]/55" />
       <div className="absolute -left-32 -top-32 hidden h-96 w-96 rounded-full bg-[#c6a15b]/20 blur-3xl sm:block" />
       <div className="absolute -bottom-24 right-1/4 hidden h-72 w-72 rounded-full bg-[#e6c987]/10 blur-3xl sm:block" />
 
       <div className="relative mx-auto grid w-full max-w-7xl items-center gap-8 px-4 pb-14 pt-10 sm:gap-10 sm:pb-16 sm:pt-20 lg:grid-cols-2 lg:pb-24 lg:pt-24">
-        {/* text */}
         <div className="min-w-0 text-center lg:text-right">
           <motion.span
             initial={{ opacity: 0, y: 16 }}
@@ -79,30 +79,22 @@ export default function Hero() {
           </motion.div>
         </div>
 
-        {/* floating crown */}
-        <div className="relative mx-auto hidden w-full max-w-sm overflow-hidden sm:block md:max-w-md lg:max-w-lg">
+        <div className="relative mx-auto w-full max-w-sm md:max-w-md lg:max-w-lg">
           <motion.div
-            initial={{ opacity: 0, scale: 0.85 }}
+            initial={{ opacity: 0, scale: 0.92 }}
             animate={{ opacity: 1, scale: 1 }}
             transition={{ duration: 0.8, delay: 0.2 }}
+            className="overflow-hidden rounded-[2rem] bg-[#111113] shadow-2xl shadow-black/50 ring-1 ring-[#c6a15b]/40"
           >
-            <motion.img
-              src="/images/logo.jpeg"
-              alt="تاج TAJ"
-              animate={{ y: [0, -16, 0] }}
-              transition={{ duration: 5, repeat: Infinity, ease: "easeInOut" }}
-              className="w-full rounded-[2rem] object-cover shadow-2xl shadow-black/50 ring-1 ring-[#c6a15b]/40"
+            <img
+              src={FEATURED.hero}
+              alt={FEATURED.heroAlt}
+              className="aspect-[4/5] w-full object-contain object-top p-3 sm:p-4"
             />
           </motion.div>
-          <motion.div
-            animate={{ rotate: 360 }}
-            transition={{ duration: 30, repeat: Infinity, ease: "linear" }}
-            className="pointer-events-none absolute right-3 top-3 h-16 w-16 rounded-full border-2 border-dashed border-[#c6a15b]/50 md:h-20 md:w-20 lg:h-24 lg:w-24"
-          />
         </div>
       </div>
 
-      {/* stats */}
       <div className="relative border-t border-white/10 bg-black/25 pb-16 backdrop-blur-sm sm:pb-0">
         <div className="mx-auto grid max-w-7xl grid-cols-2 gap-6 px-4 py-7 sm:grid-cols-4">
           {STATS.map((s, i) => (

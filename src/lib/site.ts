@@ -18,8 +18,29 @@ export const SITE = {
   facebook: "https://www.facebook.com/profile.php?id=61591849934315",
   whatsapp: "https://wa.me/201010841285",
   logo: "https://tag-eg.online/images/logo.jpeg",
-  image: "https://tag-eg.online/images/products/cover.jpg",
+  image: "https://tag-eg.online/images/lookbook/lb-20.png",
   foundingLocation: "طنطا، الغربية، مصر",
+} as const;
+
+export const FEATURED = {
+  hero: "/images/lookbook/lb-20.png",
+  heroAlt: "ساعة مرايا شمس من كاتلوج مصنع تاج",
+  mosaic: [
+    "/images/lookbook/lb-04.png",
+    "/images/lookbook/lb-10.png",
+    "/images/lookbook/lb-05.png",
+    "/images/lookbook/lb-20.png",
+    "/images/lookbook/lb-19.png",
+    "/images/lookbook/lb-18.png",
+    "/images/lookbook/lb-03.png",
+    "/images/lookbook/lb-16.png",
+  ],
+  about: [
+    { src: "/images/lookbook/lb-04.png", alt: "ساعة غزالة من كاتلوج مصنع تاج" },
+    { src: "/images/lookbook/lb-10.png", alt: "ساعة تاج بندول من كاتلوج مصنع تاج" },
+    { src: "/images/lookbook/lb-03.png", alt: "بوت فراولة من كاتلوج مصنع تاج" },
+    { src: "/images/lookbook/lb-16.png", alt: "بوت شبح من كاتلوج مصنع تاج" },
+  ],
 } as const;
 
 export const FAQS: { q: string; a: string }[] = [

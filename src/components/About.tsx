@@ -1,5 +1,6 @@
 import { motion } from "framer-motion";
 import { CheckCircle2 } from "lucide-react";
+import { FEATURED } from "@/lib/site";
 
 const POINTS = [
   "تصنيع محلي بخامات مختارة وتشطيبات فاخرة",
@@ -20,12 +21,19 @@ export default function About() {
           transition={{ duration: 0.7 }}
           className="relative min-w-0 pb-8"
         >
-          <div className="overflow-hidden rounded-[2rem] shadow-2xl shadow-[#191920]/15 ring-1 ring-[#c6a15b]/30">
-            <img
-              src="/images/products/cover.jpg"
-              alt="ساعات حائط وتحف ديكور من إنتاج مصنع تاج في طنطا"
-              className="h-full w-full object-cover transition-transform duration-700 hover:scale-105"
-            />
+          <div className="grid grid-cols-2 gap-3">
+            {FEATURED.about.map((shot) => (
+              <div
+                key={shot.src}
+                className="overflow-hidden rounded-[1.4rem] bg-[#111113] shadow-xl shadow-[#191920]/10 ring-1 ring-[#c6a15b]/25"
+              >
+                <img
+                  src={shot.src}
+                  alt={shot.alt}
+                  className="aspect-[4/5] w-full object-contain object-top p-2"
+                />
+              </div>
+            ))}
           </div>
           <div className="bg-gold-gradient absolute -bottom-4 right-4 rounded-2xl px-5 py-3 text-center shadow-xl shadow-[#c6a15b]/30 sm:-bottom-6 sm:right-6 sm:px-6 sm:py-4">
             <div className="font-display text-3xl font-bold text-[#191920]" dir="ltr">TAJ</div>
