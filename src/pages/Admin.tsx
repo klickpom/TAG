@@ -17,6 +17,7 @@ import { LOOKBOOK, LOOK_LABELS, type LookItem, type LookKind } from "@/data/look
 import { loginAdmin, saveNameMap, type NameMap } from "@/lib/productNames";
 import { saveCatalogItems, uploadCatalogImage } from "@/lib/catalogApi";
 import { useCatalog } from "@/context/CatalogContext";
+import Seo from "@/components/Seo";
 
 const SESSION_KEY = "taj-admin-pass";
 
@@ -202,6 +203,7 @@ export default function Admin() {
   if (!authed) {
     return (
       <div className="flex min-h-screen items-center justify-center bg-[#191920] px-4">
+        <Seo title="لوحة التحكم | مصنع تاج" description="صفحة إدارة داخلية لمصنع تاج." path="/admin" noindex />
         <form
           onSubmit={onLogin}
           className="w-full max-w-md rounded-3xl border border-[#c6a15b]/30 bg-[#faf6ef] p-8 shadow-2xl"
@@ -240,6 +242,7 @@ export default function Admin() {
 
   return (
     <div className="min-h-screen bg-[#faf6ef]">
+      <Seo title="لوحة التحكم | مصنع تاج" description="صفحة إدارة داخلية لمصنع تاج." path="/admin" noindex />
       <header className="sticky top-0 z-30 border-b border-[#eadfc9] bg-white/90 backdrop-blur">
         <div className="mx-auto flex max-w-6xl flex-wrap items-center justify-between gap-3 px-4 py-3">
           <div>

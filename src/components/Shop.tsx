@@ -187,10 +187,10 @@ export default function Shop() {
           <div>
             <p className="text-[11px] font-bold tracking-[0.32em] text-[#a8853f]">THE COLLECTION</p>
             <h2 className="mt-3 text-3xl font-black text-[#191920] sm:text-4xl">
-              معرض <span className="text-gold-gradient">المصنع</span>
+              معرض ساعات الحائط <span className="text-gold-gradient">وتحف الديكور</span>
             </h2>
             <p className="mt-3 max-w-xl text-sm leading-7 text-[#7a6f60]">
-              الساعات والتحف من إنتاج المصنع. الأسعار داخل الكاتلوج فقط.
+              ساعات حائط وتحف ديكور من مصنع تاج في طنطا. الأسعار داخل الكاتلوج فقط، والطلب عبر واتساب.
             </p>
           </div>
           <Link

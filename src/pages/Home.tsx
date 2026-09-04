@@ -6,12 +6,21 @@ import About from "@/components/About";
 import Shop from "@/components/Shop";
 import Testimonials from "@/components/Testimonials";
 import Contact from "@/components/Contact";
+import Faq from "@/components/Faq";
 import Footer from "@/components/Footer";
 import WhatsAppFloat from "@/components/WhatsAppFloat";
+import Seo from "@/components/Seo";
+import { SITE } from "@/lib/site";
 
 export default function Home() {
   return (
     <div className="min-h-screen w-full min-w-0 overflow-x-hidden bg-[#faf6ef]">
+      <Seo
+        title="مصنع تاج | ساعات حائط وتحف ديكور من طنطا — شحن لكل مصر"
+        description={SITE.description}
+        path="/"
+        jsonLd={[]}
+      />
       <TopBar />
       <Navbar />
       <main>
@@ -20,6 +29,7 @@ export default function Home() {
         <About />
         <Shop />
         <Testimonials />
+        <Faq />
         <Contact />
       </main>
       <Footer />

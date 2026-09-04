@@ -22,11 +22,10 @@ export default function Contact() {
         >
           <span className="text-sm font-bold tracking-wide text-[#a8853f]">تواصل معنا</span>
           <h2 className="mt-3 text-3xl font-black text-[#191920] sm:text-4xl">
-            احنا <span className="text-gold-gradient">في الخدمة</span>
+            تواصل مع مصنع تاج <span className="text-gold-gradient">في طنطا</span>
           </h2>
           <p className="mx-auto mt-3 max-w-lg text-sm leading-7 text-[#7a6f60]">
-            عندك سؤال عن منتج أو عايز تطلب؟ كلمنا على أي قناة من دول وهنرد عليك
-            بأسرع وقت.
+            اطلب ساعات الحائط وتحف الديكور عبر واتساب 01010841285. المصنع في طنطا، والشحن لكل محافظات مصر مع الدفع عند الاستلام.
           </p>
         </motion.div>
 

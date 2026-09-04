@@ -23,7 +23,7 @@ export default function About() {
           <div className="overflow-hidden rounded-[2rem] shadow-2xl shadow-[#191920]/15 ring-1 ring-[#c6a15b]/30">
             <img
               src="/images/products/cover.jpg"
-              alt="داخل مصنع تاج"
+              alt="ساعات حائط وتحف ديكور من إنتاج مصنع تاج في طنطا"
               className="h-full w-full object-cover transition-transform duration-700 hover:scale-105"
             />
           </div>
@@ -42,13 +42,13 @@ export default function About() {
         >
           <span className="text-sm font-bold tracking-wide text-[#a8853f]">عن المصنع</span>
           <h2 className="mt-3 text-3xl font-black leading-snug text-[#191920] sm:text-4xl">
-            مصنع تاج…
-            <span className="text-gold-gradient"> حيث تبدأ الفخامة</span>
+            مصنع تاج في طنطا
+            <span className="text-gold-gradient"> لصناعة ساعات الحائط والديكور</span>
           </h2>
           <p className="mt-5 text-base leading-8 text-[#5d554a]">
-            «نحن نسعى في مصنع تاج للوصول لأعلى جودة لإرضاء عملائنا» — من قلب
-            طنطا نصنع ساعات الحائط ولوازم الديكور بخامات مختارة وتشطيبات
-            دقيقة، ونوصلها لكل محافظات مصر من المصنع مباشرة.
+            <strong>مصنع تاج</strong> هو مصنع مصري في طنطا بمحافظة الغربية متخصص في ساعات الحائط
+            وتحف الديكور والبوتات السيراميك. التصنيع محلي من المصنع مباشرة بدون وسطاء، والشحن لكل
+            محافظات مصر مع الدفع عند الاستلام. «نحن نسعى في مصنع تاج للوصول لأعلى جودة لإرضاء عملائنا».
           </p>
           <ul className="mt-6 space-y-3">
             {POINTS.map((p, i) => (

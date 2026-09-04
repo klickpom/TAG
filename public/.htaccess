@@ -2,6 +2,7 @@
   RewriteEngine On
   RewriteBase /
   RewriteRule ^api/ - [L]
+  RewriteRule ^admin(/.*)?$ index.html [L,E=TAJ_NOINDEX:1]
   RewriteCond %{REQUEST_FILENAME} !-f
   RewriteCond %{REQUEST_FILENAME} !-d
   RewriteRule ^ index.html [L]
@@ -13,6 +14,7 @@
     Header set Pragma "no-cache"
     Header set Expires "0"
   </Files>
+  Header set X-Robots-Tag "noindex, nofollow" env=TAJ_NOINDEX
 </IfModule>
 
 <IfModule mod_expires.c>

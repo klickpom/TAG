@@ -9,7 +9,7 @@ export default function Footer() {
           <div className="flex items-center gap-3">
             <img
               src="/images/logo.jpeg"
-              alt="TAJ"
+              alt="شعار مصنع تاج لساعات الحائط والديكور"
               className="h-12 w-12 rounded-full object-cover ring-2 ring-[#c6a15b]/60"
             />
             <span className="font-display text-2xl font-bold tracking-[0.25em] text-white">
@@ -17,9 +17,11 @@ export default function Footer() {
             </span>
           </div>
           <p className="mt-4 text-sm leading-7">
-            مصنع تاج لساعات الحائط ولوازم الديكور — جودة المصنع مباشرة من طنطا
-            لكل بيت في مصر.
+            مصنع تاج لساعات الحائط ولوازم الديكور. المصنع في طنطا، الغربية، مصر. شحن لكل
+            المحافظات والدفع عند الاستلام.
           </p>
+          <p className="mt-3 text-sm font-semibold text-[#e6c987]">طنطا — الغربية، مصر</p>
+          <p className="mt-1 text-sm">يومياً من 10 صباحاً حتى 10 مساءً</p>
         </div>
 
         <div>
@@ -31,6 +33,7 @@ export default function Footer() {
               ["#shop", "المعرض"],
               ["/catalog", "الكاتلوج"],
               ["#reviews", "آراء العملاء"],
+              ["#faq", "الأسئلة"],
               ["#contact", "تواصل معنا"],
             ].map(([href, label]) => (
               <li key={href}>

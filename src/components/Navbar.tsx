@@ -7,6 +7,7 @@ const LINKS = [
   { href: "#home", label: "الرئيسية" },
   { href: "#about", label: "عن المصنع" },
   { href: "#shop", label: "المعرض" },
+  { href: "#faq", label: "الأسئلة" },
   { href: "/catalog", label: "الكاتلوج" },
   { href: "#reviews", label: "آراء العملاء" },
   { href: "#contact", label: "تواصل معنا" },
@@ -33,7 +34,7 @@ export default function Navbar() {
         <a href="#home" className="flex min-w-0 flex-1 items-center gap-2 sm:gap-3">
           <img
             src="/images/logo.jpeg"
-            alt="TAJ"
+              alt="شعار مصنع تاج لساعات الحائط والديكور"
             className="h-9 w-9 shrink-0 rounded-full object-cover ring-2 ring-[#c6a15b]/60 sm:h-11 sm:w-11"
           />
           <div className="min-w-0 leading-tight">

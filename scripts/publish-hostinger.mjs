@@ -14,3 +14,6 @@ if (existsSync("dist/data")) {
 if (existsSync("dist/.htaccess")) {
   copyFileSync("dist/.htaccess", ".htaccess");
 }
+for (const file of ["robots.txt", "sitemap.xml", "llms.txt"]) {
+  if (existsSync(`dist/${file}`)) copyFileSync(`dist/${file}`, file);
+}

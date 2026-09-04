@@ -6,6 +6,8 @@ import { ChevronLeft, ChevronRight, MessageCircle } from "lucide-react";
 import { LOOKBOOK, LOOK_LABELS, type LookItem } from "@/data/lookbook";
 import { useCatalog } from "@/context/CatalogContext";
 import { WA_LINK } from "@/components/TopBar";
+import Seo from "@/components/Seo";
+import { breadcrumbJsonLd, collectionPageJsonLd, localBusinessJsonLd } from "@/lib/site";
 
 function waItem(name: string, size: string, price: string) {
   const extra = price ? ` — السعر ${price}` : "";
@@ -118,6 +120,19 @@ export default function Lookbook() {
 
   return (
     <div className="catalog-root relative flex h-dvh w-full flex-col overflow-hidden bg-[#070708] text-[#f4ead8]">
+      <Seo
+        title="كاتلوج مصنع تاج | أسعار ساعات الحائط وتحف الديكور — طنطا"
+        description="كاتلوج مصنع تاج في طنطا: ساعات حائط وتحف ديكور بالأسعار. صناعة من المصنع مباشرة، شحن لكل محافظات مصر، والدفع عند الاستلام."
+        path="/catalog"
+        jsonLd={[
+          localBusinessJsonLd(),
+          collectionPageJsonLd(lookbook.map((item) => item.name)),
+          breadcrumbJsonLd([
+            { name: "الرئيسية", path: "/" },
+            { name: "الكاتلوج", path: "/catalog" },
+          ]),
+        ]}
+      />
       <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_at_top,_#241c14_0%,_#070708_62%)]" />
       <div className="catalog-sheen pointer-events-none absolute inset-x-0 top-0 h-px" />
 
@@ -258,11 +273,10 @@ function Cover({
         <div className="mt-6 h-px w-14 bg-[#c6a15b]" />
       </div>
       <div className="relative">
-        <p className="text-xs font-bold tracking-[0.35em] text-[#c6a15b]">CATALOG</p>
-        <h1 className="mt-3 font-display text-6xl leading-none tracking-[0.18em] text-[#f8f0de] sm:text-8xl">TAJ</h1>
-        <p className="mt-5 text-3xl font-black text-white sm:text-4xl">كاتلوج المصنع</p>
+        <p className="font-display text-6xl leading-none tracking-[0.18em] text-[#f8f0de] sm:text-8xl">TAJ</p>
+        <h1 className="mt-5 text-3xl font-black text-white sm:text-4xl">كاتلوج مصنع تاج — ساعات حائط وتحف ديكور</h1>
         <p className="mt-4 max-w-sm text-sm leading-7 text-[#d9cbb0]">
-          الساعات أولاً، وبعدين التحف والديكور. اسحب بيدك بين القطع. {clocks} ساعة و {decor} تحفة.
+          أسعار الساعات والتحف من مصنع تاج في طنطا. اسحب بيدك بين القطع. {clocks} ساعة و {decor} تحفة.
         </p>
       </div>
       <div className="relative flex items-center gap-4">

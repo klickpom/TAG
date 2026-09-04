@@ -37,11 +37,11 @@ export default function Hero() {
             initial={{ opacity: 0, y: 24 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6, delay: 0.1 }}
-            className="mt-5 text-[2rem] font-black leading-[1.3] text-white sm:text-5xl lg:text-6xl"
+            className="mt-5 text-[1.85rem] font-black leading-[1.3] text-white sm:text-5xl lg:text-6xl"
           >
-            فخامة تليق
+            مصنع تاج لساعات الحائط
             <br />
-            <span className="text-gold-gradient">ببيتك</span>
+            <span className="text-gold-gradient">والديكور</span>
           </motion.h1>
 
           <motion.p
@@ -50,8 +50,9 @@ export default function Hero() {
             transition={{ duration: 0.6, delay: 0.2 }}
             className="mx-auto mt-5 max-w-xl break-words text-sm leading-7 text-[#cfc7b4] sm:text-base sm:leading-8 md:text-lg lg:mx-0"
           >
-            ساعات حائط فاخرة، مزهريات سيراميك، وأطقم ديكور — صناعة مباشرة من
-            المصنع بجودة عالية، مع شحن لكل محافظات مصر ودفع عند الاستلام.
+            <strong className="font-black text-white">مصنع تاج</strong> مصنع مصري في طنطا متخصص في
+            تصنيع ساعات الحائط وتحف الديكور. الصناعة من المصنع مباشرة، والشحن لكل محافظات مصر،
+            والدفع عند الاستلام. الأسعار في الكاتلوج.
           </motion.p>
 
           <motion.div
