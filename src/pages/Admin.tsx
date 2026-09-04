@@ -13,7 +13,7 @@ import {
   Trash2,
 } from "lucide-react";
 import { CATEGORY_LABELS, PRODUCTS, type Category } from "@/data/products";
-import { LOOK_LABELS, type LookItem, type LookKind } from "@/data/lookbook";
+import { LOOKBOOK, LOOK_LABELS, type LookItem, type LookKind } from "@/data/lookbook";
 import { loginAdmin, saveNameMap, type NameMap } from "@/lib/productNames";
 import { saveCatalogItems, uploadCatalogImage } from "@/lib/catalogApi";
 import { useCatalog } from "@/context/CatalogContext";
@@ -180,13 +180,23 @@ export default function Admin() {
 
   const onUpload = async (index: number, file: File | undefined) => {
     if (!file) return;
+    setMsg("بيرفع الصورة…");
     const res = await uploadCatalogImage(pass(), file);
     if (!res.ok || !res.url) {
       setMsg(res.error || "فشل رفع الصورة");
       return;
     }
-    updateItem(index, { image: res.url });
-    setMsg("اترفعت الصورة — اضغط حفظ الكتالوج عشان تتثبت");
+    const next = items.map((row, i) => (i === index ? { ...row, image: res.url as string } : row));
+    setItems(next);
+    setSaving(true);
+    const saved = await saveCatalogItems(pass(), next);
+    setSaving(false);
+    if (!saved.ok) {
+      setMsg(saved.error || "الصورة اترفعت بس الحفظ فشل — اضغط حفظ الكتالوج");
+      return;
+    }
+    await reload();
+    setMsg("اتحفظت الصورة وظاهرة في الكاتلوج");
   };
 
   if (!authed) {
@@ -381,7 +391,15 @@ export default function Admin() {
                 key={item.id}
                 className="grid gap-3 rounded-2xl border border-[#eadfc9] bg-white p-3 md:grid-cols-[96px_1fr_auto]"
               >
-                <img src={item.image} alt="" className="h-24 w-full rounded-xl object-cover object-top md:h-24 md:w-24" />
+                <img
+                  src={item.image}
+                  alt=""
+                  className="h-24 w-full rounded-xl object-cover object-top md:h-24 md:w-24"
+                  onError={(e) => {
+                    const fallback = LOOKBOOK.find((row) => row.id === item.id)?.image;
+                    if (fallback && e.currentTarget.src !== fallback) e.currentTarget.src = fallback;
+                  }}
+                />
                 <div className="grid gap-2 sm:grid-cols-2">
                   <label className="text-[11px] font-bold text-[#7a6f60]">
                     الاسم
@@ -426,9 +444,13 @@ export default function Admin() {
                       رفع صورة
                       <input
                         type="file"
-                        accept="image/png,image/jpeg,image/webp"
+                        accept="image/png,image/jpeg,image/webp,image/gif,.jpg,.jpeg,.png,.webp,.gif,.jfif"
                         className="hidden"
-                        onChange={(e) => void onUpload(index, e.target.files?.[0])}
+                        onChange={(e) => {
+                          const picked = e.target.files?.[0];
+                          e.target.value = "";
+                          void onUpload(index, picked);
+                        }}
                       />
                     </span>
                   </label>

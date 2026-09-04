@@ -3,7 +3,7 @@ import { Link } from "react-router";
 import useEmblaCarousel from "embla-carousel-react";
 import { motion, useReducedMotion } from "framer-motion";
 import { ChevronLeft, ChevronRight, MessageCircle } from "lucide-react";
-import { LOOK_LABELS, type LookItem } from "@/data/lookbook";
+import { LOOKBOOK, LOOK_LABELS, type LookItem } from "@/data/lookbook";
 import { useCatalog } from "@/context/CatalogContext";
 import { WA_LINK } from "@/components/TopBar";
 
@@ -218,6 +218,28 @@ function IndexPage({ items, onPick }: { items: LookItem[]; onPick: (i: number) =
   );
 }
 
+function CatalogPhoto({ item, active }: { item: LookItem; active: boolean }) {
+  const fallback = LOOKBOOK.find((row) => row.id === item.id)?.image || "";
+  const [src, setSrc] = useState(item.image);
+
+  useEffect(() => {
+    setSrc(item.image);
+  }, [item.image]);
+
+  return (
+    <img
+      src={src}
+      alt={item.name}
+      draggable={false}
+      loading={active ? "eager" : "lazy"}
+      decoding="async"
+      onError={() => {
+        if (fallback && src !== fallback) setSrc(fallback);
+      }}
+    />
+  );
+}
+
 function ProductSpread({
   item,
   no,
@@ -232,13 +254,7 @@ function ProductSpread({
   return (
     <article className="grid h-full min-h-0 w-full grid-rows-[minmax(0,1fr)_auto] bg-[#08080a] lg:grid-cols-[minmax(0,1.55fr)_minmax(280px,0.85fr)] lg:grid-rows-1">
       <div className="catalog-photo relative min-h-0 w-full">
-        <img
-          src={item.image}
-          alt={item.name}
-          draggable={false}
-          loading={active ? "eager" : "lazy"}
-          decoding="async"
-        />
+        <CatalogPhoto item={item} active={active} />
       </div>
       <div className="relative flex flex-col justify-between gap-3 border-t border-white/5 px-5 py-4 sm:px-8 sm:py-7 lg:border-r lg:border-t-0 lg:border-white/10">
         <div>
