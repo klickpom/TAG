@@ -29,7 +29,7 @@ export default function Footer() {
               ["#home", "الرئيسية"],
               ["#about", "عن المصنع"],
               ["#shop", "المعرض"],
-              ["/catalog", "الكتالوج"],
+              ["/catalog", "الكاتلوج"],
               ["#reviews", "آراء العملاء"],
               ["#contact", "تواصل معنا"],
             ].map(([href, label]) => (

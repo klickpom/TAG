@@ -1,6 +1,7 @@
-import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { Link } from "react-router";
-import { AnimatePresence, motion, useReducedMotion } from "framer-motion";
+import useEmblaCarousel from "embla-carousel-react";
+import { motion, useReducedMotion } from "framer-motion";
 import { ChevronLeft, ChevronRight, MessageCircle } from "lucide-react";
 import { LOOK_LABELS, type LookItem } from "@/data/lookbook";
 import { useCatalog } from "@/context/CatalogContext";
@@ -8,148 +9,150 @@ import { WA_LINK } from "@/components/TopBar";
 
 function waItem(name: string, size: string, price: string) {
   const extra = price ? ` — السعر ${price}` : "";
-  return `${WA_LINK}?text=${encodeURIComponent(`السلام عليكم، محتاج تفاصيل من كتالوج تاج عن: ${name} — ${size}${extra}`)}`;
+  return `${WA_LINK}?text=${encodeURIComponent(`السلام عليكم، محتاج تفاصيل من كاتلوج تاج عن: ${name} — ${size}${extra}`)}`;
 }
-
-type Leaf =
-  | { type: "cover" }
-  | { type: "index"; items: LookItem[] }
-  | { type: "product"; item: LookItem; no: number };
 
 export default function Lookbook() {
   const { lookbook } = useCatalog();
   const reduce = useReducedMotion();
-  const [leaf, setLeaf] = useState(0);
-  const [dir, setDir] = useState<1 | -1>(1);
-  const touchX = useRef(0);
+  const [selected, setSelected] = useState(0);
 
-  const leaves: Leaf[] = useMemo(
-    () => [
-      { type: "cover" },
-      { type: "index", items: lookbook },
-      ...lookbook.map((item, i) => ({ type: "product" as const, item, no: i + 1 })),
-    ],
-    [lookbook]
-  );
-
-  const total = leaves.length;
-  const current = leaves[leaf] ?? leaves[0];
-
-  const go = useCallback(
-    (next: number) => {
-      if (next < 0 || next >= total || next === leaf) return;
-      setDir(next > leaf ? 1 : -1);
-      setLeaf(next);
+  const [viewportRef, emblaApi] = useEmblaCarousel({
+    loop: false,
+    align: "start",
+    containScroll: "trimSnaps",
+    duration: reduce ? 8 : 22,
+    direction: "ltr",
+    skipSnaps: false,
+    dragThreshold: 8,
+    watchDrag: (_api, event) => {
+      const el = event.target as HTMLElement | null;
+      if (!el) return true;
+      if (el.closest("a, button, input, textarea, select")) return false;
+      return true;
     },
-    [leaf, total]
-  );
+  });
+
+  const total = lookbook.length + 2;
+
+  useEffect(() => {
+    document.documentElement.classList.add("catalog-open");
+    document.body.classList.add("catalog-open");
+    return () => {
+      document.documentElement.classList.remove("catalog-open");
+      document.body.classList.remove("catalog-open");
+    };
+  }, []);
+
+  useEffect(() => {
+    if (!emblaApi) return;
+    const sync = () => setSelected(emblaApi.selectedScrollSnap());
+    const onResize = () => emblaApi.reInit();
+    emblaApi.on("select", sync);
+    emblaApi.on("reInit", sync);
+    window.addEventListener("resize", onResize);
+    sync();
+    return () => {
+      emblaApi.off("select", sync);
+      emblaApi.off("reInit", sync);
+      window.removeEventListener("resize", onResize);
+    };
+  }, [emblaApi]);
 
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
-      if (e.key === "ArrowLeft") go(leaf + 1);
-      if (e.key === "ArrowRight") go(leaf - 1);
+      if (e.key === "ArrowLeft") emblaApi?.scrollNext();
+      if (e.key === "ArrowRight") emblaApi?.scrollPrev();
     };
     window.addEventListener("keydown", onKey);
     return () => window.removeEventListener("keydown", onKey);
-  }, [go, leaf]);
+  }, [emblaApi]);
 
-  const flip = reduce
-    ? { initial: { opacity: 0 }, animate: { opacity: 1 }, exit: { opacity: 0 } }
-    : {
-        initial: { rotateY: dir * 78, opacity: 0.35 },
-        animate: { rotateY: 0, opacity: 1 },
-        exit: { rotateY: dir * -78, opacity: 0.35 },
-      };
+  const go = useCallback(
+    (index: number) => emblaApi?.scrollTo(index),
+    [emblaApi]
+  );
 
   return (
-    <div className="relative min-h-dvh overflow-hidden bg-[#1a140f]">
-      <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_at_center,_#5a4028_0%,_#24180f_55%,_#100c09_100%)]" />
-      <div className="pointer-events-none absolute inset-x-0 bottom-0 h-1/2 bg-[linear-gradient(to_top,rgba(0,0,0,.55),transparent)]" />
+    <div className="catalog-root relative flex h-dvh w-full flex-col overflow-hidden bg-[#070708] text-[#f4ead8]">
+      <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_at_top,_#241c14_0%,_#070708_62%)]" />
+      <div className="catalog-sheen pointer-events-none absolute inset-x-0 top-0 h-px" />
 
-      <header className="relative z-20 mx-auto flex max-w-6xl items-center justify-between px-4 py-4">
-        <Link to="/" className="text-xs font-bold text-[#d9cbb0]/80 hover:text-[#e6c987]">
+      <header className="relative z-20 flex items-center justify-between gap-3 px-4 py-3">
+        <Link to="/" className="text-[11px] font-bold tracking-wide text-[#d9cbb0]/80 hover:text-[#e6c987]">
           الموقع الرئيسي
         </Link>
-        <p className="font-display tracking-[0.45em] text-[#f4ead8]">TAJ</p>
-        <span className="text-[11px] font-semibold text-[#c6a15b]">
-          {leaf + 1} / {total}
+        <p className="font-display text-sm tracking-[0.42em] text-[#f8f0de]">TAJ</p>
+        <span className="min-w-10 text-left text-[11px] font-semibold text-[#c6a15b]">
+          {selected + 1} / {total}
         </span>
       </header>
 
-      <div className="relative z-10 mx-auto flex min-h-[calc(100dvh-5.5rem)] max-w-[1120px] items-center justify-center px-3 pb-8">
+      <div className="relative z-20 h-[2px] w-full bg-white/10">
+        <motion.div
+          className="h-full bg-[#c6a15b]"
+          animate={{ width: `${((selected + 1) / total) * 100}%` }}
+          transition={{ duration: reduce ? 0.12 : 0.28, ease: [0.22, 1, 0.36, 1] }}
+        />
+      </div>
+
+      <div className="relative z-10 flex min-h-0 flex-1">
         <button
           type="button"
-          onClick={() => go(leaf + 1)}
-          disabled={leaf >= total - 1}
-          className="absolute left-2 top-1/2 z-30 hidden -translate-y-1/2 rounded-full border border-[#c6a15b]/40 bg-black/30 p-3 text-[#e6c987] disabled:opacity-30 md:flex"
-          aria-label="الصفحة التالية"
+          onClick={() => emblaApi?.scrollPrev()}
+          disabled={selected <= 0}
+          className="absolute left-2 top-1/2 z-30 hidden -translate-y-1/2 rounded-full border border-[#c6a15b]/35 bg-black/45 p-3 text-[#e6c987] backdrop-blur disabled:opacity-25 md:flex"
+          aria-label="السابق"
         >
           <ChevronLeft className="h-6 w-6" />
         </button>
         <button
           type="button"
-          onClick={() => go(leaf - 1)}
-          disabled={leaf <= 0}
-          className="absolute right-2 top-1/2 z-30 hidden -translate-y-1/2 rounded-full border border-[#c6a15b]/40 bg-black/30 p-3 text-[#e6c987] disabled:opacity-30 md:flex"
-          aria-label="الصفحة السابقة"
+          onClick={() => emblaApi?.scrollNext()}
+          disabled={selected >= total - 1}
+          className="absolute right-2 top-1/2 z-30 hidden -translate-y-1/2 rounded-full border border-[#c6a15b]/35 bg-black/45 p-3 text-[#e6c987] backdrop-blur disabled:opacity-25 md:flex"
+          aria-label="التالي"
         >
           <ChevronRight className="h-6 w-6" />
         </button>
 
-        <div className="relative w-full max-w-[940px]" style={{ perspective: "2400px" }}>
-          <div className="book-stack pointer-events-none absolute -left-2 top-5 bottom-5 w-3 rounded-l-sm opacity-90" />
-          <div className="book-spine pointer-events-none absolute -right-3 top-0 bottom-0 w-3 rounded-r-[3px]" />
-
-          <AnimatePresence mode="wait" custom={dir}>
-            <motion.div
-              key={leaf}
-              custom={dir}
-              initial={flip.initial}
-              animate={flip.animate}
-              exit={flip.exit}
-              transition={{ duration: reduce ? 0.2 : 0.58, ease: [0.22, 1, 0.36, 1] }}
-              style={{ transformOrigin: "right center", transformStyle: "preserve-3d" }}
-              className="relative mx-auto aspect-[3/4] w-full max-h-[78vh] overflow-hidden rounded-sm shadow-[18px_28px_70px_rgba(0,0,0,.55)] sm:aspect-[4/3] md:max-h-[82vh]"
-              onPointerDown={(e) => {
-                touchX.current = e.clientX;
-              }}
-              onPointerUp={(e) => {
-                const dx = e.clientX - touchX.current;
-                if (Math.abs(dx) > 48) {
-                  if (dx < 0) go(leaf + 1);
-                  else go(leaf - 1);
-                  return;
-                }
-                const box = (e.currentTarget as HTMLDivElement).getBoundingClientRect();
-                const x = e.clientX - box.left;
-                if (x < box.width * 0.28) go(leaf + 1);
-                else if (x > box.width * 0.72) go(leaf - 1);
-              }}
-            >
-              {current.type === "cover" && <Cover onOpen={() => go(1)} count={lookbook.length} />}
-              {current.type === "index" && (
-                <IndexPage items={current.items} onPick={(i) => go(i + 2)} />
-              )}
-              {current.type === "product" && (
-                <ProductSpread item={current.item} no={current.no} total={lookbook.length} />
-              )}
-            </motion.div>
-          </AnimatePresence>
+        <div className="catalog-viewport h-full min-h-0 w-full" ref={viewportRef} dir="ltr">
+          <div className="catalog-track">
+            <div className="catalog-slide" dir="rtl">
+              <Cover onOpen={() => go(1)} count={lookbook.length} />
+            </div>
+            <div className="catalog-slide" dir="rtl">
+              <IndexPage items={lookbook} onPick={(i) => go(i + 2)} />
+            </div>
+            {lookbook.map((item, i) => (
+              <div className="catalog-slide" dir="rtl" key={item.id}>
+                <ProductSpread
+                  item={item}
+                  no={i + 1}
+                  total={lookbook.length}
+                  active={selected === i + 2}
+                />
+              </div>
+            ))}
+          </div>
         </div>
       </div>
 
-      <div className="relative z-20 flex justify-center gap-6 pb-5 md:hidden">
+      <div className="relative z-20 flex items-center justify-between gap-3 px-4 pb-[max(0.8rem,env(safe-area-inset-bottom))] pt-2 md:hidden">
         <button
           type="button"
-          onClick={() => go(leaf - 1)}
-          className="rounded-full border border-[#c6a15b]/50 px-5 py-2 text-sm font-bold text-[#e6c987]"
+          onClick={() => emblaApi?.scrollPrev()}
+          disabled={selected <= 0}
+          className="flex-1 rounded-full border border-[#c6a15b]/45 py-3 text-sm font-bold text-[#e6c987] disabled:opacity-30"
         >
           السابق
         </button>
+        <p className="shrink-0 text-[10px] font-semibold tracking-wide text-[#a89a80]">اسحب للتمرير</p>
         <button
           type="button"
-          onClick={() => go(leaf + 1)}
-          className="rounded-full bg-[#c6a15b] px-5 py-2 text-sm font-bold text-[#1a140f]"
+          onClick={() => emblaApi?.scrollNext()}
+          disabled={selected >= total - 1}
+          className="flex-1 rounded-full bg-[#c6a15b] py-3 text-sm font-black text-[#141216] disabled:opacity-30"
         >
           التالي
         </button>
@@ -160,28 +163,26 @@ export default function Lookbook() {
 
 function Cover({ onOpen, count }: { onOpen: () => void; count: number }) {
   return (
-    <div className="book-leather flex h-full flex-col justify-between p-8 text-[#f4ead8] sm:p-12">
-      <div>
-        <p className="text-[11px] font-bold tracking-[0.55em] text-[#e6c987]">TAJ FACTORY · TANTA</p>
-        <div className="mt-8 h-px w-16 bg-[#c6a15b]" />
+    <div className="relative flex h-full w-full flex-col justify-between overflow-hidden px-7 py-8 sm:px-14 sm:py-12">
+      <div className="catalog-mesh pointer-events-none absolute inset-0" />
+      <div className="relative">
+        <p className="text-[11px] font-bold tracking-[0.48em] text-[#e6c987]">TAJ · TANTA</p>
+        <div className="mt-6 h-px w-14 bg-[#c6a15b]" />
       </div>
-      <div>
-        <h1 className="font-display text-6xl leading-none tracking-[0.22em] text-[#f8f0de] sm:text-8xl">TAJ</h1>
-        <p className="mt-5 text-2xl font-black text-white sm:text-4xl">كتالوج المصنع</p>
+      <div className="relative">
+        <p className="text-xs font-bold tracking-[0.35em] text-[#c6a15b]">CATALOG</p>
+        <h1 className="mt-3 font-display text-6xl leading-none tracking-[0.18em] text-[#f8f0de] sm:text-8xl">TAJ</h1>
+        <p className="mt-5 text-3xl font-black text-white sm:text-4xl">كاتلوج المصنع</p>
         <p className="mt-4 max-w-sm text-sm leading-7 text-[#d9cbb0]">
-          كتاب ساعات وبوتات. اقلب الصفحة زي الكتالوج الورقي. {count} قطعة في الدفعة الحالية.
+          ساعات حائط وبوتات ديكور. اسحب بيدك بين القطع. {count} منتج في الإصدار الحالي.
         </p>
       </div>
       <button
         type="button"
-        onPointerUp={(e) => e.stopPropagation()}
-        onClick={(e) => {
-          e.stopPropagation();
-          onOpen();
-        }}
-        className="self-start rounded-full border border-[#e6c987] px-6 py-3 text-sm font-black text-[#e6c987]"
+        onClick={onOpen}
+        className="relative self-start rounded-full bg-[#c6a15b] px-7 py-3 text-sm font-black text-[#141216]"
       >
-        افتح الكتاب
+        ادخل الكاتلوج
       </button>
     </div>
   );
@@ -189,27 +190,26 @@ function Cover({ onOpen, count }: { onOpen: () => void; count: number }) {
 
 function IndexPage({ items, onPick }: { items: LookItem[]; onPick: (i: number) => void }) {
   return (
-    <div className="book-paper h-full overflow-y-auto p-6 text-[#2a2118] sm:p-10">
-      <p className="text-[11px] font-bold tracking-[0.3em] text-[#a8853f]">الفهرس</p>
-      <h2 className="mt-2 font-display text-3xl italic text-[#2a2118]">محتويات الكتالوج</h2>
-      <ol className="mt-6 columns-1 gap-x-10 sm:columns-2">
+    <div
+      data-catalog-scroll
+      className="h-full overflow-y-auto overscroll-contain bg-[#f6efe3] p-5 text-[#2a2118] sm:p-10"
+    >
+      <p className="text-[11px] font-bold tracking-[0.32em] text-[#a8853f]">CATALOG INDEX</p>
+      <h2 className="mt-2 text-3xl font-black">محتويات الكاتلوج</h2>
+      <ol className="mt-6 space-y-0">
         {items.map((item, i) => (
-          <li key={item.id} className="mb-2 break-inside-avoid">
+          <li key={item.id}>
             <button
               type="button"
-              onPointerUp={(e) => e.stopPropagation()}
-              onClick={(e) => {
-                e.stopPropagation();
-                onPick(i);
-              }}
-              className="flex w-full items-baseline justify-between gap-3 border-b border-dotted border-[#c6b79a] py-1.5 text-right text-sm font-bold hover:text-[#a8853f]"
+              onClick={() => onPick(i)}
+              className="flex w-full items-baseline justify-between gap-3 border-b border-[#e2d4b8] py-2.5 text-right"
             >
-              <span className="min-w-0 truncate">
+              <span className="min-w-0 truncate text-sm font-bold">
                 {item.name}
                 <span className="mr-2 font-semibold text-[#8a7a5c]"> — {item.size}</span>
                 {item.price ? <span className="mr-2 font-black text-[#a8853f]"> — {item.price}</span> : null}
               </span>
-              <span className="shrink-0 font-display text-[#a8853f]">{String(i + 1).padStart(2, "0")}</span>
+              <span className="shrink-0 font-display text-sm text-[#a8853f]">{String(i + 1).padStart(2, "0")}</span>
             </button>
           </li>
         ))}
@@ -218,40 +218,54 @@ function IndexPage({ items, onPick }: { items: LookItem[]; onPick: (i: number) =
   );
 }
 
-function ProductSpread({ item, no, total }: { item: LookItem; no: number; total: number }) {
+function ProductSpread({
+  item,
+  no,
+  total,
+  active,
+}: {
+  item: LookItem;
+  no: number;
+  total: number;
+  active: boolean;
+}) {
   return (
-    <div className="grid h-full grid-rows-[1.15fr_0.85fr] bg-[#f4ead8] sm:grid-cols-2 sm:grid-rows-1">
-      <div className="relative min-h-0 overflow-hidden bg-[#ddd3c2]">
-        <img src={item.image} alt={item.name} className="h-full w-full object-cover object-top" />
+    <article className="grid h-full min-h-0 w-full grid-rows-[minmax(0,1fr)_auto] bg-[#08080a] lg:grid-cols-[minmax(0,1.55fr)_minmax(280px,0.85fr)] lg:grid-rows-1">
+      <div className="catalog-photo relative min-h-0 w-full">
+        <img
+          src={item.image}
+          alt={item.name}
+          draggable={false}
+          loading={active ? "eager" : "lazy"}
+          decoding="async"
+        />
       </div>
-      <div className="book-paper relative flex flex-col justify-between p-6 sm:border-r sm:border-[#e2d4b8] sm:p-10">
+      <div className="relative flex flex-col justify-between gap-3 border-t border-white/5 px-5 py-4 sm:px-8 sm:py-7 lg:border-r lg:border-t-0 lg:border-white/10">
         <div>
-          <p className="text-[11px] font-bold tracking-[0.28em] text-[#a8853f]">{LOOK_LABELS[item.kind]}</p>
-          <h2 className="mt-3 text-2xl font-black leading-snug text-[#2a2118] sm:text-4xl">{item.name}</h2>
-          <div className="mt-6 inline-block border border-[#c6a15b] px-4 py-2 text-sm font-bold text-[#6b542e]">
+          <p className="text-[11px] font-bold tracking-[0.28em] text-[#c6a15b]">{LOOK_LABELS[item.kind]}</p>
+          <h2 className="mt-2 text-2xl font-black leading-snug text-white sm:text-4xl">{item.name}</h2>
+          <div className="mt-4 inline-block border border-[#c6a15b]/70 px-3 py-1.5 text-sm font-bold text-[#e6c987]">
             {item.size}
           </div>
           {item.price ? (
-            <p className="mt-5 font-display text-3xl font-bold text-[#a8853f]">{item.price}</p>
+            <p className="mt-3 font-display text-3xl font-bold text-[#e6c987] sm:text-4xl">{item.price}</p>
           ) : null}
         </div>
-        <div className="flex items-end justify-between gap-3">
+        <div className="flex items-center justify-between gap-3">
           <a
             href={waItem(item.name, item.size, item.price)}
             target="_blank"
             rel="noreferrer"
-            onPointerUp={(e) => e.stopPropagation()}
-            onClick={(e) => e.stopPropagation()}
-            className="flex items-center gap-2 rounded-full bg-[#2a2118] px-4 py-2.5 text-xs font-bold text-[#e6c987]"
+            className="flex items-center gap-2 rounded-full bg-[#c6a15b] px-4 py-2.5 text-xs font-black text-[#141216]"
           >
             <MessageCircle className="h-4 w-4" />
             واتساب
           </a>
-          <p className="font-display text-sm text-[#a8853f]">
+          <p className="font-display text-sm text-[#c6a15b]">
             {no} / {total}
           </p>
         </div>
       </div>
-    </div>
+    </article>
   );
 }

@@ -7,7 +7,7 @@ const LINKS = [
   { href: "#home", label: "الرئيسية" },
   { href: "#about", label: "عن المصنع" },
   { href: "#shop", label: "المعرض" },
-  { href: "/catalog", label: "الكتالوج" },
+  { href: "/catalog", label: "الكاتلوج" },
   { href: "#reviews", label: "آراء العملاء" },
   { href: "#contact", label: "تواصل معنا" },
 ];

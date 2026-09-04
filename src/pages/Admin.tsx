@@ -138,7 +138,7 @@ export default function Admin() {
       return;
     }
     await reload();
-    setMsg("اتحفظ الكتالوج — ظاهر في الكتاب فورًا");
+    setMsg("اتحفظ الكتالوج — ظاهر في الكاتلوج فورًا");
   };
 
   const addItem = () => {
@@ -236,7 +236,7 @@ export default function Admin() {
             <h1 className="text-lg font-black text-[#191920]">لوحة تاج</h1>
             <p className="text-xs text-[#7a6f60]">
               {board === "lookbook"
-                ? `${items.length} قطعة في الكتاب${catalogDirty ? " — في تعديلات مش محفوظة" : ""}`
+                ? `${items.length} قطعة في الكاتلوج${catalogDirty ? " — في تعديلات مش محفوظة" : ""}`
                 : `${PRODUCTS.length} منتج في المعرض — ${dirtyNames} تعديل أسماء`}
             </p>
           </div>
@@ -313,7 +313,7 @@ export default function Admin() {
             }}
             className={`rounded-full px-4 py-2 text-xs font-bold ${board === "lookbook" ? "bg-[#191920] text-[#e6c987]" : "border border-[#eadfc9] bg-white"}`}
           >
-            كتاب الكتالوج
+            الكاتلوج
           </button>
           <button
             type="button"
@@ -326,7 +326,7 @@ export default function Admin() {
             معرض الموقع
           </button>
           <Link to="/catalog" className="rounded-full border border-[#eadfc9] bg-white px-4 py-2 text-xs font-bold text-[#a8853f]">
-            معاينة الكتاب
+            معاينة الكاتلوج
           </Link>
         </div>
 
