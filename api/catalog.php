@@ -90,6 +90,16 @@ function heal_images(array $items): array {
   return $items;
 }
 
+function sort_catalog_items(array $items): array {
+  $clocks = [];
+  $decor = [];
+  foreach ($items as $row) {
+    if (is_array($row) && (($row['kind'] ?? '') === 'clocks')) $clocks[] = $row;
+    else $decor[] = $row;
+  }
+  return array_merge($clocks, $decor);
+}
+
 function merge_seed_items(array $items): array {
   $seed = seed_catalog();
   if (!$seed) return $items;
@@ -122,12 +132,12 @@ function read_catalog(string $file): array {
     $data = json_decode(file_get_contents($file) ?: '[]', true);
     if (is_array($data)) $items = $data;
   }
-  if (!$items) return heal_images(seed_catalog());
+  if (!$items) return sort_catalog_items(heal_images(seed_catalog()));
   $seed = dirname(__DIR__) . '/data/catalog.json';
   if (is_file($file) && is_file($seed) && realpath($file) === realpath($seed)) {
-    return heal_images($items);
+    return sort_catalog_items(heal_images($items));
   }
-  return heal_images(merge_seed_items($items));
+  return sort_catalog_items(heal_images(merge_seed_items($items)));
 }
 
 function auth_ok(): bool {
@@ -249,6 +259,8 @@ foreach ($items as $row) {
   if (!preg_match('#^(/images/|/api/media\.php\?f=|https?://)#', $image)) continue;
   $clean[] = compact('id', 'name', 'image', 'kind', 'size', 'price');
 }
+
+$clean = sort_catalog_items($clean);
 
 $file = catalog_file();
 $dir = dirname($file);

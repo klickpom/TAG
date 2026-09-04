@@ -162,6 +162,12 @@
     min-width: 0;
     height: 100%;
   }
+  .catalog-slide-inner {
+    height: 100%;
+    width: 100%;
+    will-change: transform, opacity, filter;
+    transform-origin: center center;
+  }
   .catalog-photo {
     display: flex;
     align-items: center;
@@ -170,6 +176,7 @@
     height: 100%;
     padding: 0.6rem;
     background: #050506;
+    overflow: hidden;
   }
   .catalog-photo img {
     display: block;
@@ -182,5 +189,31 @@
     -webkit-user-drag: none;
     user-select: none;
     pointer-events: none;
+    transition: transform 0.7s cubic-bezier(0.22, 1, 0.36, 1);
+  }
+  .catalog-photo img.catalog-photo-live {
+    transform: scale(1.035);
+  }
+  .catalog-swipe-hint {
+    animation: catalog-swipe-nudge 1.8s ease-in-out infinite;
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .catalog-swipe-hint {
+      animation: none;
+    }
+    .catalog-photo img {
+      transition: none;
+    }
+  }
+  @keyframes catalog-swipe-nudge {
+    0%,
+    100% {
+      transform: translateX(0);
+      opacity: 0.7;
+    }
+    50% {
+      transform: translateX(-6px);
+      opacity: 1;
+    }
   }
 }

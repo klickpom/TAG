@@ -434,7 +434,7 @@ export default function Admin() {
                       className="mt-1 w-full rounded-xl border border-[#eadfc9] bg-white px-3 py-2 text-sm font-bold text-[#191920] outline-none"
                     >
                       <option value="clocks">ساعات</option>
-                      <option value="pots">بوتات وأصص</option>
+                      <option value="pots">تحف وديكور</option>
                     </select>
                   </label>
                   <label className="text-[11px] font-bold text-[#7a6f60]">

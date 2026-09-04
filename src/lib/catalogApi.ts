@@ -1,4 +1,4 @@
-import { LOOKBOOK, type LookItem } from "@/data/lookbook";
+import { LOOKBOOK, type LookItem, sortCatalogItems } from "@/data/lookbook";
 
 const LOCAL_KEY = "taj-catalog-v1";
 
@@ -19,7 +19,7 @@ function mergeCatalog(saved: LookItem[]): LookItem[] {
     const image = usableImage(s.image) ? s.image : f?.image || s.image;
     return f ? { ...f, ...s, price, image } : { ...s, price, image };
   });
-  return [...merged, ...LOOKBOOK.filter((i) => !ids.has(i.id))];
+  return sortCatalogItems([...merged, ...LOOKBOOK.filter((i) => !ids.has(i.id))]);
 }
 
 const UPLOAD_ERRORS: Record<string, string> = {
@@ -56,7 +56,7 @@ export async function saveCatalogItems(
   password: string,
   items: LookItem[]
 ): Promise<{ ok: boolean; error?: string }> {
-  const safe = items.filter((item) => usableImage(item.image));
+        const safe = sortCatalogItems(items.filter((item) => usableImage(item.image)));
   try {
     const res = await fetch("/api/catalog.php", {
       method: "POST",

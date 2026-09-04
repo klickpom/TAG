@@ -12,10 +12,20 @@ export interface LookItem {
 export const LOOK_LABELS: Record<LookKind | "all", string> = {
   all: "الكل",
   clocks: "ساعات",
-  pots: "بوتات وأصص",
+  pots: "تحف وديكور",
 };
 
-export const LOOKBOOK: LookItem[] = [
+export function sortCatalogItems(items: LookItem[]): LookItem[] {
+  const clocks: LookItem[] = [];
+  const decor: LookItem[] = [];
+  for (const item of items) {
+    if (item.kind === "clocks") clocks.push(item);
+    else decor.push(item);
+  }
+  return [...clocks, ...decor];
+}
+
+export const LOOKBOOK: LookItem[] = sortCatalogItems([
   { id: "lb01", name: "بوت مرجانة صغير", image: "/images/lookbook/lb-01.png", kind: "pots", size: "ارتفاع 20 سم × عرض 18 سم", price: "27 جنيه" },
   { id: "lb02", name: "بوت بابلز بدون رجل", image: "/images/lookbook/lb-02.png", kind: "pots", size: "ارتفاع 28 سم × عرض 22 سم", price: "55 جنيه" },
   { id: "lb03", name: "بوت فراولة فك وتركيب", image: "/images/lookbook/lb-03.png", kind: "pots", size: "ارتفاع 25.5 سم × عرض 25 سم", price: "75 جنيه" },
@@ -62,4 +72,4 @@ export const LOOKBOOK: LookItem[] = [
   { id: "lb44", name: "بوت تريندس", image: "/images/lookbook/lb-41.png", kind: "pots", size: "ارتفاع 30 سم × عرض 36 سم", price: "55 جنيه" },
   { id: "lb45", name: "بوت لوكس أكريلك", image: "/images/lookbook/lb-42.png", kind: "pots", size: "ارتفاع 50 سم × عرض 28 سم", price: "110 جنيه" },
   { id: "lb46", name: "بوت بابلز برجل", image: "/images/lookbook/lb-43.png", kind: "pots", size: "ارتفاع 48 سم × عرض 22 سم", price: "75 جنيه" },
-];
+]);
