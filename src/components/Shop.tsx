@@ -1,8 +1,8 @@
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { Link } from "react-router";
 import { AnimatePresence, motion } from "framer-motion";
 import { ArrowLeft, MessageCircle, Search, X } from "lucide-react";
-import { LOOKBOOK, LOOK_LABELS, type LookItem, type LookKind } from "@/data/lookbook";
+import { LOOKBOOK, LOOK_LABELS, catalogPhoto, type LookItem, type LookKind } from "@/data/lookbook";
 import { useCatalog } from "@/context/CatalogContext";
 import { WA_LINK } from "./TopBar";
 
@@ -15,7 +15,10 @@ function waItem(name: string, size: string) {
 
 function GalleryPhoto({ item, className }: { item: LookItem; className?: string }) {
   const fallback = LOOKBOOK.find((row) => row.id === item.id)?.image || item.image;
-  const [src, setSrc] = useState(item.image);
+  const [src, setSrc] = useState(catalogPhoto(item));
+  useEffect(() => {
+    setSrc(catalogPhoto(item));
+  }, [item]);
   return (
     <img
       src={src}

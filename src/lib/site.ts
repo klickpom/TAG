@@ -18,28 +18,28 @@ export const SITE = {
   facebook: "https://www.facebook.com/profile.php?id=61591849934315",
   whatsapp: "https://wa.me/201010841285",
   logo: "https://tag-eg.online/images/logo.jpeg",
-  image: "https://tag-eg.online/images/lookbook/lb-20.png",
+  image: "https://tag-eg.online/images/products/clock-01.jpg",
   foundingLocation: "طنطا، الغربية، مصر",
 } as const;
 
 export const FEATURED = {
-  hero: "/images/lookbook/lb-20.png",
-  heroAlt: "ساعة مرايا شمس من كاتلوج مصنع تاج",
+  hero: "/images/products/clock-01.jpg",
+  heroAlt: "ساعة حائط مرايا من مصنع تاج",
   mosaic: [
-    "/images/lookbook/lb-04.png",
-    "/images/lookbook/lb-10.png",
-    "/images/lookbook/lb-05.png",
-    "/images/lookbook/lb-20.png",
-    "/images/lookbook/lb-19.png",
-    "/images/lookbook/lb-18.png",
-    "/images/lookbook/lb-03.png",
-    "/images/lookbook/lb-16.png",
+    "/images/products/clock-01.jpg",
+    "/images/products/clock-02.jpg",
+    "/images/products/clock-03.jpg",
+    "/images/products/clock-04.jpg",
+    "/images/products/clock-05.jpg",
+    "/images/products/clock-06.jpg",
+    "/images/products/vase1-01.jpg",
+    "/images/products/vase1-05.jpg",
   ],
   about: [
-    { src: "/images/lookbook/lb-04.png", alt: "ساعة غزالة من كاتلوج مصنع تاج" },
-    { src: "/images/lookbook/lb-10.png", alt: "ساعة تاج بندول من كاتلوج مصنع تاج" },
-    { src: "/images/lookbook/lb-03.png", alt: "بوت فراولة من كاتلوج مصنع تاج" },
-    { src: "/images/lookbook/lb-16.png", alt: "بوت شبح من كاتلوج مصنع تاج" },
+    { src: "/images/products/clock-01.jpg", alt: "ساعة حائط مرايا من مصنع تاج" },
+    { src: "/images/products/clock-03.jpg", alt: "ساعة حائط ذهبية من مصنع تاج" },
+    { src: "/images/products/vase1-01.jpg", alt: "أصيص بابل من مصنع تاج" },
+    { src: "/images/products/vase1-05.jpg", alt: "أصيص ضفيرة من مصنع تاج" },
   ],
 } as const;
 

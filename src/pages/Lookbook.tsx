@@ -3,7 +3,7 @@ import { Link } from "react-router";
 import useEmblaCarousel from "embla-carousel-react";
 import { motion, useReducedMotion } from "framer-motion";
 import { ChevronLeft, ChevronRight, MessageCircle } from "lucide-react";
-import { LOOKBOOK, LOOK_LABELS, type LookItem } from "@/data/lookbook";
+import { LOOKBOOK, LOOK_LABELS, catalogPhoto, type LookItem } from "@/data/lookbook";
 import { useCatalog } from "@/context/CatalogContext";
 import { WA_LINK } from "@/components/TopBar";
 import Seo from "@/components/Seo";
@@ -379,11 +379,11 @@ function IndexGroup({
 
 function CatalogPhoto({ item, active }: { item: LookItem; active: boolean }) {
   const fallback = LOOKBOOK.find((row) => row.id === item.id)?.image || "";
-  const [src, setSrc] = useState(item.image);
+  const [src, setSrc] = useState(catalogPhoto(item));
 
   useEffect(() => {
-    setSrc(item.image);
-  }, [item.image]);
+    setSrc(catalogPhoto(item));
+  }, [item]);
 
   return (
     <img

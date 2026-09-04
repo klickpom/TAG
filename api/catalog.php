@@ -49,6 +49,10 @@ function image_filename(string $image): string {
   return preg_replace('/[^a-zA-Z0-9._-]/', '', $file) ?? '';
 }
 
+function is_customer_screenshot(string $image): bool {
+  return (bool)preg_match('#/images/lookbook/lb-\d{2}(?:-\d{2})?\.png$#i', $image);
+}
+
 function heal_images(array $items): array {
   $seed = seed_catalog();
   $byId = [];
@@ -62,6 +66,10 @@ function heal_images(array $items): array {
     $image = trim((string)($row['image'] ?? ''));
     $id = (string)($row['id'] ?? '');
     $fallback = is_array($byId[$id] ?? null) ? (string)($byId[$id]['image'] ?? '') : '';
+    if (is_customer_screenshot($image)) {
+      if ($fallback !== '') $row['image'] = $fallback;
+      continue;
+    }
     if ($image === '' || strpos($image, 'blob:') === 0 || strpos($image, 'data:') === 0) {
       if ($fallback !== '') $row['image'] = $fallback;
       continue;
@@ -115,6 +123,10 @@ function merge_seed_items(array $items): array {
     if ($id !== '' && isset($byId[$id])) {
       if (trim((string)($row['price'] ?? '')) === '' && !empty($byId[$id]['price'])) {
         $row['price'] = $byId[$id]['price'];
+      }
+      $savedImage = trim((string)($row['image'] ?? ''));
+      if (is_customer_screenshot($savedImage) && !empty($byId[$id]['image'])) {
+        $row['image'] = $byId[$id]['image'];
       }
     }
   }
@@ -256,6 +268,7 @@ foreach ($items as $row) {
   $price = trim(mb_substr((string)($row['price'] ?? ''), 0, 40));
   if ($id === '' || $name === '' || $image === '') continue;
   if (strpos($image, 'blob:') === 0 || strpos($image, 'data:') === 0) continue;
+  if (preg_match('#/images/lookbook/lb-\d{2}(?:-\d{2})?\.png$#i', $image)) continue;
   if (!preg_match('#^(/images/|/api/media\.php\?f=|https?://)#', $image)) continue;
   $clean[] = compact('id', 'name', 'image', 'kind', 'size', 'price');
 }

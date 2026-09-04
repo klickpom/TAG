@@ -102,7 +102,7 @@ export default function Admin() {
         size: "مقاس — سم",
         price: "",
         kind: "clocks",
-        image: "/images/lookbook/lb-01.png",
+        image: "/images/products/clock-01.jpg",
       },
       ...prev,
     ]);

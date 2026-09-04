@@ -1,4 +1,4 @@
-import { LOOKBOOK, type LookItem, sortCatalogItems } from "@/data/lookbook";
+import { LOOKBOOK, isCustomerScreenshot, type LookItem, sortCatalogItems } from "@/data/lookbook";
 
 const LOCAL_KEY = "taj-catalog-v1";
 
@@ -7,7 +7,9 @@ function isJsonResponse(res: Response) {
 }
 
 function usableImage(url: string) {
-  return /^(https?:\/\/|\/images\/|\/api\/media\.php)/.test(url.trim());
+  const value = url.trim();
+  if (isCustomerScreenshot(value)) return false;
+  return /^(https?:\/\/|\/images\/products\/|\/images\/lookbook\/lb-\d{8}|\/api\/media\.php)/.test(value);
 }
 
 function mergeCatalog(saved: LookItem[]): LookItem[] {
