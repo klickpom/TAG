@@ -209,7 +209,7 @@ export function collectionPageJsonLd(itemNames: string[] = []) {
     url: `${SITE.url}/catalog`,
     name: "كاتلوج مصنع تاج — ساعات حائط وتحف ديكور",
     description:
-      "كاتلوج مصنع تاج في طنطا: ساعات حائط وتحف ديكور بالأسعار. شحن لكل محافظات مصر والدفع عند الاستلام.",
+      "كاتلوج مصنع تاج في طنطا: ساعات حائط وتحف ديكور. شحن لكل محافظات مصر والدفع عند الاستلام.",
     inLanguage: "ar-EG",
     isPartOf: { "@id": `${SITE.url}/#website` },
     about: { "@id": orgId() },
