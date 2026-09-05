@@ -1,4 +1,4 @@
-import { LOOKBOOK, isCustomerScreenshot, type LookItem, sortCatalogItems } from "@/data/lookbook";
+import { LOOKBOOK, type LookItem, sortCatalogItems } from "@/data/lookbook";
 
 const LOCAL_KEY = "taj-catalog-v1";
 
@@ -8,8 +8,8 @@ function isJsonResponse(res: Response) {
 
 function usableImage(url: string) {
   const value = url.trim();
-  if (isCustomerScreenshot(value)) return false;
-  return /^(https?:\/\/|\/images\/products\/|\/images\/catalog\/|\/api\/media\.php)/.test(value);
+  if (!value || value.startsWith("blob:") || value.startsWith("data:")) return false;
+  return /^(https?:\/\/|\/images\/|\/api\/media\.php)/.test(value);
 }
 
 function mergeCatalog(saved: LookItem[]): LookItem[] {
@@ -17,9 +17,12 @@ function mergeCatalog(saved: LookItem[]): LookItem[] {
   const ids = new Set(saved.map((i) => i.id));
   const merged = saved.map((s) => {
     const f = fb.get(s.id);
-    const price = (s.price || f?.price || "").trim();
-    const image = usableImage(s.image) ? s.image : f?.image || s.image;
-    return f ? { ...f, ...s, price, image } : { ...s, price, image };
+    if (!f) return { ...s, price: (s.price || "").trim() };
+    return {
+      ...f,
+      size: (s.size || f.size).trim(),
+      price: (s.price || f.price).trim(),
+    };
   });
   return sortCatalogItems([...merged, ...LOOKBOOK.filter((i) => !ids.has(i.id))]);
 }
@@ -58,7 +61,7 @@ export async function saveCatalogItems(
   password: string,
   items: LookItem[]
 ): Promise<{ ok: boolean; error?: string }> {
-        const safe = sortCatalogItems(items.filter((item) => usableImage(item.image)));
+  const safe = sortCatalogItems(items.filter((item) => usableImage(item.image)));
   try {
     const res = await fetch("/api/catalog.php", {
       method: "POST",
