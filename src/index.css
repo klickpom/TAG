@@ -74,6 +74,7 @@
     width: 100%;
     max-width: 100%;
     overflow-x: hidden;
+    overflow-y: auto;
   }
   html.catalog-open,
   html.catalog-open body,
@@ -87,13 +88,13 @@
     font-family: "Cairo", system-ui, sans-serif;
     width: 100%;
     max-width: 100%;
-    overflow-x: hidden;
+    overflow: visible;
   }
   #root {
     width: 100%;
     max-width: 100%;
     min-width: 0;
-    overflow-x: hidden;
+    overflow: visible;
   }
   img {
     max-width: 100%;
@@ -360,4 +361,15 @@
       animation: none;
     }
   }
+}
+
+/* Window must be the only vertical scroller. overflow-x:hidden on html+body+#root
+   makes all three overflow-y:auto and traps wheel/PageDown on Windows Chrome. */
+html:not(.catalog-open) {
+  overflow-x: hidden;
+  overflow-y: auto;
+}
+html:not(.catalog-open) body,
+html:not(.catalog-open) #root {
+  overflow: visible;
 }

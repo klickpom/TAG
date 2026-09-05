@@ -19,7 +19,6 @@ export default function BrandIntro() {
   const finish = useCallback(() => {
     sessionStorage.setItem(KEY, "1");
     setShow(false);
-    document.documentElement.style.overflow = "";
   }, []);
 
   useEffect(() => {
@@ -28,14 +27,22 @@ export default function BrandIntro() {
       return;
     }
     setShow(true);
-    document.documentElement.style.overflow = "hidden";
   }, [reduce]);
 
   useEffect(() => {
-    if (!show) return;
+    if (!show) {
+      document.documentElement.style.overflow = "";
+      document.body.style.overflow = "";
+      return;
+    }
     document.documentElement.style.overflow = "hidden";
+    document.body.style.overflow = "hidden";
     const t = window.setTimeout(finish, 4500);
-    return () => window.clearTimeout(t);
+    return () => {
+      window.clearTimeout(t);
+      document.documentElement.style.overflow = "";
+      document.body.style.overflow = "";
+    };
   }, [show, finish]);
 
   if (typeof document === "undefined") return null;

@@ -15,7 +15,7 @@ import { SITE } from "@/lib/site";
 
 export default function Home() {
   return (
-    <div className="min-h-screen w-full min-w-0 overflow-x-hidden bg-[#faf6ef]">
+    <div className="min-h-screen w-full min-w-0 overflow-x-clip bg-[#faf6ef]">
       <BrandIntro />
       <Seo
         title="مصنع تاج | ساعات حائط وتحف ديكور من بسيون — شحن لكل مصر"
