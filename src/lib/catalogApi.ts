@@ -57,7 +57,7 @@ export async function saveCatalogItems(
   password: string,
   items: LookItem[]
 ): Promise<{ ok: boolean; error?: string }> {
-  const safe = sortCatalogItems(items.filter((item) => usableImage(item.image)));
+        const safe = sortCatalogItems(items.filter((item) => usableImage(item.image)));
   try {
     const res = await fetch("/api/catalog.php", {
       method: "POST",

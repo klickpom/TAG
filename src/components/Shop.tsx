@@ -1,75 +1,67 @@
-import { useEffect, useMemo, useState } from "react";
-import { Link } from "react-router";
+import { useMemo, useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
-import { ArrowLeft, MessageCircle, Search, X } from "lucide-react";
-import { LOOKBOOK, LOOK_LABELS, catalogPhoto, type LookItem, type LookKind } from "@/data/lookbook";
+import { Eye, MessageCircle, Search, X } from "lucide-react";
+import { CATEGORY_LABELS, type Category, type Product } from "@/data/products";
 import { useCatalog } from "@/context/CatalogContext";
 import { WA_LINK } from "./TopBar";
 
-type Filter = LookKind | "all";
-const FILTERS: Filter[] = ["all", "clocks", "pots"];
+type Filter = Category | "all";
+const FILTERS: Filter[] = ["all", "clocks", "vases", "sets"];
 
-function waItem(name: string, size: string) {
-  return `${WA_LINK}?text=${encodeURIComponent(`السلام عليكم، محتاج تفاصيل عن: ${name} — ${size}`)}`;
-}
-
-function GalleryPhoto({ item, className }: { item: LookItem; className?: string }) {
-  const fallback = LOOKBOOK.find((row) => row.id === item.id)?.image || item.image;
-  const [src, setSrc] = useState(catalogPhoto(item));
-  useEffect(() => {
-    setSrc(catalogPhoto(item));
-  }, [item]);
-  return (
-    <img
-      src={src}
-      alt={item.name}
-      loading="lazy"
-      className={className}
-      onError={() => {
-        if (src !== fallback) setSrc(fallback);
-      }}
-    />
-  );
+function waProduct(name: string) {
+  const msg = `السلام عليكم، محتاج تفاصيل عن المنتج: ${name}`;
+  return `${WA_LINK}?text=${encodeURIComponent(msg)}`;
 }
 
 function ProductCard({
-  item,
-  onOpen,
+  product,
+  onQuickView,
 }: {
-  item: LookItem;
-  onOpen: (item: LookItem) => void;
+  product: Product;
+  onQuickView: (p: Product) => void;
 }) {
   return (
     <motion.article
       layout
-      initial={{ opacity: 0, y: 18 }}
+      initial={{ opacity: 0, y: 24 }}
       animate={{ opacity: 1, y: 0 }}
-      exit={{ opacity: 0 }}
-      transition={{ duration: 0.32 }}
-      className="group min-w-0 overflow-hidden border border-[#eadfc9] bg-white"
+      exit={{ opacity: 0, scale: 0.92 }}
+      transition={{ duration: 0.35 }}
+      className="group min-w-0 overflow-hidden rounded-2xl border border-[#eadfc9] bg-white shadow-sm transition-shadow hover:shadow-xl hover:shadow-[#c6a15b]/10"
     >
       <button
         type="button"
-        onClick={() => onOpen(item)}
-        className="relative aspect-[4/5] w-full overflow-hidden bg-[#111113] text-right"
+        onClick={() => onQuickView(product)}
+        className="relative aspect-square w-full overflow-hidden bg-[#f5efe4] text-right"
       >
-        <GalleryPhoto
-          item={item}
-          className="h-full w-full object-contain object-center p-3 transition-transform duration-700 group-hover:scale-[1.04]"
+        <img
+          src={product.image}
+          alt={product.name}
+          loading="lazy"
+          className="h-full w-full object-cover transition-transform duration-700 group-hover:scale-110"
         />
-        <span className="pointer-events-none absolute inset-x-0 bottom-0 h-16 bg-gradient-to-t from-black/45 to-transparent opacity-0 transition-opacity group-hover:opacity-100" />
+        {product.badge && (
+          <span className="bg-gold-gradient absolute right-3 top-3 rounded-full px-3 py-1 text-[11px] font-bold text-white shadow-md">
+            {product.badge}
+          </span>
+        )}
+        <span className="absolute left-3 top-3 rounded-full bg-white/90 p-2 text-[#191920] opacity-0 shadow-md backdrop-blur transition-all group-hover:opacity-100">
+          <Eye className="h-4 w-4" />
+        </span>
       </button>
-      <div className="border-t border-[#eadfc9] p-4">
-        <p className="text-[10px] font-bold tracking-[0.22em] text-[#a8853f]">{LOOK_LABELS[item.kind]}</p>
-        <h3 className="mt-1 line-clamp-2 min-h-[2.6rem] text-sm font-black text-[#191920] sm:text-[15px]">
-          {item.name}
+
+      <div className="p-4">
+        <span className="text-[11px] font-bold text-[#a8853f]">
+          {CATEGORY_LABELS[product.category]}
+        </span>
+        <h3 className="mt-1 line-clamp-2 min-h-[2.5rem] text-sm font-bold text-[#191920] sm:text-base">
+          {product.name}
         </h3>
-        <p className="mt-2 text-xs font-semibold text-[#7a6f60]">{item.size}</p>
         <a
-          href={waItem(item.name, item.size)}
+          href={waProduct(product.name)}
           target="_blank"
           rel="noreferrer"
-          className="mt-3 flex w-full items-center justify-center gap-1.5 bg-[#191920] px-3 py-2.5 text-[11px] font-bold text-[#e6c987] transition-colors hover:bg-[#2a2a33] sm:text-xs"
+          className="mt-3 flex w-full items-center justify-center gap-1.5 rounded-full bg-[#191920] px-3 py-2 text-[11px] font-bold text-[#e6c987] transition-all hover:scale-[1.02] hover:bg-[#2a2a33] sm:text-xs"
         >
           <MessageCircle className="h-4 w-4" />
           اسأل على واتساب
@@ -79,103 +71,73 @@ function ProductCard({
   );
 }
 
-function QuickView({ item, onClose }: { item: LookItem; onClose: () => void }) {
+function QuickView({
+  product,
+  onClose,
+}: {
+  product: Product;
+  onClose: () => void;
+}) {
   return (
     <motion.div
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       exit={{ opacity: 0 }}
-      className="fixed inset-0 z-50 flex items-center justify-center bg-black/65 p-4 backdrop-blur-sm"
+      className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 p-4 backdrop-blur-sm"
       onClick={onClose}
     >
       <motion.div
-        initial={{ scale: 0.94, y: 24 }}
+        initial={{ scale: 0.9, y: 30 }}
         animate={{ scale: 1, y: 0 }}
-        exit={{ scale: 0.94, y: 24 }}
-        transition={{ type: "spring", damping: 24 }}
+        exit={{ scale: 0.9, y: 30 }}
+        transition={{ type: "spring", damping: 22 }}
         onClick={(e) => e.stopPropagation()}
-        className="grid w-[min(100%,52rem)] max-h-[90dvh] overflow-y-auto overflow-x-hidden bg-[#faf6ef] shadow-2xl md:grid-cols-2"
+        className="grid w-[min(100%,48rem)] max-h-[90dvh] overflow-y-auto overflow-x-hidden rounded-3xl bg-white shadow-2xl md:grid-cols-2"
       >
-        <div className="relative min-h-[280px] bg-[#111113] md:min-h-[420px]">
-          <GalleryPhoto item={item} className="h-full w-full object-contain object-center p-5" />
+        <div className="relative aspect-square bg-[#f5efe4]">
+          <img src={product.image} alt={product.name} className="h-full w-full object-cover" />
         </div>
         <div className="relative flex flex-col p-6 sm:p-8">
           <button
-            type="button"
             onClick={onClose}
-            className="absolute left-4 top-4 rounded-full bg-white p-2 text-[#191920]"
+            className="absolute left-4 top-4 rounded-full bg-[#f5efe4] p-2 text-[#191920] hover:bg-[#eadfc9]"
             aria-label="إغلاق"
           >
             <X className="h-4 w-4" />
           </button>
-          <p className="text-[11px] font-bold tracking-[0.28em] text-[#a8853f]">{LOOK_LABELS[item.kind]}</p>
-          <h3 className="mt-2 text-2xl font-black text-[#191920]">{item.name}</h3>
-          <div className="mt-5 inline-block self-start border border-[#c6a15b]/70 px-3 py-1.5 text-sm font-bold text-[#a8853f]">
-            {item.size}
-          </div>
-          <p className="mt-5 text-sm leading-7 text-[#5d554a]">
-            صناعة المصنع في طنطا. السعر والتفاصيل الكاملة في الكاتلوج، أو اسأل مباشرة على واتساب.
-          </p>
-          <div className="mt-auto flex flex-col gap-3 pt-8">
-            <a
-              href={waItem(item.name, item.size)}
-              target="_blank"
-              rel="noreferrer"
-              className="bg-gold-gradient flex items-center justify-center gap-2 px-6 py-3 text-sm font-bold text-[#191920]"
-            >
-              <MessageCircle className="h-4 w-4" />
-              اسأل على واتساب
-            </a>
-            <Link
-              to="/catalog"
-              className="flex items-center justify-center gap-2 border border-[#191920] px-6 py-3 text-sm font-bold text-[#191920]"
-            >
-              فتح الكاتلوج بالأسعار
-              <ArrowLeft className="h-4 w-4" />
-            </Link>
-          </div>
+          <span className="text-xs font-bold text-[#a8853f]">
+            {CATEGORY_LABELS[product.category]}
+          </span>
+          <h3 className="mt-2 text-2xl font-black text-[#191920]">{product.name}</h3>
+          <p className="mt-4 flex-1 text-sm leading-8 text-[#5d554a]">{product.desc}</p>
+          <a
+            href={waProduct(product.name)}
+            target="_blank"
+            rel="noreferrer"
+            className="bg-gold-gradient mt-6 flex items-center justify-center gap-2 rounded-full px-6 py-3 text-sm font-bold text-[#191920] shadow-lg shadow-[#c6a15b]/30 transition-transform hover:scale-[1.03]"
+          >
+            <MessageCircle className="h-4 w-4" />
+            اسأل عن المنتج على واتساب
+          </a>
         </div>
       </motion.div>
     </motion.div>
   );
 }
 
-function ProductGrid({
-  items,
-  onOpen,
-}: {
-  items: LookItem[];
-  onOpen: (item: LookItem) => void;
-}) {
-  return (
-    <div className="grid min-w-0 grid-cols-2 gap-3 sm:gap-4 lg:grid-cols-3 xl:grid-cols-4">
-      <AnimatePresence mode="popLayout">
-        {items.map((item) => (
-          <ProductCard key={item.id} item={item} onOpen={onOpen} />
-        ))}
-      </AnimatePresence>
-    </div>
-  );
-}
-
 export default function Shop() {
-  const { lookbook } = useCatalog();
+  const { products } = useCatalog();
   const [filter, setFilter] = useState<Filter>("all");
   const [query, setQuery] = useState("");
-  const [quick, setQuick] = useState<LookItem | null>(null);
+  const [quick, setQuick] = useState<Product | null>(null);
 
-  const filtered = useMemo(() => {
-    const q = query.trim();
-    return lookbook.filter((item) => {
-      const okKind = filter === "all" || item.kind === filter;
-      const okQ = !q || item.name.includes(q) || item.size.includes(q);
-      return okKind && okQ;
+  const list = useMemo(() => {
+    return products.filter((p) => {
+      const okCat = filter === "all" || p.category === filter;
+      const okQ = query.trim() === "" || p.name.includes(query.trim());
+      return okCat && okQ;
     });
-  }, [filter, query, lookbook]);
-
-  const clocks = filtered.filter((item) => item.kind === "clocks");
-  const decor = filtered.filter((item) => item.kind !== "clocks");
-  const grouped = filter === "all" && !query.trim();
+  }, [filter, query, products]);
 
   return (
     <section id="shop" className="bg-[#faf6ef] py-20">
@@ -184,25 +146,16 @@ export default function Shop() {
           initial={{ opacity: 0, y: 24 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
-          transition={{ duration: 0.55 }}
-          className="flex flex-col items-start justify-between gap-6 lg:flex-row lg:items-end"
+          transition={{ duration: 0.6 }}
+          className="text-center"
         >
-          <div>
-            <p className="text-[11px] font-bold tracking-[0.32em] text-[#a8853f]">THE COLLECTION</p>
-            <h2 className="mt-3 text-3xl font-black text-[#191920] sm:text-4xl">
-              معرض ساعات الحائط <span className="text-gold-gradient">وتحف الديكور</span>
-            </h2>
-            <p className="mt-3 max-w-xl text-sm leading-7 text-[#7a6f60]">
-              ساعات حائط وتحف ديكور من مصنع تاج في طنطا. الأسعار داخل الكاتلوج فقط، والطلب عبر واتساب.
-            </p>
-          </div>
-          <Link
-            to="/catalog"
-            className="inline-flex items-center gap-2 border border-[#191920] px-5 py-2.5 text-xs font-black text-[#191920] transition-colors hover:bg-[#191920] hover:text-[#e6c987]"
-          >
-            فتح الكاتلوج بالأسعار
-            <ArrowLeft className="h-4 w-4" />
-          </Link>
+          <span className="text-sm font-bold tracking-wide text-[#a8853f]">المعرض</span>
+          <h2 className="mt-3 text-3xl font-black text-[#191920] sm:text-4xl">
+            اختار قطعتك <span className="text-gold-gradient">المفضلة</span>
+          </h2>
+          <p className="mx-auto mt-3 max-w-xl text-sm leading-7 text-[#7a6f60]">
+            كل المنتجات من مصنعنا مباشرة — للتفاصيل والطلب كلمنا على واتساب.
+          </p>
         </motion.div>
 
         <div className="mt-10 flex flex-col items-center justify-between gap-4 md:flex-row">
@@ -210,15 +163,14 @@ export default function Shop() {
             {FILTERS.map((f) => (
               <button
                 key={f}
-                type="button"
                 onClick={() => setFilter(f)}
-                className={`px-5 py-2.5 text-sm font-bold transition-all ${
+                className={`rounded-full px-5 py-2.5 text-sm font-bold transition-all ${
                   filter === f
-                    ? "bg-[#191920] text-[#e6c987]"
+                    ? "bg-gold-gradient text-white shadow-lg shadow-[#c6a15b]/30"
                     : "border border-[#eadfc9] bg-white text-[#5d554a] hover:border-[#c6a15b]"
                 }`}
               >
-                {LOOK_LABELS[f]}
+                {CATEGORY_LABELS[f]}
               </button>
             ))}
           </div>
@@ -227,45 +179,30 @@ export default function Shop() {
             <input
               value={query}
               onChange={(e) => setQuery(e.target.value)}
-              placeholder="ابحث عن قطعة…"
-              className="w-full rounded-none border border-[#eadfc9] bg-white py-2.5 pl-4 pr-10 text-sm outline-none placeholder:text-[#a89a80] focus:border-[#c6a15b]"
+              placeholder="ابحث عن منتج…"
+              className="w-full rounded-full border border-[#eadfc9] bg-white py-2.5 pl-4 pr-10 text-sm outline-none transition-colors placeholder:text-[#a89a80] focus:border-[#c6a15b]"
             />
           </div>
         </div>
 
-        {grouped ? (
-          <div className="mt-12 space-y-14">
-            {clocks.length > 0 ? (
-              <section>
-                <div className="mb-6 flex items-baseline justify-between gap-3 border-b border-[#eadfc9] pb-3">
-                  <h3 className="text-xl font-black text-[#191920]">ساعات</h3>
-                  <span className="font-display text-sm text-[#a8853f]">{String(clocks.length).padStart(2, "0")}</span>
-                </div>
-                <ProductGrid items={clocks} onOpen={setQuick} />
-              </section>
-            ) : null}
-            {decor.length > 0 ? (
-              <section>
-                <div className="mb-6 flex items-baseline justify-between gap-3 border-b border-[#eadfc9] pb-3">
-                  <h3 className="text-xl font-black text-[#191920]">تحف وديكور</h3>
-                  <span className="font-display text-sm text-[#a8853f]">{String(decor.length).padStart(2, "0")}</span>
-                </div>
-                <ProductGrid items={decor} onOpen={setQuick} />
-              </section>
-            ) : null}
-          </div>
-        ) : (
-          <div className="mt-10">
-            <ProductGrid items={filtered} onOpen={setQuick} />
-          </div>
-        )}
+        <motion.div layout className="mt-10 grid min-w-0 grid-cols-1 gap-4 sm:grid-cols-2 sm:gap-5 lg:grid-cols-3 xl:grid-cols-4">
+          <AnimatePresence mode="popLayout">
+            {list.map((p) => (
+              <ProductCard key={p.id} product={p} onQuickView={setQuick} />
+            ))}
+          </AnimatePresence>
+        </motion.div>
 
-        {filtered.length === 0 && (
-          <p className="mt-16 text-center text-sm font-semibold text-[#a89a80]">لا توجد قطع مطابقة لبحثك</p>
+        {list.length === 0 && (
+          <p className="mt-16 text-center text-sm font-semibold text-[#a89a80]">
+            لا توجد منتجات مطابقة لبحثك
+          </p>
         )}
       </div>
 
-      <AnimatePresence>{quick ? <QuickView item={quick} onClose={() => setQuick(null)} /> : null}</AnimatePresence>
+      <AnimatePresence>
+        {quick && <QuickView product={quick} onClose={() => setQuick(null)} />}
+      </AnimatePresence>
     </section>
   );
 }

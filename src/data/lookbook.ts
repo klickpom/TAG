@@ -73,7 +73,3 @@ export const LOOKBOOK: LookItem[] = sortCatalogItems([
   { id: "lb45", name: "بوت لوكس أكريلك", image: "/images/lookbook/lb-42.png", kind: "pots", size: "ارتفاع 50 سم × عرض 28 سم", price: "110 جنيه" },
   { id: "lb46", name: "بوت بابلز برجل", image: "/images/lookbook/lb-43.png", kind: "pots", size: "ارتفاع 48 سم × عرض 22 سم", price: "75 جنيه" },
 ]);
-
-export function catalogPhoto(item: Pick<LookItem, "id" | "image">) {
-  return item.image || LOOKBOOK.find((row) => row.id === item.id)?.image || "";
-}

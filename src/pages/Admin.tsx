@@ -6,30 +6,40 @@ import {
   ImagePlus,
   LogOut,
   Plus,
+  RotateCcw,
   Save,
   Search,
   Shield,
   Trash2,
 } from "lucide-react";
+import { CATEGORY_LABELS, PRODUCTS, type Category } from "@/data/products";
 import { LOOKBOOK, LOOK_LABELS, type LookItem, type LookKind } from "@/data/lookbook";
-import { loginAdmin } from "@/lib/productNames";
+import { loginAdmin, saveNameMap, type NameMap } from "@/lib/productNames";
 import { saveCatalogItems, uploadCatalogImage } from "@/lib/catalogApi";
 import { useCatalog } from "@/context/CatalogContext";
-import Seo from "@/components/Seo";
 
 const SESSION_KEY = "taj-admin-pass";
+
+function defaultDraft(names: NameMap): NameMap {
+  const init: NameMap = {};
+  for (const p of PRODUCTS) init[p.id] = names[p.id]?.trim() || p.name;
+  return init;
+}
 
 function newId() {
   return `lb${Date.now().toString(36)}${Math.random().toString(36).slice(2, 5)}`;
 }
 
 export default function Admin() {
-  const { lookbook, reload } = useCatalog();
+  const { names, lookbook, reload } = useCatalog();
   const [authed, setAuthed] = useState(() => !!sessionStorage.getItem(SESSION_KEY));
   const [password, setPassword] = useState("");
   const [loginError, setLoginError] = useState("");
   const [logging, setLogging] = useState(false);
+  const [draft, setDraft] = useState<NameMap>({});
   const [items, setItems] = useState<LookItem[]>([]);
+  const [board, setBoard] = useState<"lookbook" | "site">("lookbook");
+  const [filter, setFilter] = useState<Category | "all">("all");
   const [kindFilter, setKindFilter] = useState<LookKind | "all">("all");
   const [query, setQuery] = useState("");
   const [saving, setSaving] = useState(false);
@@ -37,10 +47,28 @@ export default function Admin() {
 
   useEffect(() => {
     if (!authed) return;
+    setDraft(defaultDraft(names));
     setItems(lookbook.map((x) => ({ ...x, price: x.price ?? "" })));
-  }, [authed, lookbook]);
+  }, [authed, names, lookbook]);
+
+  const dirtyNames = useMemo(() => {
+    return PRODUCTS.filter((p) => {
+      const now = (draft[p.id] ?? p.name).trim();
+      const saved = (names[p.id]?.trim() || p.name).trim();
+      return now !== saved;
+    }).length;
+  }, [draft, names]);
 
   const catalogDirty = useMemo(() => JSON.stringify(items) !== JSON.stringify(lookbook), [items, lookbook]);
+
+  const siteList = useMemo(() => {
+    return PRODUCTS.filter((p) => {
+      const name = draft[p.id] ?? p.name;
+      const okCat = filter === "all" || p.category === filter;
+      const q = query.trim();
+      return okCat && (!q || name.includes(q) || p.name.includes(q));
+    });
+  }, [filter, query, draft]);
 
   const catalogList = useMemo(() => {
     const q = query.trim();
@@ -70,10 +98,29 @@ export default function Admin() {
     sessionStorage.removeItem(SESSION_KEY);
     setPassword("");
     setAuthed(false);
+    setDraft({});
     setItems([]);
   };
 
   const pass = () => sessionStorage.getItem(SESSION_KEY) || password;
+
+  const saveSite = async () => {
+    setSaving(true);
+    setMsg("");
+    const payload: NameMap = {};
+    for (const p of PRODUCTS) {
+      const n = (draft[p.id] ?? p.name).trim();
+      if (n && n !== p.name) payload[p.id] = n;
+    }
+    const res = await saveNameMap(pass(), payload);
+    setSaving(false);
+    if (!res.ok) {
+      setMsg(res.error || "فشل حفظ أسماء الموقع");
+      return;
+    }
+    await reload();
+    setMsg("اتحفظت أسماء معرض الموقع");
+  };
 
   const saveCatalog = async () => {
     for (const item of items) {
@@ -102,7 +149,7 @@ export default function Admin() {
         size: "مقاس — سم",
         price: "",
         kind: "clocks",
-        image: "/images/products/clock-01.jpg",
+        image: "/images/lookbook/lb-01.png",
       },
       ...prev,
     ]);
@@ -155,7 +202,6 @@ export default function Admin() {
   if (!authed) {
     return (
       <div className="flex min-h-screen items-center justify-center bg-[#191920] px-4">
-        <Seo title="لوحة التحكم | مصنع تاج" description="صفحة إدارة داخلية لمصنع تاج." path="/admin" noindex />
         <form
           onSubmit={onLogin}
           className="w-full max-w-md rounded-3xl border border-[#c6a15b]/30 bg-[#faf6ef] p-8 shadow-2xl"
@@ -164,7 +210,7 @@ export default function Admin() {
             <Shield className="h-7 w-7" />
           </div>
           <h1 className="mt-4 text-center text-2xl font-black text-[#191920]">لوحة تاج</h1>
-          <p className="mt-2 text-center text-sm text-[#7a6f60]">إدارة الكاتلوج</p>
+          <p className="mt-2 text-center text-sm text-[#7a6f60]">إدارة الكتالوج ومعرض الموقع</p>
           <label className="mt-6 block text-sm font-bold text-[#3d3830]">كلمة السر</label>
           <input
             type="password"
@@ -194,33 +240,61 @@ export default function Admin() {
 
   return (
     <div className="min-h-screen bg-[#faf6ef]">
-      <Seo title="لوحة التحكم | مصنع تاج" description="صفحة إدارة داخلية لمصنع تاج." path="/admin" noindex />
       <header className="sticky top-0 z-30 border-b border-[#eadfc9] bg-white/90 backdrop-blur">
         <div className="mx-auto flex max-w-6xl flex-wrap items-center justify-between gap-3 px-4 py-3">
           <div>
             <h1 className="text-lg font-black text-[#191920]">لوحة تاج</h1>
             <p className="text-xs text-[#7a6f60]">
-              {items.length} قطعة في الكاتلوج{catalogDirty ? " — في تعديلات مش محفوظة" : ""}
+              {board === "lookbook"
+                ? `${items.length} قطعة في الكاتلوج${catalogDirty ? " — في تعديلات مش محفوظة" : ""}`
+                : `${PRODUCTS.length} منتج في المعرض — ${dirtyNames} تعديل أسماء`}
             </p>
           </div>
           <div className="flex flex-wrap gap-2">
-            <button
-              type="button"
-              onClick={addItem}
-              className="flex items-center gap-1.5 rounded-full border border-[#eadfc9] px-4 py-2 text-xs font-bold text-[#5d554a]"
-            >
-              <Plus className="h-4 w-4" />
-              إضافة قطعة
-            </button>
-            <button
-              type="button"
-              onClick={() => void saveCatalog()}
-              disabled={saving}
-              className="bg-gold-gradient flex items-center gap-1.5 rounded-full px-5 py-2 text-xs font-black text-[#191920] disabled:opacity-50"
-            >
-              <Save className="h-4 w-4" />
-              {saving ? "بيحفظ…" : "حفظ الكاتلوج"}
-            </button>
+            {board === "lookbook" ? (
+              <>
+                <button
+                  type="button"
+                  onClick={addItem}
+                  className="flex items-center gap-1.5 rounded-full border border-[#eadfc9] px-4 py-2 text-xs font-bold text-[#5d554a]"
+                >
+                  <Plus className="h-4 w-4" />
+                  إضافة قطعة
+                </button>
+                <button
+                  type="button"
+                  onClick={() => void saveCatalog()}
+                  disabled={saving}
+                  className="bg-gold-gradient flex items-center gap-1.5 rounded-full px-5 py-2 text-xs font-black text-[#191920] disabled:opacity-50"
+                >
+                  <Save className="h-4 w-4" />
+                  {saving ? "بيحفظ…" : "حفظ الكتالوج"}
+                </button>
+              </>
+            ) : (
+              <>
+                <button
+                  type="button"
+                  onClick={() => {
+                    setDraft(defaultDraft({}));
+                    setMsg("رجّعنا أسماء المعرض — اضغط حفظ عشان تتثبت");
+                  }}
+                  className="flex items-center gap-1.5 rounded-full border border-[#eadfc9] px-4 py-2 text-xs font-bold text-[#5d554a]"
+                >
+                  <RotateCcw className="h-4 w-4" />
+                  الافتراضي
+                </button>
+                <button
+                  type="button"
+                  onClick={() => void saveSite()}
+                  disabled={saving}
+                  className="bg-gold-gradient flex items-center gap-1.5 rounded-full px-5 py-2 text-xs font-black text-[#191920] disabled:opacity-50"
+                >
+                  <Save className="h-4 w-4" />
+                  {saving ? "بيحفظ…" : "حفظ الأسماء"}
+                </button>
+              </>
+            )}
             <button
               type="button"
               onClick={logout}
@@ -241,6 +315,26 @@ export default function Admin() {
         )}
 
         <div className="mb-4 flex flex-wrap gap-2">
+          <button
+            type="button"
+            onClick={() => {
+              setBoard("lookbook");
+              setQuery("");
+            }}
+            className={`rounded-full px-4 py-2 text-xs font-bold ${board === "lookbook" ? "bg-[#191920] text-[#e6c987]" : "border border-[#eadfc9] bg-white"}`}
+          >
+            الكاتلوج
+          </button>
+          <button
+            type="button"
+            onClick={() => {
+              setBoard("site");
+              setQuery("");
+            }}
+            className={`rounded-full px-4 py-2 text-xs font-bold ${board === "site" ? "bg-[#191920] text-[#e6c987]" : "border border-[#eadfc9] bg-white"}`}
+          >
+            معرض الموقع
+          </button>
           <Link to="/catalog" className="rounded-full border border-[#eadfc9] bg-white px-4 py-2 text-xs font-bold text-[#a8853f]">
             معاينة الكاتلوج
           </Link>
@@ -248,20 +342,36 @@ export default function Admin() {
 
         <div className="flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
           <div className="flex flex-wrap gap-2">
-            {(["all", "clocks", "pots"] as const).map((f) => (
-              <button
-                key={f}
-                type="button"
-                onClick={() => setKindFilter(f)}
-                className={`rounded-full px-4 py-2 text-xs font-bold ${
-                  kindFilter === f
-                    ? "bg-gold-gradient text-white"
-                    : "border border-[#eadfc9] bg-white text-[#5d554a]"
-                }`}
-              >
-                {LOOK_LABELS[f]}
-              </button>
-            ))}
+            {board === "lookbook" &&
+              (["all", "clocks", "pots"] as const).map((f) => (
+                <button
+                  key={f}
+                  type="button"
+                  onClick={() => setKindFilter(f)}
+                  className={`rounded-full px-4 py-2 text-xs font-bold ${
+                    kindFilter === f
+                      ? "bg-gold-gradient text-white"
+                      : "border border-[#eadfc9] bg-white text-[#5d554a]"
+                  }`}
+                >
+                  {LOOK_LABELS[f]}
+                </button>
+              ))}
+            {board === "site" &&
+              (["all", "clocks", "vases", "sets"] as const).map((f) => (
+                <button
+                  key={f}
+                  type="button"
+                  onClick={() => setFilter(f)}
+                  className={`rounded-full px-4 py-2 text-xs font-bold ${
+                    filter === f
+                      ? "bg-gold-gradient text-white"
+                      : "border border-[#eadfc9] bg-white text-[#5d554a]"
+                  }`}
+                >
+                  {CATEGORY_LABELS[f]}
+                </button>
+              ))}
           </div>
           <div className="relative w-full max-w-xs">
             <Search className="absolute right-3 top-1/2 h-4 w-4 -translate-y-1/2 text-[#a89a80]" />
@@ -274,7 +384,8 @@ export default function Admin() {
           </div>
         </div>
 
-        <div className="mt-6 grid gap-3">
+        {board === "lookbook" ? (
+          <div className="mt-6 grid gap-3">
             {catalogList.map(({ item, index }) => (
               <div
                 key={item.id}
@@ -372,7 +483,44 @@ export default function Admin() {
                 </div>
               </div>
             ))}
-        </div>
+          </div>
+        ) : (
+          <div className="mt-6 grid gap-3">
+            {siteList.map((p) => {
+              const current = draft[p.id] ?? p.name;
+              const changed = current.trim() !== p.name;
+              return (
+                <div
+                  key={p.id}
+                  className="flex flex-col gap-3 rounded-2xl border border-[#eadfc9] bg-white p-3 sm:flex-row sm:items-center"
+                >
+                  <img src={p.image} alt="" className="h-20 w-20 shrink-0 rounded-xl object-cover" />
+                  <div className="min-w-0 flex-1">
+                    <div className="flex items-center gap-2 text-[11px] font-bold text-[#a8853f]">
+                      {CATEGORY_LABELS[p.category]}
+                      {changed && (
+                        <span className="rounded-full bg-[#c6a15b]/15 px-2 py-0.5 text-[#a8853f]">معدّل</span>
+                      )}
+                    </div>
+                    <p className="mt-1 truncate text-[11px] text-[#a89a80]">الأصل: {p.name}</p>
+                    <input
+                      value={current}
+                      onChange={(e) => setDraft((d) => ({ ...d, [p.id]: e.target.value }))}
+                      className="mt-2 w-full rounded-xl border border-[#eadfc9] px-3 py-2 text-sm font-bold text-[#191920] outline-none focus:border-[#c6a15b]"
+                    />
+                  </div>
+                  <button
+                    type="button"
+                    onClick={() => setDraft((d) => ({ ...d, [p.id]: p.name }))}
+                    className="shrink-0 text-xs font-semibold text-[#7a6f60] hover:text-[#a8853f]"
+                  >
+                    رجوع للاسم الأصلي
+                  </button>
+                </div>
+              );
+            })}
+          </div>
+        )}
       </div>
     </div>
   );

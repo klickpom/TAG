@@ -6,11 +6,13 @@ import {
   useState,
   type ReactNode,
 } from "react";
+import { PRODUCTS, type Product } from "@/data/products";
 import { LOOKBOOK, type LookItem } from "@/data/lookbook";
 import { fetchNameMap, type NameMap } from "@/lib/productNames";
 import { fetchCatalogItems } from "@/lib/catalogApi";
 
 interface CatalogCtx {
+  products: Product[];
   lookbook: LookItem[];
   names: NameMap;
   loading: boolean;
@@ -36,8 +38,13 @@ export function CatalogProvider({ children }: { children: ReactNode }) {
     void reload();
   }, [reload]);
 
+  const products = PRODUCTS.map((p) => {
+    const n = names[p.id]?.trim();
+    return n ? { ...p, name: n } : p;
+  });
+
   return (
-    <Ctx.Provider value={{ lookbook, names, loading, reload }}>
+    <Ctx.Provider value={{ products, lookbook, names, loading, reload }}>
       {children}
     </Ctx.Provider>
   );
