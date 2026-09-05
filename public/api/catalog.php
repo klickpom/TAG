@@ -31,7 +31,7 @@ function durable_upload_dir(): string {
 }
 
 function public_upload_dir(): string {
-  $dir = dirname(__DIR__) . '/images/catalog';
+  $dir = dirname(__DIR__) . '/images/lookbook';
   if (!is_dir($dir)) @mkdir($dir, 0755, true);
   return $dir;
 }
@@ -49,23 +49,6 @@ function image_filename(string $image): string {
   return preg_replace('/[^a-zA-Z0-9._-]/', '', $file) ?? '';
 }
 
-function is_customer_screenshot(string $image): bool {
-  return strpos($image, '/images/lookbook/') !== false;
-}
-
-function is_legacy_sku(string $id): bool {
-  return (bool)preg_match('/^lb\d+$/i', $id);
-}
-
-function catalog_contaminated(array $items): bool {
-  foreach ($items as $row) {
-    if (!is_array($row)) continue;
-    if (is_legacy_sku((string)($row['id'] ?? ''))) return true;
-    if (is_customer_screenshot((string)($row['image'] ?? ''))) return true;
-  }
-  return false;
-}
-
 function heal_images(array $items): array {
   $seed = seed_catalog();
   $byId = [];
@@ -79,13 +62,6 @@ function heal_images(array $items): array {
     $image = trim((string)($row['image'] ?? ''));
     $id = (string)($row['id'] ?? '');
     $fallback = is_array($byId[$id] ?? null) ? (string)($byId[$id]['image'] ?? '') : '';
-    if (is_customer_screenshot($image)) {
-      if ($fallback !== '') $row['image'] = $fallback;
-      continue;
-    }
-    if (strpos($image, '/images/products/') !== false) {
-      continue;
-    }
     if ($image === '' || strpos($image, 'blob:') === 0 || strpos($image, 'data:') === 0) {
       if ($fallback !== '') $row['image'] = $fallback;
       continue;
@@ -101,7 +77,7 @@ function heal_images(array $items): array {
       @copy($dur, $pub);
     }
     if (is_file($pub)) {
-      $row['image'] = '/images/catalog/' . $file;
+      $row['image'] = '/images/lookbook/' . $file;
       continue;
     }
     if (is_file($dur)) {
@@ -131,42 +107,30 @@ function merge_seed_items(array $items): array {
   foreach ($seed as $row) {
     if (is_array($row) && isset($row['id'])) $byId[(string)$row['id']] = $row;
   }
-  $out = [];
   $ids = [];
-  foreach ($items as $row) {
+  foreach ($items as &$row) {
     if (!is_array($row)) continue;
     $id = (string)($row['id'] ?? '');
-    $image = trim((string)($row['image'] ?? ''));
-    if (is_legacy_sku($id) || is_customer_screenshot($image)) continue;
     $ids[$id] = true;
     if ($id !== '' && isset($byId[$id])) {
-      $seedRow = $byId[$id];
-      if (trim((string)($row['name'] ?? '')) === '' && !empty($seedRow['name'])) {
-        $row['name'] = $seedRow['name'];
-      }
-      if (trim((string)($row['size'] ?? '')) === '' && !empty($seedRow['size'])) {
-        $row['size'] = $seedRow['size'];
-      }
-      if (trim((string)($row['price'] ?? '')) === '' && !empty($seedRow['price'])) {
-        $row['price'] = $seedRow['price'];
-      }
-      if ($image === '' && !empty($seedRow['image'])) {
-        $row['image'] = $seedRow['image'];
+      if (trim((string)($row['price'] ?? '')) === '' && !empty($byId[$id]['price'])) {
+        $row['price'] = $byId[$id]['price'];
       }
     }
-    $out[] = $row;
   }
+  unset($row);
   foreach ($seed as $row) {
     $id = is_array($row) ? (string)($row['id'] ?? '') : '';
-    if ($id !== '' && empty($ids[$id])) $out[] = $row;
+    if ($id !== '' && empty($ids[$id])) $items[] = $row;
   }
-  return $out;
+  return $items;
 }
 
-function persist_catalog(string $file, array $items): void {
-  $dir = dirname($file);
-  if (!is_dir($dir)) mkdir($dir, 0755, true);
-  @file_put_contents($file, json_encode($items, JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT), LOCK_EX);
+function is_factory_catalog(array $items): bool {
+  foreach ($items as $row) {
+    if (is_array($row) && (string)($row['id'] ?? '') === 'lb04') return true;
+  }
+  return false;
 }
 
 function read_catalog(string $file): array {
@@ -175,13 +139,15 @@ function read_catalog(string $file): array {
     $data = json_decode(file_get_contents($file) ?: '[]', true);
     if (is_array($data)) $items = $data;
   }
-  $seed = sort_catalog_items(heal_images(seed_catalog()));
-  if (!$items || catalog_contaminated($items)) {
-    persist_catalog($file, $seed);
-    return $seed;
+  $seedItems = sort_catalog_items(heal_images(seed_catalog()));
+  if (!$items || !is_factory_catalog($items)) {
+    $dir = dirname($file);
+    if (!is_dir($dir)) mkdir($dir, 0755, true);
+    @file_put_contents($file, json_encode($seedItems, JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT), LOCK_EX);
+    return $seedItems;
   }
-  $seedPath = dirname(__DIR__) . '/data/catalog.json';
-  if (is_file($file) && is_file($seedPath) && realpath($file) === realpath($seedPath)) {
+  $seed = dirname(__DIR__) . '/data/catalog.json';
+  if (is_file($file) && is_file($seed) && realpath($file) === realpath($seed)) {
     return sort_catalog_items(heal_images($items));
   }
   return sort_catalog_items(heal_images(merge_seed_items($items)));
@@ -265,7 +231,7 @@ if (!empty($_FILES['image'])) {
   }
   @copy($durable, $public);
   $url = is_file($public)
-    ? '/images/catalog/' . $name
+    ? '/images/lookbook/' . $name
     : '/api/media.php?f=' . rawurlencode($name);
   header('Content-Type: application/json; charset=utf-8');
   echo json_encode(['ok' => true, 'url' => $url]);
@@ -303,8 +269,7 @@ foreach ($items as $row) {
   $price = trim(mb_substr((string)($row['price'] ?? ''), 0, 40));
   if ($id === '' || $name === '' || $image === '') continue;
   if (strpos($image, 'blob:') === 0 || strpos($image, 'data:') === 0) continue;
-  if (is_legacy_sku($id) || is_customer_screenshot($image)) continue;
-  if (!preg_match('#^(/images/products/|/images/catalog/|/api/media\.php\?f=|https?://)#', $image)) continue;
+  if (!preg_match('#^(/images/|/api/media\.php\?f=|https?://)#', $image)) continue;
   $clean[] = compact('id', 'name', 'image', 'kind', 'size', 'price');
 }
 

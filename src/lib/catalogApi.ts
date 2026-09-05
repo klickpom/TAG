@@ -1,42 +1,25 @@
-import { LOOKBOOK, isCustomerScreenshot, type LookItem, sortCatalogItems } from "@/data/lookbook";
+import { LOOKBOOK, type LookItem, sortCatalogItems } from "@/data/lookbook";
 
-const LOCAL_KEY = "taj-catalog-v2";
+const LOCAL_KEY = "taj-catalog-v1";
 
 function isJsonResponse(res: Response) {
   return (res.headers.get("content-type") || "").includes("json");
 }
 
 function usableImage(url: string) {
-  const value = url.trim();
-  if (!value || value.startsWith("blob:") || value.startsWith("data:")) return false;
-  if (isCustomerScreenshot(value)) return false;
-  return /^(https?:\/\/|\/images\/products\/|\/images\/catalog\/|\/api\/media\.php)/.test(value);
-}
-
-function isLegacySku(id: string) {
-  return /^lb\d+/i.test(id.trim());
+  return /^(https?:\/\/|\/images\/|\/api\/media\.php)/.test(url.trim());
 }
 
 function mergeCatalog(saved: LookItem[]): LookItem[] {
+  if (!saved.some((s) => s.id === "lb04")) return LOOKBOOK;
   const fb = new Map(LOOKBOOK.map((i) => [i.id, i]));
-  const ids = new Set<string>();
-  const merged: LookItem[] = [];
-  for (const s of saved) {
-    if (isLegacySku(s.id) || isCustomerScreenshot(s.image)) continue;
+  const ids = new Set(saved.map((i) => i.id));
+  const merged = saved.map((s) => {
     const f = fb.get(s.id);
-    ids.add(s.id);
-    if (!f) {
-      if (usableImage(s.image)) merged.push({ ...s, price: (s.price || "").trim() });
-      continue;
-    }
-    merged.push({
-      ...f,
-      name: (s.name || f.name).trim() || f.name,
-      size: (s.size || f.size).trim(),
-      price: (s.price || f.price).trim(),
-      image: usableImage(s.image) ? s.image : f.image,
-    });
-  }
+    const price = (s.price || f?.price || "").trim();
+    const image = usableImage(s.image) ? s.image : f?.image || s.image;
+    return f ? { ...f, ...s, price, image } : { ...s, price, image };
+  });
   return sortCatalogItems([...merged, ...LOOKBOOK.filter((i) => !ids.has(i.id))]);
 }
 
@@ -74,7 +57,7 @@ export async function saveCatalogItems(
   password: string,
   items: LookItem[]
 ): Promise<{ ok: boolean; error?: string }> {
-  const safe = sortCatalogItems(items.filter((item) => usableImage(item.image) && !isLegacySku(item.id)));
+  const safe = sortCatalogItems(items.filter((item) => usableImage(item.image)));
   try {
     const res = await fetch("/api/catalog.php", {
       method: "POST",
