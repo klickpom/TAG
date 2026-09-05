@@ -30,10 +30,20 @@ function durable_upload_dir(): string {
   return $inside;
 }
 
+function public_upload_dirs(): array {
+  $dirs = [
+    dirname(__DIR__) . '/images/lookbook',
+    dirname(__DIR__) . '/images/catalog',
+  ];
+  foreach ($dirs as $dir) {
+    if (!is_dir($dir)) @mkdir($dir, 0755, true);
+  }
+  return $dirs;
+}
+
 function public_upload_dir(): string {
-  $dir = dirname(__DIR__) . '/images/lookbook';
-  if (!is_dir($dir)) @mkdir($dir, 0755, true);
-  return $dir;
+  $dirs = public_upload_dirs();
+  return $dirs[0];
 }
 
 function seed_catalog(): array {
@@ -44,9 +54,136 @@ function seed_catalog(): array {
 }
 
 function image_filename(string $image): string {
+  $query = parse_url($image, PHP_URL_QUERY);
+  if (is_string($query) && $query !== '') {
+    parse_str($query, $params);
+    if (!empty($params['f'])) {
+      $image = (string)$params['f'];
+    }
+  }
   $path = parse_url($image, PHP_URL_PATH);
   $file = basename(is_string($path) && $path !== '' ? $path : $image);
   return preg_replace('/[^a-zA-Z0-9._-]/', '', $file) ?? '';
+}
+
+function is_dated_upload_name(string $file): bool {
+  return (bool)preg_match('/^lb-\d{8}/', $file);
+}
+
+function is_admin_upload_url(string $image): bool {
+  $image = trim($image);
+  if ($image === '') return false;
+  if (strpos($image, '/api/media.php') !== false) return true;
+  if (strpos($image, '/images/catalog/') !== false) return true;
+  return is_dated_upload_name(image_filename($image));
+}
+
+function catalog_has_admin_uploads(array $items): bool {
+  foreach ($items as $row) {
+    if (!is_array($row)) continue;
+    if (is_admin_upload_url((string)($row['image'] ?? ''))) return true;
+  }
+  return false;
+}
+
+function upload_search_dirs(): array {
+  return array_values(array_unique(array_filter([
+    durable_upload_dir(),
+    dirname(__DIR__) . '/data/uploads',
+    dirname(__DIR__) . '/images/lookbook',
+    dirname(__DIR__) . '/images/catalog',
+  ])));
+}
+
+function find_upload_path(string $file): ?string {
+  if ($file === '') return null;
+  foreach (upload_search_dirs() as $dir) {
+    $try = $dir . DIRECTORY_SEPARATOR . $file;
+    if (is_file($try)) return $try;
+  }
+  return null;
+}
+
+function media_url(string $file): string {
+  return '/api/media.php?f=' . rawurlencode($file);
+}
+
+function republish_upload(string $file): void {
+  $src = find_upload_path($file);
+  if ($src === null) return;
+  $durable = durable_upload_dir() . '/' . $file;
+  if ($src !== $durable) @copy($src, $durable);
+  foreach (public_upload_dirs() as $dir) {
+    $dest = $dir . '/' . $file;
+    if (!is_file($dest)) @copy($src, $dest);
+  }
+}
+
+function list_admin_upload_files(): array {
+  $seen = [];
+  $out = [];
+  foreach (upload_search_dirs() as $dir) {
+    if (!is_dir($dir)) continue;
+    $files = @scandir($dir);
+    if (!is_array($files)) continue;
+    foreach ($files as $file) {
+      if ($file === '.' || $file === '..' || isset($seen[$file])) continue;
+      if (!is_dated_upload_name($file)) continue;
+      $path = $dir . '/' . $file;
+      if (!is_file($path)) continue;
+      $seen[$file] = true;
+      republish_upload($file);
+      $out[] = [
+        'file' => $file,
+        'url' => media_url($file),
+        'mtime' => (int)filemtime($path),
+        'size' => (int)filesize($path),
+      ];
+    }
+  }
+  usort($out, function ($a, $b) {
+    return ($a['mtime'] <=> $b['mtime']);
+  });
+  return $out;
+}
+
+function backup_paths(string $file): array {
+  $dir = dirname($file);
+  $base = basename($file);
+  $paths = glob($dir . '/' . $base . '.bak*') ?: [];
+  $paths = array_merge($paths, glob($dir . '/taj-catalog.json.bak*') ?: []);
+  $paths = array_merge($paths, glob(dirname(__DIR__) . '/data/taj-catalog.json.bak*') ?: []);
+  $paths = array_values(array_unique($paths));
+  usort($paths, function ($a, $b) {
+    return (filemtime($b) ?: 0) <=> (filemtime($a) ?: 0);
+  });
+  return $paths;
+}
+
+function find_restorable_catalog(string $file): ?array {
+  foreach (backup_paths($file) as $path) {
+    if (!is_file($path)) continue;
+    $data = json_decode(file_get_contents($path) ?: '[]', true);
+    if (is_array($data) && catalog_has_admin_uploads($data)) return $data;
+  }
+  return null;
+}
+
+function persist_catalog(string $file, array $items): void {
+  $dir = dirname($file);
+  if (!is_dir($dir)) mkdir($dir, 0755, true);
+  if (is_file($file)) {
+    $prev = json_decode(file_get_contents($file) ?: '[]', true);
+    if (is_array($prev) && catalog_has_admin_uploads($prev)) {
+      @copy($file, $file . '.bak');
+      @copy($file, $file . '.bak-' . date('YmdHis'));
+      $old = backup_paths($file);
+      foreach (array_slice($old, 30) as $stale) {
+        if (preg_match('/\.bak-\d{14}$/', $stale)) @unlink($stale);
+      }
+    }
+  }
+  file_put_contents($file, json_encode($items, JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT), LOCK_EX);
 }
 
 function heal_images(array $items): array {
@@ -55,33 +192,32 @@ function heal_images(array $items): array {
   foreach ($seed as $row) {
     if (is_array($row) && isset($row['id'])) $byId[(string)$row['id']] = $row;
   }
-  $publicDir = public_upload_dir();
-  $durableDir = durable_upload_dir();
   foreach ($items as &$row) {
     if (!is_array($row)) continue;
     $image = trim((string)($row['image'] ?? ''));
     $id = (string)($row['id'] ?? '');
     $fallback = is_array($byId[$id] ?? null) ? (string)($byId[$id]['image'] ?? '') : '';
+    $admin = is_admin_upload_url($image);
     if ($image === '' || strpos($image, 'blob:') === 0 || strpos($image, 'data:') === 0) {
-      if ($fallback !== '') $row['image'] = $fallback;
+      if (!$admin && $fallback !== '') $row['image'] = $fallback;
       continue;
     }
     $file = image_filename($image);
     if ($file === '') {
-      if ($fallback !== '') $row['image'] = $fallback;
+      if (!$admin && $fallback !== '') $row['image'] = $fallback;
       continue;
     }
-    $pub = $publicDir . '/' . $file;
-    $dur = $durableDir . '/' . $file;
-    if (is_file($dur) && !is_file($pub)) {
-      @copy($dur, $pub);
-    }
-    if (is_file($pub)) {
-      $row['image'] = '/images/lookbook/' . $file;
+    if ($admin || is_dated_upload_name($file)) {
+      republish_upload($file);
+      if (find_upload_path($file) !== null) {
+        $row['image'] = media_url($file);
+      }
       continue;
     }
-    if (is_file($dur)) {
-      $row['image'] = '/api/media.php?f=' . rawurlencode($file);
+    $found = find_upload_path($file);
+    if ($found !== null) {
+      republish_upload($file);
+      $row['image'] = is_dated_upload_name($file) ? media_url($file) : '/images/lookbook/' . $file;
       continue;
     }
     if ($fallback !== '') $row['image'] = $fallback;
@@ -126,30 +262,33 @@ function merge_seed_items(array $items): array {
   return $items;
 }
 
-function is_factory_catalog(array $items): bool {
-  foreach ($items as $row) {
-    if (is_array($row) && (string)($row['id'] ?? '') === 'lb04') return true;
+function decode_items($data): array {
+  if (!is_array($data)) return [];
+  $items = [];
+  foreach ($data as $row) {
+    if (is_array($row)) $items[] = $row;
   }
-  return false;
+  return $items;
 }
 
 function read_catalog(string $file): array {
   $items = [];
   if (is_file($file)) {
-    $data = json_decode(file_get_contents($file) ?: '[]', true);
-    if (is_array($data)) $items = $data;
+    $items = decode_items(json_decode(file_get_contents($file) ?: '[]', true));
   }
-  $seedItems = sort_catalog_items(heal_images(seed_catalog()));
-  if (!$items || !is_factory_catalog($items)) {
-    $dir = dirname($file);
-    if (!is_dir($dir)) mkdir($dir, 0755, true);
-    @file_put_contents($file, json_encode($seedItems, JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT), LOCK_EX);
-    return $seedItems;
+
+  if (!catalog_has_admin_uploads($items)) {
+    $restored = find_restorable_catalog($file);
+    if (is_array($restored) && catalog_has_admin_uploads($restored)) {
+      persist_catalog($file, $restored);
+      $items = $restored;
+    }
   }
-  $seed = dirname(__DIR__) . '/data/catalog.json';
-  if (is_file($file) && is_file($seed) && realpath($file) === realpath($seed)) {
-    return sort_catalog_items(heal_images($items));
+
+  if (!$items) {
+    $items = seed_catalog();
   }
+
   return sort_catalog_items(heal_images(merge_seed_items($items)));
 }
 
@@ -220,7 +359,6 @@ if (!empty($_FILES['image'])) {
   $name = 'lb-' . date('YmdHis') . '-' . bin2hex(random_bytes(3)) . '.' . $ext;
   $tmp = (string)$file['tmp_name'];
   $durable = durable_upload_dir() . '/' . $name;
-  $public = public_upload_dir() . '/' . $name;
   $saved = @copy($tmp, $durable);
   if (!$saved) $saved = @move_uploaded_file($tmp, $durable);
   if (!$saved) {
@@ -229,12 +367,9 @@ if (!empty($_FILES['image'])) {
     echo json_encode(['ok' => false, 'error' => 'move']);
     exit;
   }
-  @copy($durable, $public);
-  $url = is_file($public)
-    ? '/images/lookbook/' . $name
-    : '/api/media.php?f=' . rawurlencode($name);
+  republish_upload($name);
   header('Content-Type: application/json; charset=utf-8');
-  echo json_encode(['ok' => true, 'url' => $url]);
+  echo json_encode(['ok' => true, 'url' => media_url($name)]);
   exit;
 }
 
@@ -246,8 +381,44 @@ if (!is_array($body) || !hash_equals(ADMIN_PASSWORD, (string)($body['password'] 
   exit;
 }
 
-if (($body['action'] ?? '') === 'login') {
+$action = (string)($body['action'] ?? 'save');
+
+if ($action === 'login') {
   echo json_encode(['ok' => true]);
+  exit;
+}
+
+if ($action === 'uploads') {
+  $current = [];
+  $file = catalog_file();
+  if (is_file($file)) {
+    $current = decode_items(json_decode(file_get_contents($file) ?: '[]', true));
+  }
+  echo json_encode([
+    'ok' => true,
+    'files' => list_admin_upload_files(),
+    'hasUploads' => catalog_has_admin_uploads($current),
+  ], JSON_UNESCAPED_UNICODE);
+  exit;
+}
+
+if ($action === 'restore') {
+  $file = catalog_file();
+  $restored = find_restorable_catalog($file);
+  if (!is_array($restored) || !catalog_has_admin_uploads($restored)) {
+    echo json_encode([
+      'ok' => false,
+      'error' => 'no_backup',
+      'files' => list_admin_upload_files(),
+    ], JSON_UNESCAPED_UNICODE);
+    exit;
+  }
+  persist_catalog($file, $restored);
+  echo json_encode([
+    'ok' => true,
+    'count' => count($restored),
+    'source' => 'backup',
+  ], JSON_UNESCAPED_UNICODE);
   exit;
 }
 
@@ -274,9 +445,5 @@ foreach ($items as $row) {
 }
 
 $clean = sort_catalog_items($clean);
-
-$file = catalog_file();
-$dir = dirname($file);
-if (!is_dir($dir)) mkdir($dir, 0755, true);
-file_put_contents($file, json_encode($clean, JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT), LOCK_EX);
+persist_catalog(catalog_file(), $clean);
 echo json_encode(['ok' => true, 'count' => count($clean)], JSON_UNESCAPED_UNICODE);

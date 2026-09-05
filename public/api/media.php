@@ -9,6 +9,7 @@ $dirs = [
   dirname(__DIR__, 2) . '/taj-uploads',
   dirname(__DIR__) . '/data/uploads',
   dirname(__DIR__) . '/images/lookbook',
+  dirname(__DIR__) . '/images/catalog',
 ];
 
 $path = null;

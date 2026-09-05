@@ -2,6 +2,13 @@ import { LOOKBOOK, type LookItem, sortCatalogItems } from "@/data/lookbook";
 
 const LOCAL_KEY = "taj-catalog-v1";
 
+export type CatalogUploadFile = {
+  file: string;
+  url: string;
+  mtime: number;
+  size: number;
+};
+
 function isJsonResponse(res: Response) {
   return (res.headers.get("content-type") || "").includes("json");
 }
@@ -10,8 +17,31 @@ function usableImage(url: string) {
   return /^(https?:\/\/|\/images\/|\/api\/media\.php)/.test(url.trim());
 }
 
+export function isAdminUploadUrl(url: string) {
+  const value = url.trim();
+  if (!value) return false;
+  if (/\/api\/media\.php/i.test(value)) return true;
+  if (/\/images\/catalog\//i.test(value)) return true;
+  return /lb-\d{8}/i.test(value);
+}
+
+export function catalogHasAdminUploads(items: LookItem[]) {
+  return items.some((item) => isAdminUploadUrl(item.image));
+}
+
+export function readLocalCatalog(): LookItem[] {
+  try {
+    const raw = localStorage.getItem(LOCAL_KEY);
+    if (!raw) return [];
+    const parsed = JSON.parse(raw) as LookItem[];
+    return Array.isArray(parsed) ? parsed : [];
+  } catch {
+    return [];
+  }
+}
+
 function mergeCatalog(saved: LookItem[]): LookItem[] {
-  if (!saved.some((s) => s.id === "lb04")) return LOOKBOOK;
+  if (!saved.some((s) => s.id === "lb04") && !catalogHasAdminUploads(saved)) return LOOKBOOK;
   const fb = new Map(LOOKBOOK.map((i) => [i.id, i]));
   const ids = new Set(saved.map((i) => i.id));
   const merged = saved.map((s) => {
@@ -31,25 +61,30 @@ const UPLOAD_ERRORS: Record<string, string> = {
   move: "فشل حفظ الصورة على السيرفر",
 };
 
+async function fetchServerCatalog(): Promise<LookItem[]> {
+  const res = await fetch("/api/catalog.php", { cache: "no-store" });
+  if (!res.ok || !isJsonResponse(res)) return [];
+  const data = (await res.json()) as { items?: LookItem[] };
+  return Array.isArray(data.items) ? data.items : [];
+}
+
 export async function fetchCatalogItems(): Promise<LookItem[]> {
+  const local = readLocalCatalog();
   try {
-    const res = await fetch("/api/catalog.php", { cache: "no-store" });
-    if (res.ok && isJsonResponse(res)) {
-      const data = (await res.json()) as { items?: LookItem[] };
-      if (Array.isArray(data.items) && data.items.length) return mergeCatalog(data.items);
+    const remote = await fetchServerCatalog();
+    if (catalogHasAdminUploads(local) && !catalogHasAdminUploads(remote)) {
+      return mergeCatalog(local);
+    }
+    if (remote.length) {
+      if (catalogHasAdminUploads(remote)) {
+        localStorage.setItem(LOCAL_KEY, JSON.stringify(remote));
+      }
+      return mergeCatalog(remote);
     }
   } catch {
     /* local */
   }
-  try {
-    const raw = localStorage.getItem(LOCAL_KEY);
-    if (raw) {
-      const parsed = JSON.parse(raw) as LookItem[];
-      if (Array.isArray(parsed) && parsed.length) return mergeCatalog(parsed);
-    }
-  } catch {
-    /* ignore */
-  }
+  if (local.length) return mergeCatalog(local);
   return LOOKBOOK;
 }
 
@@ -57,7 +92,7 @@ export async function saveCatalogItems(
   password: string,
   items: LookItem[]
 ): Promise<{ ok: boolean; error?: string }> {
-        const safe = sortCatalogItems(items.filter((item) => usableImage(item.image)));
+  const safe = sortCatalogItems(items.filter((item) => usableImage(item.image)));
   try {
     const res = await fetch("/api/catalog.php", {
       method: "POST",
@@ -77,6 +112,63 @@ export async function saveCatalogItems(
     /* local */
   }
   return { ok: false, error: "الحفظ على السيرفر فشل. الصورة مش هتظهر للعملاء" };
+}
+
+export async function listCatalogUploads(password: string): Promise<CatalogUploadFile[]> {
+  try {
+    const res = await fetch("/api/catalog.php", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ action: "uploads", password }),
+    });
+    if (!isJsonResponse(res)) return [];
+    const data = (await res.json()) as { ok?: boolean; files?: CatalogUploadFile[] };
+    return res.ok && data.ok && Array.isArray(data.files) ? data.files : [];
+  } catch {
+    return [];
+  }
+}
+
+export async function recoverUploadedCatalog(password: string): Promise<{
+  restored: boolean;
+  count: number;
+  files: number;
+}> {
+  const local = readLocalCatalog();
+  let remote: LookItem[] = [];
+  try {
+    remote = await fetchServerCatalog();
+  } catch {
+    remote = [];
+  }
+
+  if (catalogHasAdminUploads(local) && !catalogHasAdminUploads(remote)) {
+    const saved = await saveCatalogItems(password, local);
+    if (saved.ok) {
+      const count = local.filter((item) => isAdminUploadUrl(item.image)).length;
+      return { restored: true, count, files: 0 };
+    }
+  }
+
+  try {
+    const res = await fetch("/api/catalog.php", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ action: "restore", password }),
+    });
+    if (isJsonResponse(res)) {
+      const data = (await res.json()) as { ok?: boolean; count?: number; files?: CatalogUploadFile[] };
+      if (res.ok && data.ok) {
+        return { restored: true, count: data.count || 0, files: 0 };
+      }
+      return { restored: false, count: 0, files: Array.isArray(data.files) ? data.files.length : 0 };
+    }
+  } catch {
+    /* ignore */
+  }
+
+  const files = await listCatalogUploads(password);
+  return { restored: false, count: 0, files: files.length };
 }
 
 async function prepareCatalogFile(file: File): Promise<File> {
