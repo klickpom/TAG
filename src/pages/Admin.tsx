@@ -20,7 +20,7 @@ import Seo from "@/components/Seo";
 const SESSION_KEY = "taj-admin-pass";
 
 function newId() {
-  return `lb${Date.now().toString(36)}${Math.random().toString(36).slice(2, 5)}`;
+  return `p${Date.now().toString(36)}${Math.random().toString(36).slice(2, 5)}`;
 }
 
 export default function Admin() {

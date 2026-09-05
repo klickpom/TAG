@@ -49,9 +49,21 @@ function image_filename(string $image): string {
   return preg_replace('/[^a-zA-Z0-9._-]/', '', $file) ?? '';
 }
 
-function is_static_catalog_image(string $image): bool {
-  return strpos($image, '/images/lookbook/') !== false
-    || strpos($image, '/images/products/') !== false;
+function is_customer_screenshot(string $image): bool {
+  return strpos($image, '/images/lookbook/') !== false;
+}
+
+function is_legacy_sku(string $id): bool {
+  return (bool)preg_match('/^lb\d+$/i', $id);
+}
+
+function catalog_contaminated(array $items): bool {
+  foreach ($items as $row) {
+    if (!is_array($row)) continue;
+    if (is_legacy_sku((string)($row['id'] ?? ''))) return true;
+    if (is_customer_screenshot((string)($row['image'] ?? ''))) return true;
+  }
+  return false;
 }
 
 function heal_images(array $items): array {
@@ -67,7 +79,11 @@ function heal_images(array $items): array {
     $image = trim((string)($row['image'] ?? ''));
     $id = (string)($row['id'] ?? '');
     $fallback = is_array($byId[$id] ?? null) ? (string)($byId[$id]['image'] ?? '') : '';
-    if (is_static_catalog_image($image)) {
+    if (is_customer_screenshot($image)) {
+      if ($fallback !== '') $row['image'] = $fallback;
+      continue;
+    }
+    if (strpos($image, '/images/products/') !== false) {
       continue;
     }
     if ($image === '' || strpos($image, 'blob:') === 0 || strpos($image, 'data:') === 0) {
@@ -115,30 +131,42 @@ function merge_seed_items(array $items): array {
   foreach ($seed as $row) {
     if (is_array($row) && isset($row['id'])) $byId[(string)$row['id']] = $row;
   }
+  $out = [];
   $ids = [];
-  foreach ($items as &$row) {
+  foreach ($items as $row) {
     if (!is_array($row)) continue;
     $id = (string)($row['id'] ?? '');
+    $image = trim((string)($row['image'] ?? ''));
+    if (is_legacy_sku($id) || is_customer_screenshot($image)) continue;
     $ids[$id] = true;
     if ($id !== '' && isset($byId[$id])) {
       $seedRow = $byId[$id];
-      $row['name'] = $seedRow['name'] ?? $row['name'];
-      $row['image'] = $seedRow['image'] ?? $row['image'];
-      $row['kind'] = $seedRow['kind'] ?? $row['kind'];
+      if (trim((string)($row['name'] ?? '')) === '' && !empty($seedRow['name'])) {
+        $row['name'] = $seedRow['name'];
+      }
       if (trim((string)($row['size'] ?? '')) === '' && !empty($seedRow['size'])) {
         $row['size'] = $seedRow['size'];
       }
       if (trim((string)($row['price'] ?? '')) === '' && !empty($seedRow['price'])) {
         $row['price'] = $seedRow['price'];
       }
+      if ($image === '' && !empty($seedRow['image'])) {
+        $row['image'] = $seedRow['image'];
+      }
     }
+    $out[] = $row;
   }
-  unset($row);
   foreach ($seed as $row) {
     $id = is_array($row) ? (string)($row['id'] ?? '') : '';
-    if ($id !== '' && empty($ids[$id])) $items[] = $row;
+    if ($id !== '' && empty($ids[$id])) $out[] = $row;
   }
-  return $items;
+  return $out;
+}
+
+function persist_catalog(string $file, array $items): void {
+  $dir = dirname($file);
+  if (!is_dir($dir)) mkdir($dir, 0755, true);
+  @file_put_contents($file, json_encode($items, JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT), LOCK_EX);
 }
 
 function read_catalog(string $file): array {
@@ -147,18 +175,16 @@ function read_catalog(string $file): array {
     $data = json_decode(file_get_contents($file) ?: '[]', true);
     if (is_array($data)) $items = $data;
   }
-  if (!$items) return sort_catalog_items(heal_images(seed_catalog()));
-  $seed = dirname(__DIR__) . '/data/catalog.json';
-  if (is_file($file) && is_file($seed) && realpath($file) === realpath($seed)) {
+  $seed = sort_catalog_items(heal_images(seed_catalog()));
+  if (!$items || catalog_contaminated($items)) {
+    persist_catalog($file, $seed);
+    return $seed;
+  }
+  $seedPath = dirname(__DIR__) . '/data/catalog.json';
+  if (is_file($file) && is_file($seedPath) && realpath($file) === realpath($seedPath)) {
     return sort_catalog_items(heal_images($items));
   }
-  $locked = sort_catalog_items(heal_images(merge_seed_items($items)));
-  $before = json_encode($items, JSON_UNESCAPED_UNICODE);
-  $after = json_encode($locked, JSON_UNESCAPED_UNICODE);
-  if ($before !== $after) {
-    @file_put_contents($file, json_encode($locked, JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT), LOCK_EX);
-  }
-  return $locked;
+  return sort_catalog_items(heal_images(merge_seed_items($items)));
 }
 
 function auth_ok(): bool {
@@ -277,7 +303,8 @@ foreach ($items as $row) {
   $price = trim(mb_substr((string)($row['price'] ?? ''), 0, 40));
   if ($id === '' || $name === '' || $image === '') continue;
   if (strpos($image, 'blob:') === 0 || strpos($image, 'data:') === 0) continue;
-  if (!preg_match('#^(/images/|/api/media\.php\?f=|https?://)#', $image)) continue;
+  if (is_legacy_sku($id) || is_customer_screenshot($image)) continue;
+  if (!preg_match('#^(/images/products/|/images/catalog/|/api/media\.php\?f=|https?://)#', $image)) continue;
   $clean[] = compact('id', 'name', 'image', 'kind', 'size', 'price');
 }
 
