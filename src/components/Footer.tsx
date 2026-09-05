@@ -1,4 +1,5 @@
 import { Facebook, MessageCircle, Music2 } from "lucide-react";
+import BrandMark from "./BrandMark";
 import { FB_LINK, PHONE_DISPLAY, PHONE_TEL, TIKTOK_LINK, WA_LINK } from "./TopBar";
 
 export default function Footer() {
@@ -6,16 +7,7 @@ export default function Footer() {
     <footer className="bg-[#111116] py-12 text-[#cfc7b4]">
       <div className="mx-auto grid max-w-7xl gap-10 px-4 md:grid-cols-3">
         <div>
-          <div className="flex items-center gap-3">
-            <img
-              src="/images/logo.jpeg"
-              alt="شعار مصنع تاج لساعات الحائط والديكور"
-              className="h-12 w-12 rounded-full object-cover ring-2 ring-[#c6a15b]/60"
-            />
-            <span className="font-display text-2xl font-bold tracking-[0.25em] text-white">
-              TAJ
-            </span>
-          </div>
+          <BrandMark size="footer" tone="dark" />
           <p className="mt-4 text-sm leading-7">
             مصنع تاج لساعات الحائط ولوازم الديكور. المصنع في طنطا، الغربية، مصر. شحن لكل
             المحافظات والدفع عند الاستلام.

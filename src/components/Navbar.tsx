@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import { Menu, MessageCircle, X } from "lucide-react";
+import BrandMark from "./BrandMark";
 import { WA_LINK } from "./TopBar";
 
 const LINKS = [
@@ -30,21 +31,9 @@ export default function Navbar() {
         scrolled ? "glass shadow-lg shadow-black/5" : "bg-[#faf6ef]/60"
       }`}
     >
-      <div className="mx-auto flex w-full max-w-7xl items-center justify-between gap-2 px-4 py-3">
-        <a href="#home" className="flex min-w-0 flex-1 items-center gap-2 sm:gap-3">
-          <img
-            src="/images/logo.jpeg"
-              alt="شعار مصنع تاج لساعات الحائط والديكور"
-            className="h-9 w-9 shrink-0 rounded-full object-cover ring-2 ring-[#c6a15b]/60 sm:h-11 sm:w-11"
-          />
-          <div className="min-w-0 leading-tight">
-            <span className="font-display text-lg font-bold tracking-[0.12em] text-[#191920] sm:text-xl sm:tracking-[0.25em]">
-              TAJ
-            </span>
-            <span className="mt-0.5 block truncate text-[10px] font-semibold text-[#7a6f60] sm:text-[11px] md:whitespace-normal">
-              مصنع تاج لساعات الحائط والديكور
-            </span>
-          </div>
+      <div className="mx-auto flex w-full max-w-7xl items-center justify-between gap-2 px-4 py-2 sm:py-2.5">
+        <a href="#home" className="flex min-w-0 flex-1 items-center" aria-label="مصنع تاج — الرئيسية">
+          <BrandMark />
         </a>
 
         <nav className="hidden items-center gap-7 lg:flex">
