@@ -69,7 +69,7 @@ export default function BrandIntro() {
             <img
               src="/images/taj-logo-3d.jpg"
               alt=""
-              className="w-full rounded-[1.6rem] object-cover shadow-[0_30px_80px_rgba(0,0,0,0.55)] ring-1 ring-[#c6a15b]/35"
+              className="aspect-square w-full rounded-[1.6rem] object-contain shadow-[0_30px_80px_rgba(0,0,0,0.55)] ring-1 ring-[#c6a15b]/35"
             />
             <span className="taj-intro-sheen pointer-events-none absolute inset-0 rounded-[1.6rem]" />
           </motion.div>

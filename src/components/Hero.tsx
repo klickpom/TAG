@@ -12,14 +12,17 @@ const STATS = [
 
 export default function Hero() {
   return (
-    <section id="home" className="relative overflow-hidden bg-[#111116]">
-      <div className="pointer-events-none absolute inset-0">
-        <div className="absolute -left-24 top-[-20%] h-[28rem] w-[28rem] rounded-full bg-[#c6a15b]/18 blur-3xl" />
-        <div className="absolute -right-16 bottom-[-10%] h-80 w-80 rounded-full bg-[#e6c987]/10 blur-3xl" />
-        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_70%_40%,rgba(198,161,91,0.12),transparent_55%)]" />
+    <section id="home" className="relative overflow-hidden bg-[#191920]">
+      <div className="absolute inset-0 grid grid-cols-4 gap-px opacity-[0.22] sm:grid-cols-4">
+        {FEATURED.mosaic.map((src) => (
+          <img key={src} src={src} alt="" className="h-full w-full object-cover object-top" />
+        ))}
       </div>
+      <div className="absolute inset-0 bg-gradient-to-l from-[#191920] via-[#191920]/88 to-[#191920]/55" />
+      <div className="absolute -left-32 -top-32 hidden h-96 w-96 rounded-full bg-[#c6a15b]/20 blur-3xl sm:block" />
+      <div className="absolute -bottom-24 right-1/4 hidden h-72 w-72 rounded-full bg-[#e6c987]/10 blur-3xl sm:block" />
 
-      <div className="relative mx-auto grid w-full max-w-7xl items-center gap-8 px-4 pb-14 pt-10 sm:gap-10 sm:pb-16 sm:pt-16 lg:grid-cols-2 lg:pb-24 lg:pt-20">
+      <div className="relative mx-auto grid w-full max-w-7xl items-center gap-8 px-4 pb-14 pt-10 sm:gap-10 sm:pb-16 sm:pt-20 lg:grid-cols-2 lg:pb-24 lg:pt-24">
         <div className="min-w-0 text-center lg:text-right">
           <motion.span
             initial={{ opacity: 0, y: 16 }}
@@ -77,17 +80,16 @@ export default function Hero() {
         </div>
 
         <div className="relative mx-auto w-full max-w-sm md:max-w-md lg:max-w-lg">
-          <div className="pointer-events-none absolute inset-6 rounded-full bg-[#c6a15b]/20 blur-3xl" />
           <motion.div
-            initial={{ opacity: 0, scale: 0.92, y: 16 }}
-            animate={{ opacity: 1, scale: 1, y: 0 }}
-            transition={{ duration: 0.85, delay: 0.15, ease: [0.22, 1, 0.36, 1] }}
-            className="relative overflow-hidden rounded-[2rem] bg-[#16151b] shadow-2xl shadow-black/50 ring-1 ring-[#c6a15b]/45"
+            initial={{ opacity: 0, scale: 0.92 }}
+            animate={{ opacity: 1, scale: 1 }}
+            transition={{ duration: 0.8, delay: 0.2 }}
+            className="overflow-hidden rounded-[2rem] bg-[#111113] shadow-2xl shadow-black/50 ring-1 ring-[#c6a15b]/40"
           >
             <img
               src={FEATURED.hero}
               alt={FEATURED.heroAlt}
-              className="aspect-[4/5] w-full object-cover object-center"
+              className="aspect-[4/5] w-full object-contain object-top p-3 sm:p-4"
             />
           </motion.div>
         </div>
