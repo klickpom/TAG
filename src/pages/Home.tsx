@@ -16,7 +16,7 @@ export default function Home() {
   return (
     <div className="min-h-screen w-full min-w-0 overflow-x-hidden bg-[#faf6ef]">
       <Seo
-        title="مصنع تاج | ساعات حائط وتحف ديكور من طنطا — شحن لكل مصر"
+        title="مصنع تاج | ساعات حائط وتحف ديكور من بسيون — شحن لكل مصر"
         description={SITE.description}
         path="/"
         jsonLd={[]}

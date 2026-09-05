@@ -1,5 +1,6 @@
 import { Facebook, MessageCircle, Music2 } from "lucide-react";
 import BrandMark from "./BrandMark";
+import { SITE } from "@/lib/site";
 import { FB_LINK, PHONE_DISPLAY, PHONE_TEL, TIKTOK_LINK, WA_LINK } from "./TopBar";
 
 export default function Footer() {
@@ -9,10 +10,17 @@ export default function Footer() {
         <div>
           <BrandMark size="footer" tone="dark" />
           <p className="mt-4 text-sm leading-7">
-            مصنع تاج لساعات الحائط ولوازم الديكور. المصنع في طنطا، الغربية، مصر. شحن لكل
+            مصنع تاج لساعات الحائط ولوازم الديكور. المصنع في بسيون، الغربية، مصر. شحن لكل
             المحافظات والدفع عند الاستلام.
           </p>
-          <p className="mt-3 text-sm font-semibold text-[#e6c987]">طنطا — الغربية، مصر</p>
+          <a
+            href={SITE.maps}
+            target="_blank"
+            rel="noreferrer"
+            className="mt-3 inline-block text-sm font-semibold text-[#e6c987] transition-colors hover:text-white"
+          >
+            بسيون — الغربية، مصر
+          </a>
           <p className="mt-1 text-sm">يومياً من 10 صباحاً حتى 10 مساءً</p>
         </div>
 

@@ -2,7 +2,7 @@ import { motion } from "framer-motion";
 import { BadgeCheck, HandCoins, PackageCheck, Truck } from "lucide-react";
 
 const FEATURES = [
-  { icon: BadgeCheck, title: "جودة مصنع مباشرة", text: "منتجاتنا من مصنعنا في طنطا مباشرة — بدون وسطاء." },
+  { icon: BadgeCheck, title: "جودة مصنع مباشرة", text: "منتجاتنا من مصنعنا في بسيون مباشرة — بدون وسطاء." },
   { icon: HandCoins, title: "دفع عند الاستلام", text: "ادفع لما توصلك المنتج وتتأكد من جودته بنفسك." },
   { icon: Truck, title: "شحن لكل المحافظات", text: "نوصل لباب بيتك أينما كنت في مصر خلال أيام." },
   { icon: PackageCheck, title: "تغليف آمن", text: "تغليف احترافي مقوّى يحمي المنتجات القابلة للكسر حتى الاستلام." },

@@ -30,7 +30,7 @@ export default function Hero() {
             transition={{ duration: 0.5 }}
             className="inline-block max-w-full rounded-full border border-[#c6a15b]/40 bg-[#c6a15b]/10 px-3 py-1.5 text-[11px] font-bold text-[#e6c987] sm:px-4 sm:text-sm"
           >
-            مصنع تاج — طنطا، الغربية
+            مصنع تاج — بسيون، الغربية
           </motion.span>
 
           <motion.h1
@@ -50,7 +50,7 @@ export default function Hero() {
             transition={{ duration: 0.6, delay: 0.2 }}
             className="mx-auto mt-5 max-w-xl break-words text-sm leading-7 text-[#cfc7b4] sm:text-base sm:leading-8 md:text-lg lg:mx-0"
           >
-            <strong className="font-black text-white">مصنع تاج</strong> مصنع مصري في طنطا متخصص في
+            <strong className="font-black text-white">مصنع تاج</strong> مصنع مصري في بسيون متخصص في
             تصنيع ساعات الحائط وتحف الديكور. الصناعة من المصنع مباشرة، والشحن لكل محافظات مصر،
             والدفع عند الاستلام. للتفاصيل والطلب كلمنا على واتساب.
           </motion.p>

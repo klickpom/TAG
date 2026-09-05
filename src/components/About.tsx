@@ -37,7 +37,7 @@ export default function About() {
           </div>
           <div className="bg-gold-gradient absolute -bottom-4 right-4 rounded-2xl px-5 py-3 text-center shadow-xl shadow-[#c6a15b]/30 sm:-bottom-6 sm:right-6 sm:px-6 sm:py-4">
             <div className="font-display text-3xl font-bold text-[#191920]" dir="ltr">TAJ</div>
-            <div className="text-xs font-bold text-[#191920]/80">صناعة بحب في طنطا</div>
+            <div className="text-xs font-bold text-[#191920]/80">صناعة بحب في بسيون</div>
           </div>
         </motion.div>
 
@@ -50,11 +50,11 @@ export default function About() {
         >
           <span className="text-sm font-bold tracking-wide text-[#a8853f]">عن المصنع</span>
           <h2 className="mt-3 text-3xl font-black leading-snug text-[#191920] sm:text-4xl">
-            مصنع تاج في طنطا
+            مصنع تاج في بسيون
             <span className="text-gold-gradient"> لصناعة ساعات الحائط والديكور</span>
           </h2>
           <p className="mt-5 text-base leading-8 text-[#5d554a]">
-            <strong>مصنع تاج</strong> هو مصنع مصري في طنطا بمحافظة الغربية متخصص في ساعات الحائط
+            <strong>مصنع تاج</strong> هو مصنع مصري في بسيون بمحافظة الغربية متخصص في ساعات الحائط
             وتحف الديكور والبوتات السيراميك. التصنيع محلي من المصنع مباشرة بدون وسطاء، والشحن لكل
             محافظات مصر مع الدفع عند الاستلام. «نحن نسعى في مصنع تاج للوصول لأعلى جودة لإرضاء عملائنا».
           </p>

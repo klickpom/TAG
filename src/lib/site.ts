@@ -4,22 +4,25 @@ export const SITE = {
   nameEn: "TAJ",
   legalName: "مصنع تاج لساعات الحائط ولوازم الديكور",
   description:
-    "مصنع تاج مصنع مصري في طنطا متخصص في ساعات الحائط ولوازم الديكور. صناعة مباشرة من المصنع، شحن لكل محافظات مصر، والدفع عند الاستلام.",
+    "مصنع تاج مصنع مصري في بسيون متخصص في ساعات الحائط ولوازم الديكور. صناعة مباشرة من المصنع، شحن لكل محافظات مصر، والدفع عند الاستلام.",
   phoneDisplay: "0101 084 1285",
   phoneIntl: "+201010841285",
   email: "",
-  city: "طنطا",
+  city: "بسيون",
+  cityEn: "Basyoun",
   region: "الغربية",
+  regionEn: "Gharbia",
   country: "مصر",
   countryCode: "EG",
-  geo: { lat: 30.7865, lng: 31.0004 },
+  geo: { lat: 31.013279, lng: 30.8531894 },
+  maps: "https://www.google.com/maps?q=31.013279,30.8531894&z=17&hl=ar",
   hours: "Mo-Su 10:00-22:00",
   hoursAr: "يومياً من 10 صباحاً حتى 10 مساءً",
   facebook: "https://www.facebook.com/profile.php?id=61591849934315",
   whatsapp: "https://wa.me/201010841285",
   logo: "https://tag-eg.online/images/logo.jpeg",
   image: "https://tag-eg.online/images/products/clock-01.jpg",
-  foundingLocation: "طنطا، الغربية، مصر",
+  foundingLocation: "بسيون، الغربية، مصر",
 } as const;
 
 export const FEATURED = {
@@ -46,7 +49,7 @@ export const FEATURED = {
 export const FAQS: { q: string; a: string }[] = [
   {
     q: "فين مصنع تاج؟",
-    a: "مصنع تاج موجود في طنطا بمحافظة الغربية في مصر. التصنيع محلي من المصنع مباشرة، والشحن لكل محافظات مصر.",
+    a: "مصنع تاج موجود في بسيون بمحافظة الغربية في مصر. التصنيع محلي من المصنع مباشرة، والشحن لكل محافظات مصر.",
   },
   {
     q: "مصنع تاج بيصنع إيه؟",
@@ -66,7 +69,7 @@ export const FAQS: { q: string; a: string }[] = [
   },
   {
     q: "هل الشحن لكل محافظات مصر؟",
-    a: "نعم. مصنع تاج يشحن ساعات الحائط والتحف لكل محافظات مصر من طنطا، مع تغليف مقوّى للمنتجات القابلة للكسر.",
+    a: "نعم. مصنع تاج يشحن ساعات الحائط والتحف لكل محافظات مصر من بسيون، مع تغليف مقوّى للمنتجات القابلة للكسر.",
   },
 ];
 
@@ -99,7 +102,7 @@ export function localBusinessJsonLd() {
     "@type": ["LocalBusiness", "HomeGoodsStore"],
     "@id": orgId(),
     name: SITE.legalName,
-    alternateName: [SITE.nameAr, SITE.nameEn, "TAJ Factory Tanta"],
+    alternateName: [SITE.nameAr, SITE.nameEn, "TAJ Factory Basyoun"],
     url: SITE.url,
     image: [SITE.logo, SITE.image],
     logo: SITE.logo,
@@ -118,6 +121,7 @@ export function localBusinessJsonLd() {
       latitude: SITE.geo.lat,
       longitude: SITE.geo.lng,
     },
+    hasMap: SITE.maps,
     areaServed: {
       "@type": "Country",
       name: "Egypt",
@@ -129,7 +133,7 @@ export function localBusinessJsonLd() {
       closes: "22:00",
     },
     sameAs: [SITE.facebook],
-    knowsAbout: ["ساعات حائط", "تحف ديكور", "ديكور منزلي", "سيراميك", "مصنع ديكور طنطا"],
+    knowsAbout: ["ساعات حائط", "تحف ديكور", "ديكور منزلي", "سيراميك", "مصنع ديكور بسيون"],
     description: SITE.description,
     hasOfferCatalog: {
       "@type": "OfferCatalog",
@@ -172,7 +176,7 @@ export function howToJsonLd() {
     "@context": "https://schema.org",
     "@type": "HowTo",
     name: "طريقة الطلب من مصنع تاج",
-    description: "طلب ساعات الحائط وتحف الديكور من مصنع تاج في طنطا عبر واتساب مع الدفع عند الاستلام.",
+    description: "طلب ساعات الحائط وتحف الديكور من مصنع تاج في بسيون عبر واتساب مع الدفع عند الاستلام.",
     step: ORDER_STEPS.map((step, i) => ({
       "@type": "HowToStep",
       position: i + 1,
@@ -209,7 +213,7 @@ export function collectionPageJsonLd(itemNames: string[] = []) {
     url: `${SITE.url}/catalog`,
     name: "كاتلوج مصنع تاج — ساعات حائط وتحف ديكور",
     description:
-      "كاتلوج مصنع تاج في طنطا: ساعات حائط وتحف ديكور. شحن لكل محافظات مصر والدفع عند الاستلام.",
+      "كاتلوج مصنع تاج في بسيون: ساعات حائط وتحف ديكور. شحن لكل محافظات مصر والدفع عند الاستلام.",
     inLanguage: "ar-EG",
     isPartOf: { "@id": `${SITE.url}/#website` },
     about: { "@id": orgId() },

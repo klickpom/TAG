@@ -1,5 +1,6 @@
 import { motion } from "framer-motion";
 import { Clock3, Facebook, MapPin, MessageCircle, Music2, Phone } from "lucide-react";
+import { SITE } from "@/lib/site";
 import { FB_LINK, PHONE_DISPLAY, PHONE_TEL, TIKTOK_LINK, WA_LINK } from "./TopBar";
 
 const CARDS = [
@@ -22,10 +23,10 @@ export default function Contact() {
         >
           <span className="text-sm font-bold tracking-wide text-[#a8853f]">تواصل معنا</span>
           <h2 className="mt-3 text-3xl font-black text-[#191920] sm:text-4xl">
-            تواصل مع مصنع تاج <span className="text-gold-gradient">في طنطا</span>
+            تواصل مع مصنع تاج <span className="text-gold-gradient">في بسيون</span>
           </h2>
           <p className="mx-auto mt-3 max-w-lg text-sm leading-7 text-[#7a6f60]">
-            اطلب ساعات الحائط وتحف الديكور عبر واتساب 01010841285. المصنع في طنطا، والشحن لكل محافظات مصر مع الدفع عند الاستلام.
+            اطلب ساعات الحائط وتحف الديكور عبر واتساب 01010841285. المصنع في بسيون، والشحن لكل محافظات مصر مع الدفع عند الاستلام.
           </p>
         </motion.div>
 
@@ -60,10 +61,15 @@ export default function Contact() {
           transition={{ duration: 0.6, delay: 0.15 }}
           className="mt-8 flex flex-col items-center justify-center gap-4 rounded-2xl bg-[#191920] px-6 py-8 text-center sm:flex-row sm:gap-12"
         >
-          <div className="flex items-center gap-3 text-[#e9e2d4]">
+          <a
+            href={SITE.maps}
+            target="_blank"
+            rel="noreferrer"
+            className="flex items-center gap-3 text-[#e9e2d4] transition-colors hover:text-[#e6c987]"
+          >
             <MapPin className="h-5 w-5 text-[#c6a15b]" />
-            <span className="text-sm font-semibold">طنطا — محافظة الغربية، مصر</span>
-          </div>
+            <span className="text-sm font-semibold">بسيون — محافظة الغربية، مصر</span>
+          </a>
           <div className="hidden h-8 w-px bg-white/15 sm:block" />
           <div className="flex items-center gap-3 text-[#e9e2d4]">
             <Clock3 className="h-5 w-5 text-[#c6a15b]" />

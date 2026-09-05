@@ -1,8 +1,9 @@
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useLayoutEffect, useMemo, useState } from "react";
 import { Link } from "react-router";
 import {
   ArrowDown,
   ArrowUp,
+  Copy,
   ImagePlus,
   LogOut,
   Plus,
@@ -44,6 +45,7 @@ export default function Admin() {
   const [query, setQuery] = useState("");
   const [saving, setSaving] = useState(false);
   const [msg, setMsg] = useState("");
+  const [followId, setFollowId] = useState<string | null>(null);
 
   useEffect(() => {
     if (!authed) return;
@@ -166,17 +168,51 @@ export default function Admin() {
     setItems((prev) => prev.filter((_, i) => i !== index));
   };
 
-  const moveItem = (index: number, dir: -1 | 1) => {
-    const next = index + dir;
-    if (next < 0 || next >= items.length) return;
+  const duplicateItem = (index: number) => {
+    const source = items[index];
+    if (!source) return;
+    const copyId = newId();
     setItems((prev) => {
+      const next = [...prev];
+      next.splice(index + 1, 0, { ...source, id: copyId });
+      return next;
+    });
+    setFollowId(copyId);
+    setMsg("اتعملت نسخة تحت القطعة — عدّل اللي محتاجه وبعدين احفظ الكتالوج");
+  };
+
+  const moveItem = (index: number, dir: -1 | 1) => {
+    const id = items[index]?.id;
+    if (!id) return;
+    setItems((prev) => {
+      const q = query.trim();
+      const visible = prev
+        .map((_, i) => i)
+        .filter((i) => {
+          const it = prev[i];
+          const okKind = kindFilter === "all" || it.kind === kindFilter;
+          return okKind && (!q || it.name.includes(q) || it.size.includes(q));
+        });
+      const pos = visible.indexOf(index);
+      const target = pos >= 0 ? visible[pos + dir] : index + dir;
+      if (target == null || target < 0 || target >= prev.length || target === index) return prev;
       const copy = [...prev];
-      const tmp = copy[index];
-      copy[index] = copy[next];
-      copy[next] = tmp;
+      const [row] = copy.splice(index, 1);
+      copy.splice(target, 0, row);
       return copy;
     });
+    setFollowId(id);
   };
+
+  useLayoutEffect(() => {
+    if (!followId) return;
+    const el = document.querySelector(`[data-item-id="${CSS.escape(followId)}"]`);
+    if (el instanceof HTMLElement) {
+      el.scrollIntoView({ behavior: "smooth", block: "center", inline: "nearest" });
+    }
+    const t = window.setTimeout(() => setFollowId(null), 700);
+    return () => window.clearTimeout(t);
+  }, [items, followId]);
 
   const onUpload = async (index: number, file: File | undefined) => {
     if (!file) return;
@@ -389,7 +425,12 @@ export default function Admin() {
             {catalogList.map(({ item, index }) => (
               <div
                 key={item.id}
-                className="grid gap-3 rounded-2xl border border-[#eadfc9] bg-white p-3 md:grid-cols-[96px_1fr_auto]"
+                data-item-id={item.id}
+                className={`grid scroll-mt-28 gap-3 rounded-2xl border bg-white p-3 transition-shadow md:grid-cols-[96px_1fr_auto] ${
+                  followId === item.id
+                    ? "border-[#c6a15b] shadow-md shadow-[#c6a15b]/20 ring-2 ring-[#c6a15b]/40"
+                    : "border-[#eadfc9]"
+                }`}
               >
                 <img
                   src={item.image}
@@ -458,6 +499,15 @@ export default function Admin() {
                     aria-label="أسفل"
                   >
                     <ArrowDown className="h-4 w-4" />
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => duplicateItem(index)}
+                    className="rounded-full border border-[#eadfc9] p-2 text-[#5d554a]"
+                    aria-label="نسخ"
+                    title="نسخ القطعة"
+                  >
+                    <Copy className="h-4 w-4" />
                   </button>
                   <button
                     type="button"

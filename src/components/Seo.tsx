@@ -43,6 +43,9 @@ export default function Seo({
     document.documentElement.lang = "ar";
     document.documentElement.dir = "rtl";
     upsertMeta("name", "description", description);
+    upsertMeta("name", "geo.placename", `${SITE.cityEn}, ${SITE.regionEn}, Egypt`);
+    upsertMeta("name", "geo.position", `${SITE.geo.lat};${SITE.geo.lng}`);
+    upsertMeta("name", "ICBM", `${SITE.geo.lat}, ${SITE.geo.lng}`);
     upsertMeta("name", "robots", noindex ? "noindex, nofollow" : "index, follow, max-image-preview:large");
     upsertMeta("name", "googlebot", noindex ? "noindex, nofollow" : "index, follow");
     upsertMeta("property", "og:type", path === "/catalog" ? "website" : "website");
