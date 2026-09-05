@@ -253,7 +253,7 @@ function Cover({
     <div className="relative flex h-full w-full flex-col justify-between overflow-hidden px-7 py-8 sm:px-14 sm:py-12">
       <div className="catalog-mesh pointer-events-none absolute inset-0" />
       <div className="relative">
-        <p className="text-[11px] font-bold tracking-[0.48em] text-[#e6c987]">TAJ · TANTA</p>
+        <p className="text-[11px] font-bold tracking-[0.48em] text-[#e6c987]">TAJ · BASYOUN</p>
         <div className="mt-6 h-px w-14 bg-[#c6a15b]" />
       </div>
       <div className="relative">

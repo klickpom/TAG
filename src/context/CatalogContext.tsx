@@ -17,6 +17,7 @@ interface CatalogCtx {
   names: NameMap;
   loading: boolean;
   reload: () => Promise<void>;
+  applyLookbook: (items: LookItem[]) => void;
 }
 
 const Ctx = createContext<CatalogCtx | null>(null);
@@ -34,6 +35,10 @@ export function CatalogProvider({ children }: { children: ReactNode }) {
     setLoading(false);
   }, []);
 
+  const applyLookbook = useCallback((items: LookItem[]) => {
+    setLookbook(items);
+  }, []);
+
   useEffect(() => {
     void reload();
   }, [reload]);
@@ -44,7 +49,7 @@ export function CatalogProvider({ children }: { children: ReactNode }) {
   });
 
   return (
-    <Ctx.Provider value={{ products, lookbook, names, loading, reload }}>
+    <Ctx.Provider value={{ products, lookbook, names, loading, reload, applyLookbook }}>
       {children}
     </Ctx.Provider>
   );

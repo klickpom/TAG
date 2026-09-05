@@ -132,6 +132,39 @@
     backdrop-filter: blur(14px);
     -webkit-backdrop-filter: blur(14px);
   }
+  .glass-dark {
+    background: rgba(17, 17, 22, 0.88);
+    backdrop-filter: blur(18px);
+    -webkit-backdrop-filter: blur(18px);
+  }
+  .taj-intro-sheen {
+    background: linear-gradient(
+      115deg,
+      transparent 32%,
+      rgba(255, 236, 190, 0.42) 50%,
+      transparent 68%
+    );
+    mix-blend-mode: screen;
+    animation: taj-intro-sheen 1.8s ease-in-out 0.35s both;
+  }
+  @keyframes taj-intro-sheen {
+    0% {
+      transform: translateX(-80%);
+      opacity: 0;
+    }
+    35% {
+      opacity: 1;
+    }
+    100% {
+      transform: translateX(80%);
+      opacity: 0;
+    }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .taj-intro-sheen {
+      animation: none;
+    }
+  }
   .catalog-sheen {
     background: linear-gradient(90deg, transparent, rgba(230, 201, 135, 0.45), transparent);
   }

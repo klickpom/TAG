@@ -26,8 +26,8 @@ export const SITE = {
 } as const;
 
 export const FEATURED = {
-  hero: "/images/products/clock-01.jpg",
-  heroAlt: "ساعة حائط مرايا من مصنع تاج",
+  hero: "/images/taj-logo-3d.jpg",
+  heroAlt: "شعار مصنع تاج ثلاثي الأبعاد",
   mosaic: [
     "/images/products/clock-01.jpg",
     "/images/products/clock-02.jpg",

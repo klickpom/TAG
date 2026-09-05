@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import { Menu, MessageCircle, X } from "lucide-react";
 import BrandMark from "./BrandMark";
@@ -15,25 +15,13 @@ const LINKS = [
 ];
 
 export default function Navbar() {
-  const [scrolled, setScrolled] = useState(false);
   const [open, setOpen] = useState(false);
 
-  useEffect(() => {
-    const onScroll = () => setScrolled(window.scrollY > 24);
-    onScroll();
-    window.addEventListener("scroll", onScroll, { passive: true });
-    return () => window.removeEventListener("scroll", onScroll);
-  }, []);
-
   return (
-    <header
-      className={`sticky top-0 z-40 transition-all duration-300 ${
-        scrolled ? "glass shadow-lg shadow-black/5" : "bg-[#faf6ef]/60"
-      }`}
-    >
+    <header className="sticky top-0 z-40 border-b border-[#c6a15b]/20 glass-dark">
       <div className="mx-auto flex w-full max-w-7xl items-center justify-between gap-2 px-4 py-2 sm:py-2.5">
         <a href="#home" className="flex min-w-0 flex-1 items-center" aria-label="مصنع تاج — الرئيسية">
-          <BrandMark />
+          <BrandMark tone="dark" />
         </a>
 
         <nav className="hidden items-center gap-7 lg:flex">
@@ -41,7 +29,7 @@ export default function Navbar() {
             <a
               key={l.href}
               href={l.href}
-              className="relative text-sm font-semibold text-[#3d3830] transition-colors hover:text-[#a8853f] after:absolute after:-bottom-1 after:right-0 after:h-0.5 after:w-0 after:bg-[#c6a15b] after:transition-all hover:after:w-full"
+              className="relative text-sm font-semibold text-[#e9e2d4] transition-colors hover:text-[#e6c987] after:absolute after:-bottom-1 after:right-0 after:h-0.5 after:w-0 after:bg-[#c6a15b] after:transition-all hover:after:w-full"
             >
               {l.label}
             </a>
@@ -53,14 +41,14 @@ export default function Navbar() {
             href={WA_LINK}
             target="_blank"
             rel="noreferrer"
-            className="relative rounded-full bg-[#191920] p-2.5 text-[#e6c987] transition-transform hover:scale-105"
+            className="relative rounded-full bg-[#c6a15b] p-2.5 text-[#191920] transition-transform hover:scale-105"
             aria-label="واتساب"
           >
             <MessageCircle className="h-5 w-5" />
           </a>
           <button
             onClick={() => setOpen((v) => !v)}
-            className="rounded-full border border-[#d9cfba] p-2.5 text-[#191920] lg:hidden"
+            className="rounded-full border border-[#c6a15b]/40 p-2.5 text-[#e6c987] lg:hidden"
             aria-label="القائمة"
           >
             {open ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
@@ -75,7 +63,7 @@ export default function Navbar() {
             animate={{ height: "auto", opacity: 1 }}
             exit={{ height: 0, opacity: 0 }}
             transition={{ duration: 0.25 }}
-            className="glass overflow-hidden border-t border-[#e7ddc8] lg:hidden"
+            className="overflow-hidden border-t border-[#c6a15b]/20 bg-[#111116] lg:hidden"
           >
             <div className="flex flex-col gap-1 px-4 py-3">
               {LINKS.map((l) => (
@@ -83,7 +71,7 @@ export default function Navbar() {
                   key={l.href}
                   href={l.href}
                   onClick={() => setOpen(false)}
-                  className="rounded-xl px-3 py-2.5 text-sm font-semibold text-[#3d3830] transition-colors hover:bg-[#efe6d3] hover:text-[#a8853f]"
+                  className="rounded-xl px-3 py-2.5 text-sm font-semibold text-[#e9e2d4] transition-colors hover:bg-white/5 hover:text-[#e6c987]"
                 >
                   {l.label}
                 </a>

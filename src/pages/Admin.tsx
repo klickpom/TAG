@@ -1,4 +1,4 @@
-import { useEffect, useLayoutEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState } from "react";
 import { Link } from "react-router";
 import {
   ArrowDown,
@@ -32,7 +32,7 @@ function newId() {
 }
 
 export default function Admin() {
-  const { names, lookbook, reload } = useCatalog();
+  const { names, lookbook, reload, applyLookbook } = useCatalog();
   const [authed, setAuthed] = useState(() => !!sessionStorage.getItem(SESSION_KEY));
   const [password, setPassword] = useState("");
   const [loginError, setLoginError] = useState("");
@@ -46,9 +46,22 @@ export default function Admin() {
   const [saving, setSaving] = useState(false);
   const [msg, setMsg] = useState("");
   const [followId, setFollowId] = useState<string | null>(null);
+  const [savedJson, setSavedJson] = useState("[]");
+  const skipHydrate = useRef(false);
+  const itemsRef = useRef(items);
+  const savedJsonRef = useRef(savedJson);
+  itemsRef.current = items;
+  savedJsonRef.current = savedJson;
 
   useEffect(() => {
     if (!authed) return;
+    if (skipHydrate.current) {
+      skipHydrate.current = false;
+      return;
+    }
+    const json = JSON.stringify(lookbook);
+    savedJsonRef.current = json;
+    setSavedJson(json);
     setDraft(defaultDraft(names));
     setItems(lookbook.map((x) => ({ ...x, price: x.price ?? "" })));
   }, [authed, names, lookbook]);
@@ -61,7 +74,7 @@ export default function Admin() {
     }).length;
   }, [draft, names]);
 
-  const catalogDirty = useMemo(() => JSON.stringify(items) !== JSON.stringify(lookbook), [items, lookbook]);
+  const catalogDirty = useMemo(() => JSON.stringify(items) !== savedJson, [items, savedJson]);
 
   const siteList = useMemo(() => {
     return PRODUCTS.filter((p) => {
@@ -124,24 +137,43 @@ export default function Admin() {
     setMsg("اتحفظت أسماء معرض الموقع");
   };
 
-  const saveCatalog = async () => {
-    for (const item of items) {
-      if (!item.name.trim() || !item.size.trim() || !item.image.trim()) {
-        setMsg("كل قطعة محتاجة اسم ومقاس وصورة");
+  const saveCatalog = useCallback(
+    async (auto = false) => {
+      const snapshot = itemsRef.current;
+      for (const item of snapshot) {
+        if (!item.name.trim() || !item.size.trim() || !item.image.trim()) {
+          if (!auto) setMsg("كل قطعة محتاجة اسم ومقاس وصورة");
+          return;
+        }
+      }
+      const json = JSON.stringify(snapshot);
+      if (json === savedJsonRef.current) return;
+      setSaving(true);
+      if (!auto) setMsg("");
+      const res = await saveCatalogItems(pass(), snapshot);
+      setSaving(false);
+      if (!res.ok) {
+        setMsg(res.error || "فشل حفظ الكتالوج");
         return;
       }
-    }
-    setSaving(true);
-    setMsg("");
-    const res = await saveCatalogItems(pass(), items);
-    setSaving(false);
-    if (!res.ok) {
-      setMsg(res.error || "فشل حفظ الكتالوج");
-      return;
-    }
-    await reload();
-    setMsg("اتحفظ الكتالوج — ظاهر في الكاتلوج فورًا");
-  };
+      savedJsonRef.current = json;
+      setSavedJson(json);
+      skipHydrate.current = true;
+      applyLookbook(snapshot);
+      setMsg(auto ? "اتحفظ تلقائي وظاهر في الكاتلوج" : "اتحفظ الكتالوج — ظاهر في الكاتلوج فورًا");
+      if (JSON.stringify(itemsRef.current) !== savedJsonRef.current) {
+        window.setTimeout(() => void saveCatalog(true), 0);
+      }
+    },
+    [applyLookbook]
+  );
+
+  useEffect(() => {
+    if (!authed || board !== "lookbook") return;
+    if (JSON.stringify(items) === savedJson) return;
+    const t = window.setTimeout(() => void saveCatalog(true), 700);
+    return () => window.clearTimeout(t);
+  }, [items, authed, board, savedJson, saveCatalog]);
 
   const addItem = () => {
     setItems((prev) => [
@@ -155,7 +187,7 @@ export default function Admin() {
       },
       ...prev,
     ]);
-    setMsg("اتضافت قطعة — عدّل الاسم والمقاس والصورة وبعدين احفظ");
+    setMsg("اتضافت قطعة — هتتحفظ لوحدها في الكاتلوج");
   };
 
   const updateItem = (index: number, patch: Partial<LookItem>) => {
@@ -178,7 +210,7 @@ export default function Admin() {
       return next;
     });
     setFollowId(copyId);
-    setMsg("اتعملت نسخة تحت القطعة — عدّل اللي محتاجه وبعدين احفظ الكتالوج");
+    setMsg("اتعملت نسخة تحت القطعة — هتتحفظ لوحدها في الكاتلوج");
   };
 
   const moveItem = (index: number, dir: -1 | 1) => {
@@ -228,10 +260,14 @@ export default function Admin() {
     const saved = await saveCatalogItems(pass(), next);
     setSaving(false);
     if (!saved.ok) {
-      setMsg(saved.error || "الصورة اترفعت بس الحفظ فشل — اضغط حفظ الكتالوج");
+      setMsg(saved.error || "الصورة اترفعت بس الحفظ فشل — هيتجرب تاني تلقائي");
       return;
     }
-    await reload();
+    const json = JSON.stringify(next);
+    savedJsonRef.current = json;
+    setSavedJson(json);
+    skipHydrate.current = true;
+    applyLookbook(next);
     setMsg("اتحفظت الصورة وظاهرة في الكاتلوج");
   };
 
@@ -282,7 +318,9 @@ export default function Admin() {
             <h1 className="text-lg font-black text-[#191920]">لوحة تاج</h1>
             <p className="text-xs text-[#7a6f60]">
               {board === "lookbook"
-                ? `${items.length} قطعة في الكاتلوج${catalogDirty ? " — في تعديلات مش محفوظة" : ""}`
+                ? `${items.length} قطعة في الكاتلوج${
+                    catalogDirty ? (saving ? " — بيحفظ…" : " — بيتكتب… هيتنشر لوحده") : " — محفوظ ومنشور"
+                  }`
                 : `${PRODUCTS.length} منتج في المعرض — ${dirtyNames} تعديل أسماء`}
             </p>
           </div>
@@ -299,12 +337,12 @@ export default function Admin() {
                 </button>
                 <button
                   type="button"
-                  onClick={() => void saveCatalog()}
-                  disabled={saving}
+                  onClick={() => void saveCatalog(false)}
+                  disabled={saving || !catalogDirty}
                   className="bg-gold-gradient flex items-center gap-1.5 rounded-full px-5 py-2 text-xs font-black text-[#191920] disabled:opacity-50"
                 >
                   <Save className="h-4 w-4" />
-                  {saving ? "بيحفظ…" : "حفظ الكتالوج"}
+                  {saving ? "بيحفظ…" : catalogDirty ? "حفظ دلوقتي" : "محفوظ"}
                 </button>
               </>
             ) : (
@@ -426,17 +464,15 @@ export default function Admin() {
               <div
                 key={item.id}
                 data-item-id={item.id}
-                className={`grid scroll-mt-28 gap-3 rounded-2xl border bg-white p-3 transition-shadow md:grid-cols-[96px_1fr_auto] ${
+                className={`grid scroll-mt-28 gap-3 rounded-2xl border bg-white p-3 transition-shadow md:grid-cols-[9.5rem_1fr_auto] ${
                   followId === item.id
                     ? "border-[#c6a15b] shadow-md shadow-[#c6a15b]/20 ring-2 ring-[#c6a15b]/40"
                     : "border-[#eadfc9]"
                 }`}
               >
-                <img
-                  src={item.image}
-                  alt=""
-                  className="h-24 w-full rounded-xl object-cover object-top md:h-24 md:w-24"
-                />
+                <div className="flex h-56 w-full items-center justify-center overflow-hidden rounded-xl bg-[#191920]/5 md:h-36 md:w-36">
+                  <img src={item.image} alt="" className="max-h-full max-w-full object-contain" />
+                </div>
                 <div className="grid gap-2 sm:grid-cols-2">
                   <label className="text-[11px] font-bold text-[#7a6f60]">
                     الاسم
