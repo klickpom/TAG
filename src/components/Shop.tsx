@@ -1,15 +1,15 @@
 import { useMemo, useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import { Eye, MessageCircle, Search, X } from "lucide-react";
-import { CATEGORY_LABELS, type Category, type Product } from "@/data/products";
+import { LOOK_LABELS, type LookItem, type LookKind } from "@/data/lookbook";
 import { useCatalog } from "@/context/CatalogContext";
 import { WA_LINK } from "./TopBar";
 
-type Filter = Category | "all";
-const FILTERS: Filter[] = ["all", "clocks", "vases", "sets"];
+type Filter = LookKind | "all";
+const FILTERS: Filter[] = ["all", "clocks", "pots"];
 
-function waProduct(name: string) {
-  const msg = `السلام عليكم، محتاج تفاصيل عن المنتج: ${name}`;
+function waProduct(name: string, size: string) {
+  const msg = `السلام عليكم، محتاج تفاصيل عن المنتج: ${name} — ${size}`;
   return `${WA_LINK}?text=${encodeURIComponent(msg)}`;
 }
 
@@ -17,8 +17,8 @@ function ProductCard({
   product,
   onQuickView,
 }: {
-  product: Product;
-  onQuickView: (p: Product) => void;
+  product: LookItem;
+  onQuickView: (p: LookItem) => void;
 }) {
   return (
     <motion.article
@@ -38,27 +38,21 @@ function ProductCard({
           src={product.image}
           alt={product.name}
           loading="lazy"
-          className="h-full w-full object-cover transition-transform duration-700 group-hover:scale-110"
+          className="h-full w-full object-cover object-top transition-transform duration-700 group-hover:scale-110"
         />
-        {product.badge && (
-          <span className="bg-gold-gradient absolute right-3 top-3 rounded-full px-3 py-1 text-[11px] font-bold text-white shadow-md">
-            {product.badge}
-          </span>
-        )}
         <span className="absolute left-3 top-3 rounded-full bg-white/90 p-2 text-[#191920] opacity-0 shadow-md backdrop-blur transition-all group-hover:opacity-100">
           <Eye className="h-4 w-4" />
         </span>
       </button>
 
       <div className="p-4">
-        <span className="text-[11px] font-bold text-[#a8853f]">
-          {CATEGORY_LABELS[product.category]}
-        </span>
+        <span className="text-[11px] font-bold text-[#a8853f]">{LOOK_LABELS[product.kind]}</span>
         <h3 className="mt-1 line-clamp-2 min-h-[2.5rem] text-sm font-bold text-[#191920] sm:text-base">
           {product.name}
         </h3>
+        <p className="mt-1 text-xs font-semibold text-[#8a7a5c]">{product.size}</p>
         <a
-          href={waProduct(product.name)}
+          href={waProduct(product.name, product.size)}
           target="_blank"
           rel="noreferrer"
           className="mt-3 flex w-full items-center justify-center gap-1.5 rounded-full bg-[#191920] px-3 py-2 text-[11px] font-bold text-[#e6c987] transition-all hover:scale-[1.02] hover:bg-[#2a2a33] sm:text-xs"
@@ -75,7 +69,7 @@ function QuickView({
   product,
   onClose,
 }: {
-  product: Product;
+  product: LookItem;
   onClose: () => void;
 }) {
   return (
@@ -95,7 +89,7 @@ function QuickView({
         className="grid w-[min(100%,48rem)] max-h-[90dvh] overflow-y-auto overflow-x-hidden rounded-3xl bg-white shadow-2xl md:grid-cols-2"
       >
         <div className="relative aspect-square bg-[#f5efe4]">
-          <img src={product.image} alt={product.name} className="h-full w-full object-cover" />
+          <img src={product.image} alt={product.name} className="h-full w-full object-cover object-top" />
         </div>
         <div className="relative flex flex-col p-6 sm:p-8">
           <button
@@ -105,13 +99,11 @@ function QuickView({
           >
             <X className="h-4 w-4" />
           </button>
-          <span className="text-xs font-bold text-[#a8853f]">
-            {CATEGORY_LABELS[product.category]}
-          </span>
+          <span className="text-xs font-bold text-[#a8853f]">{LOOK_LABELS[product.kind]}</span>
           <h3 className="mt-2 text-2xl font-black text-[#191920]">{product.name}</h3>
-          <p className="mt-4 flex-1 text-sm leading-8 text-[#5d554a]">{product.desc}</p>
+          <p className="mt-4 text-sm font-semibold text-[#5d554a]">{product.size}</p>
           <a
-            href={waProduct(product.name)}
+            href={waProduct(product.name, product.size)}
             target="_blank"
             rel="noreferrer"
             className="bg-gold-gradient mt-6 flex items-center justify-center gap-2 rounded-full px-6 py-3 text-sm font-bold text-[#191920] shadow-lg shadow-[#c6a15b]/30 transition-transform hover:scale-[1.03]"
@@ -126,18 +118,19 @@ function QuickView({
 }
 
 export default function Shop() {
-  const { products } = useCatalog();
+  const { lookbook } = useCatalog();
   const [filter, setFilter] = useState<Filter>("all");
   const [query, setQuery] = useState("");
-  const [quick, setQuick] = useState<Product | null>(null);
+  const [quick, setQuick] = useState<LookItem | null>(null);
 
   const list = useMemo(() => {
-    return products.filter((p) => {
-      const okCat = filter === "all" || p.category === filter;
-      const okQ = query.trim() === "" || p.name.includes(query.trim());
+    return lookbook.filter((p) => {
+      const okCat = filter === "all" || p.kind === filter;
+      const q = query.trim();
+      const okQ = q === "" || p.name.includes(q) || p.size.includes(q);
       return okCat && okQ;
     });
-  }, [filter, query, products]);
+  }, [filter, query, lookbook]);
 
   return (
     <section id="shop" className="bg-[#faf6ef] py-20">
@@ -170,7 +163,7 @@ export default function Shop() {
                     : "border border-[#eadfc9] bg-white text-[#5d554a] hover:border-[#c6a15b]"
                 }`}
               >
-                {CATEGORY_LABELS[f]}
+                {LOOK_LABELS[f]}
               </button>
             ))}
           </div>

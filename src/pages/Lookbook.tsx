@@ -3,13 +3,12 @@ import { Link } from "react-router";
 import useEmblaCarousel from "embla-carousel-react";
 import { motion, useReducedMotion } from "framer-motion";
 import { ChevronLeft, ChevronRight, MessageCircle } from "lucide-react";
-import { LOOKBOOK, LOOK_LABELS, type LookItem } from "@/data/lookbook";
+import { LOOK_LABELS, type LookItem } from "@/data/lookbook";
 import { useCatalog } from "@/context/CatalogContext";
 import { WA_LINK } from "@/components/TopBar";
 
-function waItem(name: string, size: string, price: string) {
-  const extra = price ? ` — السعر ${price}` : "";
-  return `${WA_LINK}?text=${encodeURIComponent(`السلام عليكم، محتاج تفاصيل من كاتلوج تاج عن: ${name} — ${size}${extra}`)}`;
+function waItem(name: string, size: string) {
+  return `${WA_LINK}?text=${encodeURIComponent(`السلام عليكم، محتاج تفاصيل من كاتلوج تاج عن: ${name} — ${size}`)}`;
 }
 
 export default function Lookbook() {
@@ -352,7 +351,6 @@ function IndexGroup({
               <span className="min-w-0 truncate text-sm font-bold">
                 {item.name}
                 <span className="mr-2 font-semibold text-[#8a7a5c]"> — {item.size}</span>
-                {item.price ? <span className="mr-2 font-black text-[#a8853f]"> — {item.price}</span> : null}
               </span>
               <span className="shrink-0 font-display text-sm text-[#a8853f]">{String(i + 1).padStart(2, "0")}</span>
             </button>
@@ -364,24 +362,14 @@ function IndexGroup({
 }
 
 function CatalogPhoto({ item, active }: { item: LookItem; active: boolean }) {
-  const fallback = LOOKBOOK.find((row) => row.id === item.id)?.image || "";
-  const [src, setSrc] = useState(item.image);
-
-  useEffect(() => {
-    setSrc(item.image);
-  }, [item.image]);
-
   return (
     <img
-      src={src}
+      src={item.image}
       alt={item.name}
       draggable={false}
       loading={active ? "eager" : "lazy"}
       decoding="async"
       className={active ? "catalog-photo-live" : undefined}
-      onError={() => {
-        if (fallback && src !== fallback) setSrc(fallback);
-      }}
     />
   );
 }
@@ -413,13 +401,10 @@ function ProductSpread({
           <div className="mt-4 inline-block border border-[#c6a15b]/70 px-3 py-1.5 text-sm font-bold text-[#e6c987]">
             {item.size}
           </div>
-          {item.price ? (
-            <p className="mt-3 font-display text-3xl font-bold text-[#e6c987] sm:text-4xl">{item.price}</p>
-          ) : null}
         </div>
         <div className="flex items-center justify-between gap-3">
           <a
-            href={waItem(item.name, item.size, item.price)}
+            href={waItem(item.name, item.size)}
             target="_blank"
             rel="noreferrer"
             className="flex items-center gap-2 rounded-full bg-[#c6a15b] px-4 py-2.5 text-xs font-black text-[#141216]"

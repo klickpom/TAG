@@ -15,14 +15,7 @@ import {
 import { CATEGORY_LABELS, PRODUCTS, type Category } from "@/data/products";
 import { LOOK_LABELS, type LookItem, type LookKind } from "@/data/lookbook";
 import { loginAdmin, saveNameMap, type NameMap } from "@/lib/productNames";
-import {
-  catalogHasAdminUploads,
-  listCatalogUploads,
-  recoverUploadedCatalog,
-  saveCatalogItems,
-  uploadCatalogImage,
-  type CatalogUploadFile,
-} from "@/lib/catalogApi";
+import { saveCatalogItems, uploadCatalogImage } from "@/lib/catalogApi";
 import { useCatalog } from "@/context/CatalogContext";
 
 const SESSION_KEY = "taj-admin-pass";
@@ -51,43 +44,12 @@ export default function Admin() {
   const [query, setQuery] = useState("");
   const [saving, setSaving] = useState(false);
   const [msg, setMsg] = useState("");
-  const [uploads, setUploads] = useState<CatalogUploadFile[]>([]);
-  const [pickedUpload, setPickedUpload] = useState("");
 
   useEffect(() => {
     if (!authed) return;
     setDraft(defaultDraft(names));
     setItems(lookbook.map((x) => ({ ...x, price: x.price ?? "" })));
   }, [authed, names, lookbook]);
-
-  useEffect(() => {
-    if (!authed) return;
-    let cancelled = false;
-    void (async () => {
-      const recovered = await recoverUploadedCatalog(pass());
-      if (cancelled) return;
-      const files = await listCatalogUploads(pass());
-      if (cancelled) return;
-      setUploads(files);
-      if (recovered.restored) {
-        await reload();
-        setMsg(
-          recovered.count
-            ? `رجعنا ${recovered.count} صورة كنت رافعها من الأدمن`
-            : "رجعنا صور الكتالوج اللي اترفعت من الأدمن"
-        );
-        return;
-      }
-      if (files.length && !catalogHasAdminUploads(lookbook)) {
-        setMsg(
-          `الصور اللي رفعتها لسه على السيرفر (${files.length}). دوس على صورة فوق، وبعدين «حط الصورة» على المنتج`
-        );
-      }
-    })();
-    return () => {
-      cancelled = true;
-    };
-  }, [authed]);
 
   const dirtyNames = useMemo(() => {
     return PRODUCTS.filter((p) => {
@@ -114,7 +76,7 @@ export default function Admin() {
       .map((item, index) => ({ item, index }))
       .filter(({ item }) => {
         const okKind = kindFilter === "all" || item.kind === kindFilter;
-        return okKind && (!q || item.name.includes(q) || item.size.includes(q) || (item.price ?? "").includes(q));
+        return okKind && (!q || item.name.includes(q) || item.size.includes(q));
       });
   }, [items, kindFilter, query]);
 
@@ -216,15 +178,6 @@ export default function Admin() {
     });
   };
 
-  const applyPickedUpload = (index: number) => {
-    if (!pickedUpload) {
-      setMsg("اختار صورة من الصور المرفوعة فوق الأول");
-      return;
-    }
-    updateItem(index, { image: pickedUpload });
-    setMsg("اتحطت الصورة على المنتج — اضغط حفظ الكتالوج");
-  };
-
   const onUpload = async (index: number, file: File | undefined) => {
     if (!file) return;
     setMsg("بيرفع الصورة…");
@@ -243,7 +196,6 @@ export default function Admin() {
       return;
     }
     await reload();
-    setUploads(await listCatalogUploads(pass()));
     setMsg("اتحفظت الصورة وظاهرة في الكاتلوج");
   };
 
@@ -434,26 +386,6 @@ export default function Admin() {
 
         {board === "lookbook" ? (
           <div className="mt-6 grid gap-3">
-            {uploads.length > 0 && (
-              <div className="rounded-2xl border border-[#c6a15b]/40 bg-white p-3">
-                <p className="text-sm font-bold text-[#191920]">صور اترفعت من الأدمن ({uploads.length})</p>
-                <p className="mt-1 text-xs text-[#7a6f60]">دوس على الصورة، وبعدين «حط الصورة» على المنتج الصح</p>
-                <div className="mt-3 flex gap-2 overflow-x-auto pb-1">
-                  {uploads.map((file) => (
-                    <button
-                      key={file.file}
-                      type="button"
-                      onClick={() => setPickedUpload(file.url)}
-                      className={`h-20 w-20 shrink-0 overflow-hidden rounded-xl border-2 ${
-                        pickedUpload === file.url ? "border-[#c6a15b]" : "border-transparent"
-                      }`}
-                    >
-                      <img src={file.url} alt="" className="h-full w-full object-cover object-top" />
-                    </button>
-                  ))}
-                </div>
-              </div>
-            )}
             {catalogList.map(({ item, index }) => (
               <div
                 key={item.id}
@@ -478,15 +410,6 @@ export default function Admin() {
                     <input
                       value={item.size}
                       onChange={(e) => updateItem(index, { size: e.target.value })}
-                      className="mt-1 w-full rounded-xl border border-[#eadfc9] px-3 py-2 text-sm font-bold text-[#191920] outline-none focus:border-[#c6a15b]"
-                    />
-                  </label>
-                  <label className="text-[11px] font-bold text-[#7a6f60]">
-                    السعر
-                    <input
-                      value={item.price ?? ""}
-                      onChange={(e) => updateItem(index, { price: e.target.value })}
-                      placeholder="مثال: 55 جنيه"
                       className="mt-1 w-full rounded-xl border border-[#eadfc9] px-3 py-2 text-sm font-bold text-[#191920] outline-none focus:border-[#c6a15b]"
                     />
                   </label>
@@ -518,15 +441,6 @@ export default function Admin() {
                       />
                     </span>
                   </label>
-                  {pickedUpload && (
-                    <button
-                      type="button"
-                      onClick={() => applyPickedUpload(index)}
-                      className="rounded-xl bg-[#191920] px-3 py-2 text-xs font-bold text-[#e6c987]"
-                    >
-                      حط الصورة على المنتج ده
-                    </button>
-                  )}
                 </div>
                 <div className="flex items-center gap-2 md:flex-col">
                   <button

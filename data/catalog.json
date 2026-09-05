@@ -2,7 +2,7 @@
   {
     "id": "lb01",
     "name": "بوت مرجانة صغير",
-    "image": "/images/lookbook/lb-01.png",
+    "image": "/api/media.php?f=lb-20260904194820-bc9c2c.jpg",
     "kind": "pots",
     "size": "ارتفاع 20 سم × عرض 18 سم",
     "price": "27 جنيه"
@@ -10,7 +10,7 @@
   {
     "id": "lb02",
     "name": "بوت بابلز بدون رجل",
-    "image": "/images/lookbook/lb-02.png",
+    "image": "/api/media.php?f=lb-20260904145206-34006f.jpg",
     "kind": "pots",
     "size": "ارتفاع 28 سم × عرض 22 سم",
     "price": "55 جنيه"
@@ -18,7 +18,7 @@
   {
     "id": "lb03",
     "name": "بوت فراولة فك وتركيب",
-    "image": "/images/lookbook/lb-03.png",
+    "image": "/api/media.php?f=lb-20260904145443-f922ca.jpg",
     "kind": "pots",
     "size": "ارتفاع 25.5 سم × عرض 25 سم",
     "price": "75 جنيه"
@@ -26,7 +26,7 @@
   {
     "id": "lb04",
     "name": "ساعة غزالة",
-    "image": "/images/lookbook/lb-04.png",
+    "image": "/api/media.php?f=lb-20260904145448-e29c5a.jpg",
     "kind": "clocks",
     "size": "مقاس 40 × 50 سم",
     "price": "145 جنيه"
@@ -34,7 +34,7 @@
   {
     "id": "lb05",
     "name": "ساعة غزالة بندول",
-    "image": "/images/lookbook/lb-05.png",
+    "image": "/api/media.php?f=lb-20260904145913-e6550b.jpg",
     "kind": "clocks",
     "size": "مقاس 65 × 40 سم",
     "price": "165 جنيه"
@@ -42,7 +42,7 @@
   {
     "id": "lb06",
     "name": "ساعة غزالة كبير",
-    "image": "/images/lookbook/lb-06.png",
+    "image": "/api/media.php?f=lb-20260904145448-e29c5a.jpg",
     "kind": "clocks",
     "size": "مقاس 50 × 40 سم",
     "price": "145 جنيه"
@@ -50,7 +50,7 @@
   {
     "id": "lb07",
     "name": "ساعة غزالة وسط",
-    "image": "/images/lookbook/lb-07.png",
+    "image": "/api/media.php?f=lb-20260904145448-e29c5a.jpg",
     "kind": "clocks",
     "size": "مقاس 36 × 39 سم",
     "price": "105 جنيه"
@@ -58,7 +58,7 @@
   {
     "id": "lb08",
     "name": "ساعة ميدان كبير",
-    "image": "/images/lookbook/lb-08.png",
+    "image": "/api/media.php?f=lb-20260904154259-91f0fb.jpg",
     "kind": "clocks",
     "size": "مقاس 40 × 40 سم",
     "price": "145 جنيه"
@@ -66,7 +66,7 @@
   {
     "id": "lb09",
     "name": "ساعة مطبخ",
-    "image": "/images/lookbook/lb-09.png",
+    "image": "/api/media.php?f=lb-20260904154526-a3bc2d.jpg",
     "kind": "clocks",
     "size": "مقاس 28 × 34 سم",
     "price": "80 جنيه"
@@ -74,7 +74,7 @@
   {
     "id": "lb10",
     "name": "ساعة تاج بندول",
-    "image": "/images/lookbook/lb-10.png",
+    "image": "/api/media.php?f=lb-20260904154622-e6b697.jpg",
     "kind": "clocks",
     "size": "مقاس 72 × 34 سم",
     "price": "210 جنيه"
@@ -82,7 +82,7 @@
   {
     "id": "lb11",
     "name": "ساعة ميدان",
-    "image": "/images/lookbook/lb-11.png",
+    "image": "/api/media.php?f=lb-20260904154259-91f0fb.jpg",
     "kind": "clocks",
     "size": "مقاس 36 × 36 سم",
     "price": "95 جنيه"
@@ -90,7 +90,7 @@
   {
     "id": "lb12",
     "name": "ساعة ميدان وسط",
-    "image": "/images/lookbook/lb-12.png",
+    "image": "/api/media.php?f=lb-20260904154823-1a622e.jpg",
     "kind": "clocks",
     "size": "مقاس 30 × 30 سم",
     "price": "105 جنيه"
@@ -98,7 +98,7 @@
   {
     "id": "lb13",
     "name": "ساعة قلب فيونكة",
-    "image": "/images/lookbook/lb-13.png",
+    "image": "/api/media.php?f=lb-20260904145716-3246ed.jpg",
     "kind": "clocks",
     "size": "مقاس 45 × 50 سم",
     "price": "130 جنيه"
@@ -106,7 +106,7 @@
   {
     "id": "lb14",
     "name": "ساعة كيتي",
-    "image": "/images/lookbook/lb-14.png",
+    "image": "/api/media.php?f=lb-20260904154941-044fd7.jpg",
     "kind": "clocks",
     "size": "مقاس 28 × 36 سم",
     "price": "105 جنيه"
@@ -114,7 +114,7 @@
   {
     "id": "lb15",
     "name": "ساعة سلسلة",
-    "image": "/images/lookbook/lb-15.png",
+    "image": "/api/media.php?f=lb-20260904155045-e7ea8f.jpg",
     "kind": "clocks",
     "size": "مقاس 49 × 49 سم",
     "price": "130 جنيه"
@@ -122,7 +122,7 @@
   {
     "id": "lb16",
     "name": "بوت شبح",
-    "image": "/images/lookbook/lb-16.png",
+    "image": "/api/media.php?f=lb-20260904152315-5ddd02.jpg",
     "kind": "pots",
     "size": "ارتفاع 55 سم × عرض 38 سم",
     "price": "150 جنيه"
@@ -130,7 +130,7 @@
   {
     "id": "lb17",
     "name": "بوت هامر بشريط",
-    "image": "/images/lookbook/lb-17.png",
+    "image": "/api/media.php?f=lb-20260904152347-6e8da5.jpg",
     "kind": "pots",
     "size": "ارتفاع 22.5 سم × عرض 22.5 سم",
     "price": "35 جنيه"
@@ -138,7 +138,7 @@
   {
     "id": "lb18",
     "name": "ساعة وردة استرس",
-    "image": "/images/lookbook/lb-18.png",
+    "image": "/api/media.php?f=lb-20260904155409-a25624.jpg",
     "kind": "clocks",
     "size": "مقاس 46 × 46 سم",
     "price": "165 جنيه"
@@ -146,7 +146,7 @@
   {
     "id": "lb19",
     "name": "ساعة مرايا قلب",
-    "image": "/images/lookbook/lb-19.png",
+    "image": "/api/media.php?f=lb-20260904155416-a27e23.jpg",
     "kind": "clocks",
     "size": "مقاس 48 × 48 سم",
     "price": "175 جنيه"
@@ -154,7 +154,7 @@
   {
     "id": "lb20",
     "name": "ساعة مرايا شمس",
-    "image": "/images/lookbook/lb-20.png",
+    "image": "/api/media.php?f=lb-20260904155418-f2b849.jpg",
     "kind": "clocks",
     "size": "مقاس 48 × 48 سم",
     "price": "175 جنيه"
@@ -162,7 +162,7 @@
   {
     "id": "lb21",
     "name": "مبخرة برجل",
-    "image": "/images/lookbook/lb-21.png",
+    "image": "/api/media.php?f=lb-20260904150418-80a7fc.jpg",
     "kind": "pots",
     "size": "أشكال متعددة",
     "price": "14 جنيه"
@@ -170,7 +170,7 @@
   {
     "id": "lb22",
     "name": "بوت زلعة برجل",
-    "image": "/images/lookbook/lb-22.png",
+    "image": "/api/media.php?f=lb-20260904153950-49860c.jpg",
     "kind": "pots",
     "size": "ارتفاع 20 سم × عرض 14 سم",
     "price": "22 جنيه"
@@ -178,7 +178,7 @@
   {
     "id": "lb23",
     "name": "بوت مدفع",
-    "image": "/images/lookbook/lb-23.png",
+    "image": "/api/media.php?f=lb-20260904151113-d051c8.jpg",
     "kind": "pots",
     "size": "ارتفاع 26 سم × عرض 26 سم",
     "price": "55 جنيه"
@@ -186,7 +186,7 @@
   {
     "id": "lb24",
     "name": "بوت مدفع",
-    "image": "/images/lookbook/lb-24.png",
+    "image": "/api/media.php?f=lb-20260904152420-ba1c2f.jpg",
     "kind": "pots",
     "size": "ارتفاع 75 سم × عرض 28 سم",
     "price": "160 جنيه"
@@ -194,7 +194,7 @@
   {
     "id": "lb25",
     "name": "بوت جامبو",
-    "image": "/images/lookbook/lb-24.png",
+    "image": "/api/media.php?f=lb-20260904152420-ba1c2f.jpg",
     "kind": "pots",
     "size": "ارتفاع 70 سم × عرض 28 سم",
     "price": "175 جنيه"
@@ -202,7 +202,7 @@
   {
     "id": "lb26",
     "name": "بوت سلسلة صغير",
-    "image": "/images/lookbook/lb-25.png",
+    "image": "/api/media.php?f=lb-20260904151641-d035d8.jpg",
     "kind": "pots",
     "size": "ارتفاع 40 سم × عرض 29 سم",
     "price": "70 جنيه"
@@ -210,7 +210,7 @@
   {
     "id": "lb27",
     "name": "بوت كلاسيك كبير",
-    "image": "/images/lookbook/lb-26.png",
+    "image": "/api/media.php?f=lb-20260904144701-0fc945.jpg",
     "kind": "pots",
     "size": "ارتفاع 30 سم × عرض 26 سم",
     "price": "55 جنيه"
@@ -218,7 +218,7 @@
   {
     "id": "lb28",
     "name": "بوت كلاسيك صغير",
-    "image": "/images/lookbook/lb-26.png",
+    "image": "/api/media.php?f=lb-20260904144701-0fc945.jpg",
     "kind": "pots",
     "size": "ارتفاع 26 سم × عرض 23 سم",
     "price": "50 جنيه"
@@ -226,7 +226,7 @@
   {
     "id": "lb29",
     "name": "بوت سلسلة صغير",
-    "image": "/images/lookbook/lb-27.png",
+    "image": "/api/media.php?f=lb-20260904151952-2221cb.jpg",
     "kind": "pots",
     "size": "ارتفاع 14.5 سم × عرض 15.5 سم",
     "price": "17 جنيه"
@@ -234,7 +234,7 @@
   {
     "id": "lb30",
     "name": "بوت بسطا عادي",
-    "image": "/images/lookbook/lb-28.png",
+    "image": "/api/media.php?f=lb-20260904145213-1c9aca.jpg",
     "kind": "pots",
     "size": "ارتفاع 25 سم × عرض 30 سم",
     "price": "50 جنيه"
@@ -242,7 +242,7 @@
   {
     "id": "lb31",
     "name": "بوت زلعة عادي",
-    "image": "/images/lookbook/lb-29.png",
+    "image": "/api/media.php?f=lb-20260904150444-945f2a.jpg",
     "kind": "pots",
     "size": "ارتفاع 14 سم × عرض 14 سم",
     "price": "14 جنيه"
@@ -250,7 +250,7 @@
   {
     "id": "lb32",
     "name": "بوت زلعة لوكس",
-    "image": "/images/lookbook/lb-29.png",
+    "image": "/api/media.php?f=lb-20260904150444-945f2a.jpg",
     "kind": "pots",
     "size": "ارتفاع 16.5 سم × عرض 14 سم",
     "price": "18 جنيه"
@@ -258,7 +258,7 @@
   {
     "id": "lb33",
     "name": "بوت بسطا صغير",
-    "image": "/images/lookbook/lb-30.png",
+    "image": "/api/media.php?f=lb-20260904145152-98a441.jpg",
     "kind": "pots",
     "size": "ارتفاع 13 سم × عرض 16 سم",
     "price": "14 جنيه"
@@ -266,7 +266,7 @@
   {
     "id": "lb34",
     "name": "بوت بسطا لوكس",
-    "image": "/images/lookbook/lb-31.png",
+    "image": "/api/media.php?f=lb-20260904151956-c5b1d3.jpg",
     "kind": "pots",
     "size": "ارتفاع 28 سم × عرض 30 سم",
     "price": "55 جنيه"
@@ -274,7 +274,7 @@
   {
     "id": "lb35",
     "name": "بوت طاقة",
-    "image": "/images/lookbook/lb-32.png",
+    "image": "/api/media.php?f=lb-20260904152330-c1f3ef.jpg",
     "kind": "pots",
     "size": "ارتفاع 33 سم × عرض 25 سم",
     "price": "55 جنيه"
@@ -282,7 +282,7 @@
   {
     "id": "lb36",
     "name": "مقلمة",
-    "image": "/images/lookbook/lb-33.png",
+    "image": "/api/media.php?f=lb-20260904150314-d1c201.jpg",
     "kind": "pots",
     "size": "ارتفاع 11 سم × عرض 10 سم",
     "price": "9 جنيه"
@@ -290,7 +290,7 @@
   {
     "id": "lb37",
     "name": "بوت بابلز",
-    "image": "/images/lookbook/lb-34.png",
+    "image": "/api/media.php?f=lb-20260904145206-34006f.jpg",
     "kind": "pots",
     "size": "ارتفاع 28 سم × عرض 22 سم",
     "price": "55 جنيه"
@@ -298,7 +298,7 @@
   {
     "id": "lb38",
     "name": "بوت تريندس برجل",
-    "image": "/images/lookbook/lb-35.png",
+    "image": "/api/media.php?f=lb-20260904152412-5e6240.jpg",
     "kind": "pots",
     "size": "ارتفاع 40 سم × عرض 36 سم",
     "price": "78 جنيه"
@@ -306,7 +306,7 @@
   {
     "id": "lb39",
     "name": "بوت شمعدان برجل",
-    "image": "/images/lookbook/lb-36.png",
+    "image": "/api/media.php?f=lb-20260904150714-c90d8d.jpg",
     "kind": "pots",
     "size": "ارتفاع 50 سم × عرض 25 سم",
     "price": "78 جنيه"
@@ -314,7 +314,7 @@
   {
     "id": "lb40",
     "name": "بوت ضفيرة برجل",
-    "image": "/images/lookbook/lb-37.png",
+    "image": "/api/media.php?f=lb-20260904152439-927b25.jpg",
     "kind": "pots",
     "size": "ارتفاع 48 سم × عرض 22 سم",
     "price": "75 جنيه"
@@ -322,7 +322,7 @@
   {
     "id": "lb41",
     "name": "بوت ضفيرة",
-    "image": "/images/lookbook/lb-38.png",
+    "image": "/api/media.php?f=lb-20260904153653-7a3185.jpg",
     "kind": "pots",
     "size": "ارتفاع 28 سم × عرض 22 سم",
     "price": "55 جنيه"
@@ -330,7 +330,7 @@
   {
     "id": "lb42",
     "name": "بوت سلسلة كبير",
-    "image": "/images/lookbook/lb-39.png",
+    "image": "/api/media.php?f=lb-20260904155459-866ad7.jpg",
     "kind": "pots",
     "size": "ارتفاع 33 سم × عرض 30 سم",
     "price": "60 جنيه"
@@ -338,7 +338,7 @@
   {
     "id": "lb43",
     "name": "تريندس لوكس",
-    "image": "/images/lookbook/lb-40.png",
+    "image": "/api/media.php?f=lb-20260904151037-38a2c4.jpg",
     "kind": "pots",
     "size": "ارتفاع 33 سم × عرض 36 سم",
     "price": "60 جنيه"
@@ -346,7 +346,7 @@
   {
     "id": "lb44",
     "name": "بوت تريندس",
-    "image": "/images/lookbook/lb-41.png",
+    "image": "/api/media.php?f=lb-20260904153943-95c45b.jpg",
     "kind": "pots",
     "size": "ارتفاع 30 سم × عرض 36 سم",
     "price": "55 جنيه"
@@ -354,7 +354,7 @@
   {
     "id": "lb45",
     "name": "بوت لوكس أكريلك",
-    "image": "/images/lookbook/lb-42.png",
+    "image": "/api/media.php?f=lb-20260904145743-7a92cf.jpg",
     "kind": "pots",
     "size": "ارتفاع 50 سم × عرض 28 سم",
     "price": "110 جنيه"
@@ -362,7 +362,7 @@
   {
     "id": "lb46",
     "name": "بوت بابلز برجل",
-    "image": "/images/lookbook/lb-43.png",
+    "image": "/api/media.php?f=lb-20260904153959-b70ea4.jpg",
     "kind": "pots",
     "size": "ارتفاع 48 سم × عرض 22 سم",
     "price": "75 جنيه"
