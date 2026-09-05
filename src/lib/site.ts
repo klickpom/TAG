@@ -32,13 +32,13 @@ export const FEATURED = {
     "/images/products/clock-04.jpg",
     "/images/products/clock-05.jpg",
     "/images/products/clock-06.jpg",
-    "/images/products/vase1-01.jpg",
+    "/images/products/vase1-01.jpg?v=2",
     "/images/products/vase1-05.jpg",
   ],
   about: [
     { src: "/images/products/clock-01.jpg", alt: "ساعة حائط مرايا من مصنع تاج" },
     { src: "/images/products/clock-03.jpg", alt: "ساعة حائط ذهبية من مصنع تاج" },
-    { src: "/images/products/vase1-01.jpg", alt: "أصيص بابل من مصنع تاج" },
+    { src: "/images/products/vase1-01.jpg?v=2", alt: "أصيص بابل من مصنع تاج" },
     { src: "/images/products/vase1-05.jpg", alt: "أصيص ضفيرة من مصنع تاج" },
   ],
 } as const;
