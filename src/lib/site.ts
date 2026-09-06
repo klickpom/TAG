@@ -26,15 +26,15 @@ export const SITE = {
 } as const;
 
 export const FEATURED = {
-  hero: "/images/products/clock-01.jpg",
-  heroAlt: "ساعة حائط مرايا من مصنع تاج",
+  hero: "/images/taj-logo-3d.jpg",
+  heroAlt: "شعار مصنع تاج",
   mosaic: [
-    "/images/products/clock-01.jpg",
     "/images/products/clock-02.jpg",
     "/images/products/clock-03.jpg",
     "/images/products/clock-04.jpg",
     "/images/products/clock-05.jpg",
     "/images/products/clock-06.jpg",
+    "/images/products/clock-07.jpg",
     "/images/products/vase1-01.jpg?v=2",
     "/images/products/vase1-05.jpg",
   ],

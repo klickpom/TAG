@@ -79,17 +79,18 @@ export default function Hero() {
           </motion.div>
         </div>
 
-        <div className="relative mx-auto w-full max-w-sm md:max-w-md lg:max-w-lg">
+        <div className="relative mx-auto w-full max-w-sm md:max-w-md lg:max-w-[28rem]">
+          <div className="pointer-events-none absolute inset-4 rounded-full bg-[#c6a15b]/25 blur-3xl" />
           <motion.div
             initial={{ opacity: 0, scale: 0.92 }}
             animate={{ opacity: 1, scale: 1 }}
             transition={{ duration: 0.8, delay: 0.2 }}
-            className="overflow-hidden rounded-[2rem] bg-[#111113] shadow-2xl shadow-black/50 ring-1 ring-[#c6a15b]/40"
+            className="relative overflow-hidden rounded-[2rem] bg-[#cbb892] shadow-2xl shadow-black/50 ring-1 ring-[#c6a15b]/50"
           >
             <img
               src={FEATURED.hero}
               alt={FEATURED.heroAlt}
-              className="aspect-[4/5] w-full object-contain object-top p-3 sm:p-4"
+              className="aspect-square w-full object-contain"
             />
           </motion.div>
         </div>
