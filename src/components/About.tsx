@@ -30,7 +30,7 @@ export default function About() {
                 <img
                   src={shot.src}
                   alt={shot.alt}
-                  className="aspect-[4/5] w-full object-contain object-top p-2"
+                  className="aspect-[4/5] w-full object-cover object-center"
                 />
               </div>
             ))}

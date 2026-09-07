@@ -21,7 +21,7 @@ export const SITE = {
   facebook: "https://www.facebook.com/profile.php?id=61591849934315",
   whatsapp: "https://wa.me/201010841285",
   logo: "https://tag-eg.online/images/logo.jpeg",
-  image: "https://tag-eg.online/images/products/clock-01.jpg",
+  image: "https://tag-eg.online/images/taj-logo-3d.jpg",
   foundingLocation: "بسيون، الغربية، مصر",
 } as const;
 
@@ -39,10 +39,10 @@ export const FEATURED = {
     "/images/products/vase1-05.jpg",
   ],
   about: [
-    { src: "/images/products/clock-01.jpg", alt: "ساعة حائط مرايا من مصنع تاج" },
-    { src: "/images/products/clock-03.jpg", alt: "ساعة حائط ذهبية من مصنع تاج" },
-    { src: "/images/products/vase1-01.jpg?v=2", alt: "أصيص بابل من مصنع تاج" },
-    { src: "/images/products/vase1-05.jpg", alt: "أصيص ضفيرة من مصنع تاج" },
+    { src: "/images/taj-logo-3d.jpg", alt: "شعار مصنع تاج" },
+    { src: "/images/products/vase1-01.jpg?v=2", alt: "أصص تاج البيضاء مع شعار المصنع" },
+    { src: "/images/products/vase1-02.jpg", alt: "أصيص تاج أبيض بحزام ذهبي" },
+    { src: "/images/products/vase1-09.jpg", alt: "طقم أصص بابل من مصنع تاج" },
   ],
 } as const;
 
