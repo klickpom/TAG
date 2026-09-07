@@ -16,6 +16,12 @@ export const SITE = {
   countryCode: "EG",
   geo: { lat: 31.013279, lng: 30.8531894 },
   maps: "https://www.google.com/maps?q=31.013279,30.8531894&z=17&hl=ar",
+  mapsEmbed:
+    "https://www.openstreetmap.org/export/embed.html?bbox=30.8432%2C31.0063%2C30.8632%2C31.0203&layer=mapnik&marker=31.013279%2C30.8531894",
+  mapsDirections:
+    "https://www.google.com/maps/dir/?api=1&destination=31.013279,30.8531894",
+  mapsApple: "https://maps.apple.com/?ll=31.013279,30.8531894&q=%D9%85%D8%B5%D9%86%D8%B9%20%D8%AA%D8%A7%D8%AC",
+  addressAr: "بسيون، محافظة الغربية، مصر",
   hours: "Mo-Su 10:00-22:00",
   hoursAr: "يومياً من 10 صباحاً حتى 10 مساءً",
   facebook: "https://www.facebook.com/profile.php?id=61591849934315",

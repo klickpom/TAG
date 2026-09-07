@@ -1,5 +1,6 @@
+import { useState } from "react";
 import { motion } from "framer-motion";
-import { Clock3, Facebook, MapPin, MessageCircle, Music2, Phone } from "lucide-react";
+import { Clock3, Facebook, MapPin, MessageCircle, Music2, Navigation, Phone } from "lucide-react";
 import { SITE } from "@/lib/site";
 import { FB_LINK, PHONE_DISPLAY, PHONE_TEL, TIKTOK_LINK, WA_LINK } from "./TopBar";
 
@@ -10,9 +11,94 @@ const CARDS = [
   { icon: Music2, title: "تيك توك", value: "فيديوهات المنتجات", href: TIKTOK_LINK },
 ];
 
+function FactoryMap() {
+  const [live, setLive] = useState(false);
+
+  return (
+    <div
+      id="location"
+      className="mt-8 overflow-hidden rounded-[1.6rem] border border-[#eadfc9] bg-white shadow-sm lg:grid lg:grid-cols-[minmax(16rem,0.9fr)_minmax(0,1.2fr)]"
+    >
+      <div className="flex flex-col justify-center gap-5 bg-[#191920] px-5 py-7 sm:px-8 sm:py-9">
+        <div className="flex items-center gap-3">
+          <span className="bg-gold-gradient flex h-11 w-11 shrink-0 items-center justify-center rounded-2xl text-[#191920]">
+            <MapPin className="h-5 w-5" />
+          </span>
+          <div>
+            <p className="text-xs font-bold tracking-wide text-[#c6a15b]">موقع المصنع</p>
+            <h3 className="text-lg font-black text-white sm:text-xl">زور مصنع تاج</h3>
+          </div>
+        </div>
+        <p className="text-sm leading-7 text-[#e9e2d4] sm:text-base">
+          {SITE.legalName}
+          <br />
+          {SITE.addressAr}
+        </p>
+        <p className="text-xs font-semibold tracking-wide text-[#cfc7b4]" dir="ltr">
+          {SITE.geo.lat}, {SITE.geo.lng}
+        </p>
+        <div className="flex flex-col gap-3 sm:flex-row sm:flex-wrap">
+          <a
+            href={SITE.maps}
+            target="_blank"
+            rel="noreferrer"
+            className="bg-gold-gradient inline-flex items-center justify-center gap-2 rounded-full px-5 py-3 text-sm font-black text-[#191920]"
+          >
+            <MapPin className="h-4 w-4" />
+            افتح في خرائط جوجل
+          </a>
+          <a
+            href={SITE.mapsDirections}
+            target="_blank"
+            rel="noreferrer"
+            className="inline-flex items-center justify-center gap-2 rounded-full border border-[#c6a15b]/50 px-5 py-3 text-sm font-bold text-[#e6c987]"
+          >
+            <Navigation className="h-4 w-4" />
+            الاتجاهات
+          </a>
+          <a
+            href={SITE.mapsApple}
+            target="_blank"
+            rel="noreferrer"
+            className="inline-flex items-center justify-center rounded-full px-4 py-3 text-xs font-semibold text-[#cfc7b4] underline-offset-4 hover:text-[#e6c987] hover:underline sm:px-2"
+          >
+            خرائط آبل
+          </a>
+        </div>
+        <div className="flex items-center gap-3 border-t border-white/10 pt-5 text-[#e9e2d4]">
+          <Clock3 className="h-5 w-5 shrink-0 text-[#c6a15b]" />
+          <span className="text-sm font-semibold">{SITE.hoursAr}</span>
+        </div>
+      </div>
+
+      <div className="relative h-56 min-h-[14rem] w-full sm:h-80 md:h-96 lg:h-full lg:min-h-[28rem]">
+        <iframe
+          title="موقع مصنع تاج في بسيون على الخريطة"
+          src={SITE.mapsEmbed}
+          className={`h-full w-full border-0 ${live ? "" : "pointer-events-none"}`}
+          loading="lazy"
+          referrerPolicy="no-referrer-when-downgrade"
+          allowFullScreen
+        />
+        {live ? null : (
+          <button
+            type="button"
+            onClick={() => setLive(true)}
+            className="absolute inset-0 flex items-end justify-center bg-gradient-to-t from-[#191920]/55 via-transparent to-transparent pb-4"
+          >
+            <span className="rounded-full bg-[#191920]/90 px-4 py-2 text-xs font-bold text-[#e6c987] shadow-lg">
+              اضغط لتحريك الخريطة
+            </span>
+          </button>
+        )}
+      </div>
+    </div>
+  );
+}
+
 export default function Contact() {
   return (
-    <section id="contact" className="bg-[#f5efe4] py-20">
+    <section id="contact" className="bg-[#f5efe4] py-16 sm:py-20">
       <div className="mx-auto max-w-7xl px-4">
         <motion.div
           initial={{ opacity: 0, y: 24 }}
@@ -58,23 +144,9 @@ export default function Contact() {
           initial={{ opacity: 0, y: 24 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
-          transition={{ duration: 0.6, delay: 0.15 }}
-          className="mt-8 flex flex-col items-center justify-center gap-4 rounded-2xl bg-[#191920] px-6 py-8 text-center sm:flex-row sm:gap-12"
+          transition={{ duration: 0.6, delay: 0.1 }}
         >
-          <a
-            href={SITE.maps}
-            target="_blank"
-            rel="noreferrer"
-            className="flex items-center gap-3 text-[#e9e2d4] transition-colors hover:text-[#e6c987]"
-          >
-            <MapPin className="h-5 w-5 text-[#c6a15b]" />
-            <span className="text-sm font-semibold">بسيون — محافظة الغربية، مصر</span>
-          </a>
-          <div className="hidden h-8 w-px bg-white/15 sm:block" />
-          <div className="flex items-center gap-3 text-[#e9e2d4]">
-            <Clock3 className="h-5 w-5 text-[#c6a15b]" />
-            <span className="text-sm font-semibold">متاحين يومياً من 10 صباحاً حتى 10 مساءً</span>
-          </div>
+          <FactoryMap />
         </motion.div>
       </div>
     </section>

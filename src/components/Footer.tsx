@@ -17,9 +17,9 @@ export default function Footer() {
             href={SITE.maps}
             target="_blank"
             rel="noreferrer"
-            className="mt-3 inline-block text-sm font-semibold text-[#e6c987] transition-colors hover:text-white"
+            className="mt-3 inline-flex items-center gap-2 text-sm font-semibold text-[#e6c987] transition-colors hover:text-white"
           >
-            بسيون — الغربية، مصر
+            {SITE.addressAr} — افتح الخريطة
           </a>
           <p className="mt-1 text-sm">يومياً من 10 صباحاً حتى 10 مساءً</p>
         </div>
