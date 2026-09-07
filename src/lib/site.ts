@@ -4,7 +4,7 @@ export const SITE = {
   nameEn: "TAJ",
   legalName: "مصنع تاج لساعات الحائط ولوازم الديكور",
   description:
-    "مصنع تاج مصنع مصري في بسيون متخصص في ساعات الحائط ولوازم الديكور. صناعة مباشرة من المصنع، شحن لكل محافظات مصر، والدفع عند الاستلام.",
+    "مصنع تاج مصنع مصري في بسيون بمحافظة الغربية يصنّع ساعات الحائط وتحف الديكور والبوتات السيراميك من المصنع مباشرة، ويشحن لكل محافظات مصر مع الدفع عند الاستلام.",
   phoneDisplay: "0101 084 1285",
   phoneIntl: "+201010841285",
   email: "",
@@ -55,7 +55,11 @@ export const FEATURED = {
 export const FAQS: { q: string; a: string }[] = [
   {
     q: "فين مصنع تاج؟",
-    a: "مصنع تاج موجود في بسيون بمحافظة الغربية في مصر. التصنيع محلي من المصنع مباشرة، والشحن لكل محافظات مصر.",
+    a: "مصنع تاج موجود في بسيون بمحافظة الغربية في مصر، على الإحداثيات 31.013279، 30.8531894. التصنيع محلي من المصنع مباشرة، والشحن لكل محافظات مصر.",
+  },
+  {
+    q: "هل مصنع تاج في طنطا؟",
+    a: "لا. مقر مصنع تاج في بسيون بمحافظة الغربية وليس في طنطا. الشحن يصل طنطا وباقي المحافظات من مصنع بسيون.",
   },
   {
     q: "مصنع تاج بيصنع إيه؟",
@@ -63,7 +67,7 @@ export const FAQS: { q: string; a: string }[] = [
   },
   {
     q: "هل الأسعار ظاهرة على الموقع؟",
-    a: "المعرض والكاتلوج على الموقع بدون أسعار. للتفاصيل والطلب كلم واتساب، والسعر يتحدد حسب القطعة والكمية.",
+    a: "المعرض والكاتلوج على الموقع بدون أسعار. للتفاصيل والطلب كلم واتساب على 01010841285، والسعر يتحدد حسب القطعة والكمية.",
   },
   {
     q: "هل في دفع عند الاستلام؟",
@@ -71,11 +75,15 @@ export const FAQS: { q: string; a: string }[] = [
   },
   {
     q: "إزاي أطلب من مصنع تاج؟",
-    a: "اختار القطعة من المعرض أو الكاتلوج، ثم راسل واتساب على 01010841285 باسم المنتج والمقاس. الرد يومياً من 10 صباحاً حتى 10 مساءً.",
+    a: "اختار القطعة من المعرض أو الكاتلوج، ثم راسل واتساب على 01010841285 باسم المنتج والمقاس والمدينة. الرد يومياً من 10 صباحاً حتى 10 مساءً.",
   },
   {
     q: "هل الشحن لكل محافظات مصر؟",
     a: "نعم. مصنع تاج يشحن ساعات الحائط والتحف لكل محافظات مصر من بسيون، مع تغليف مقوّى للمنتجات القابلة للكسر.",
+  },
+  {
+    q: "إيه مواعيد مصنع تاج؟",
+    a: "مصنع تاج متاح يومياً من 10 صباحاً حتى 10 مساءً، بما فيها الجمعة والسبت.",
   },
 ];
 
@@ -105,10 +113,10 @@ export function orgId() {
 export function localBusinessJsonLd() {
   return {
     "@context": "https://schema.org",
-    "@type": ["LocalBusiness", "HomeGoodsStore"],
+    "@type": ["LocalBusiness", "HomeGoodsStore", "Manufacturer"],
     "@id": orgId(),
     name: SITE.legalName,
-    alternateName: [SITE.nameAr, SITE.nameEn, "TAJ Factory Basyoun"],
+    alternateName: [SITE.nameAr, SITE.nameEn, "TAJ Factory", "TAJ Factory Basyoun", "Taj Clocks Basyoun"],
     url: SITE.url,
     image: [SITE.logo, SITE.image],
     logo: SITE.logo,
@@ -116,8 +124,11 @@ export function localBusinessJsonLd() {
     priceRange: "$$",
     currenciesAccepted: "EGP",
     paymentAccepted: "Cash",
+    foundingLocation: SITE.foundingLocation,
+    knowsLanguage: ["ar"],
     address: {
       "@type": "PostalAddress",
+      streetAddress: SITE.city,
       addressLocality: SITE.city,
       addressRegion: SITE.region,
       addressCountry: SITE.countryCode,
@@ -128,18 +139,48 @@ export function localBusinessJsonLd() {
       longitude: SITE.geo.lng,
     },
     hasMap: SITE.maps,
-    areaServed: {
-      "@type": "Country",
-      name: "Egypt",
+    containedInPlace: {
+      "@type": "AdministrativeArea",
+      name: "الغربية",
+      containedInPlace: { "@type": "Country", name: "مصر" },
     },
+    areaServed: [
+      { "@type": "Country", name: "مصر" },
+      { "@type": "AdministrativeArea", name: "الغربية" },
+      { "@type": "City", name: "بسيون" },
+      { "@type": "City", name: "طنطا" },
+      { "@type": "City", name: "القاهرة" },
+      { "@type": "City", name: "الإسكندرية" },
+      { "@type": "City", name: "المنصورة" },
+    ],
     openingHoursSpecification: {
       "@type": "OpeningHoursSpecification",
       dayOfWeek: ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"],
       opens: "10:00",
       closes: "22:00",
     },
-    sameAs: [SITE.facebook],
-    knowsAbout: ["ساعات حائط", "تحف ديكور", "ديكور منزلي", "سيراميك", "مصنع ديكور بسيون"],
+    contactPoint: {
+      "@type": "ContactPoint",
+      contactType: "customer service",
+      telephone: SITE.phoneIntl,
+      availableLanguage: ["ar"],
+      hoursAvailable: {
+        "@type": "OpeningHoursSpecification",
+        dayOfWeek: ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"],
+        opens: "10:00",
+        closes: "22:00",
+      },
+    },
+    sameAs: [SITE.facebook, SITE.whatsapp, SITE.maps],
+    knowsAbout: [
+      "ساعات حائط",
+      "تحف ديكور",
+      "ديكور منزلي",
+      "سيراميك",
+      "مصنع ديكور بسيون",
+      "ساعات حائط بسيون",
+      "مصنع ساعات الغربية",
+    ],
     description: SITE.description,
     hasOfferCatalog: {
       "@type": "OfferCatalog",
@@ -160,8 +201,10 @@ export function websiteJsonLd() {
     "@id": `${SITE.url}/#website`,
     url: SITE.url,
     name: SITE.legalName,
+    alternateName: SITE.nameAr,
     inLanguage: "ar-EG",
     publisher: { "@id": orgId() },
+    about: { "@id": orgId() },
   };
 }
 
@@ -234,6 +277,17 @@ export function collectionPageJsonLd(itemNames: string[] = []) {
       })),
     },
   };
+}
+
+export function homeJsonLd() {
+  return [
+    localBusinessJsonLd(),
+    websiteJsonLd(),
+    webPageJsonLd(),
+    faqJsonLd(),
+    howToJsonLd(),
+    breadcrumbJsonLd([{ name: "الرئيسية", path: "/" }]),
+  ];
 }
 
 export function breadcrumbJsonLd(items: { name: string; path: string }[]) {

@@ -50,9 +50,9 @@ export default function Hero() {
             transition={{ duration: 0.6, delay: 0.2 }}
             className="mx-auto mt-5 max-w-xl break-words text-sm leading-7 text-[#cfc7b4] sm:text-base sm:leading-8 md:text-lg lg:mx-0"
           >
-            <strong className="font-black text-white">مصنع تاج</strong> مصنع مصري في بسيون متخصص في
-            تصنيع ساعات الحائط وتحف الديكور. الصناعة من المصنع مباشرة، والشحن لكل محافظات مصر،
-            والدفع عند الاستلام. للتفاصيل والطلب كلمنا على واتساب.
+            <strong className="font-black text-white">مصنع تاج</strong> هو مصنع مصري في بسيون بمحافظة
+            الغربية يصنّع ساعات الحائط وتحف الديكور من المصنع مباشرة. الشحن لكل محافظات مصر والدفع عند
+            الاستلام. للتفاصيل والطلب كلمنا على واتساب 01010841285.
           </motion.p>
 
           <motion.div

@@ -6,6 +6,8 @@ import { ChevronLeft, ChevronRight, MessageCircle } from "lucide-react";
 import { LOOK_LABELS, type LookItem } from "@/data/lookbook";
 import { useCatalog } from "@/context/CatalogContext";
 import { WA_LINK } from "@/components/TopBar";
+import Seo from "@/components/Seo";
+import { collectionPageJsonLd, breadcrumbJsonLd, localBusinessJsonLd } from "@/lib/site";
 
 function waItem(name: string, size: string) {
   return `${WA_LINK}?text=${encodeURIComponent(`السلام عليكم، محتاج تفاصيل من كاتلوج تاج عن: ${name} — ${size}`)}`;
@@ -117,6 +119,19 @@ export default function Lookbook() {
 
   return (
     <div className="catalog-root relative flex h-dvh w-full flex-col overflow-hidden bg-[#070708] text-[#f4ead8]">
+      <Seo
+        title="كاتلوج مصنع تاج | ساعات حائط وتحف ديكور من بسيون"
+        description="كاتلوج مصنع تاج في بسيون: ساعات حائط وتحف وديكور. اطلب عبر واتساب مع الشحن لكل محافظات مصر والدفع عند الاستلام."
+        path="/catalog"
+        jsonLd={[
+          localBusinessJsonLd(),
+          collectionPageJsonLd(lookbook.map((item) => item.name)),
+          breadcrumbJsonLd([
+            { name: "الرئيسية", path: "/" },
+            { name: "الكاتلوج", path: "/catalog" },
+          ]),
+        ]}
+      />
       <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_at_top,_#241c14_0%,_#070708_62%)]" />
       <div className="catalog-sheen pointer-events-none absolute inset-x-0 top-0 h-px" />
 

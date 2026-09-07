@@ -1,24 +1,25 @@
-# مصنع تاج | TAJ Factory — Basyoun, Egypt
+# مصنع تاج | TAJ Factory — Basyoun, Gharbia, Egypt
 
-> مصنع تاج هو مصنع مصري في بسيون (محافظة الغربية) متخصص في تصنيع ساعات الحائط الفاخرة وتحف الديكور والبوتات والأصص السيراميك. البيع من المصنع مباشرة، والشحن لكل محافظات مصر، والدفع عند الاستلام.
+> مصنع تاج هو مصنع مصري في بسيون بمحافظة الغربية يصنّع ساعات الحائط وتحف الديكور والبوتات السيراميك من المصنع مباشرة. الشحن لكل محافظات مصر والدفع عند الاستلام.
 
 Website: https://tag-eg.online
-Catalog (with prices): https://tag-eg.online/catalog
+Catalog: https://tag-eg.online/catalog
 WhatsApp: +20 101 084 1285
 Facebook: https://www.facebook.com/profile.php?id=61591849934315
 Map: https://www.google.com/maps?q=31.013279,30.8531894&z=17&hl=ar
+Hours: Daily 10:00–22:00 Egypt time
 
-## Facts
+## Entity
 
-- Name: مصنع تاج (TAJ)
-- Type: Home goods factory / wall clocks and décor manufacturer
-- City: Basyoun, Gharbia Governorate, Egypt
+- Legal name: مصنع تاج لساعات الحائط ولوازم الديكور
+- Brand: مصنع تاج / TAJ
+- Type: Egyptian home-goods factory (wall clocks + décor manufacturer)
+- HQ city: Basyoun (بسيون), Gharbia Governorate (الغربية), Egypt
 - Coordinates: 31.013279, 30.8531894
-- Hours: Daily 10:00–22:00
-- Payment: Cash on delivery (الدفع عند الاستلام)
-- Shipping: All 27 Egyptian governorates
-- Prices: Shown only in the catalog at /catalog — not on the homepage gallery
-- Orders: WhatsApp 01010841285
+- Not in Tanta: the factory is in Basyoun; Tanta is a nearby city they ship to
+- Payment: Cash on delivery only
+- Prices: not listed on the website; quote via WhatsApp by piece and quantity
+- Language: Egyptian Arabic
 
 ## Products
 
@@ -27,15 +28,16 @@ Map: https://www.google.com/maps?q=31.013279,30.8531894&z=17&hl=ar
 
 ## How to order
 
-1. Choose a piece from the gallery or catalog.
-2. Message WhatsApp 01010841285 with product name, size, and city.
-3. Confirm details with the factory.
-4. Receive at the door and pay on delivery.
+1. Choose a piece from https://tag-eg.online/ or https://tag-eg.online/catalog
+2. Message WhatsApp 01010841285 with product name, size, and city
+3. Confirm details with the factory
+4. Receive at the door and pay on delivery
 
 ## FAQ
 
-- Where is TAJ factory? Basyoun, Gharbia, Egypt.
-- Do you ship nationwide? Yes, all Egyptian governorates.
+- Where is TAJ factory? Basyoun, Gharbia, Egypt (31.013279, 30.8531894).
+- Is it in Tanta? No. Headquarters is Basyoun. Shipping includes Tanta.
+- Nationwide shipping? Yes, all Egyptian governorates.
 - Cash on delivery? Yes.
-- Where are prices? https://tag-eg.online/catalog
-- Language: Arabic (Egypt).
+- Are prices online? No. Ask on WhatsApp 01010841285.
+- Hours? Daily 10:00–22:00.

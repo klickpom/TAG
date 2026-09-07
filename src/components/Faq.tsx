@@ -1,5 +1,4 @@
 import { useState } from "react";
-import { motion } from "framer-motion";
 import { ChevronDown } from "lucide-react";
 import { FAQS, ORDER_STEPS } from "@/lib/site";
 
@@ -42,13 +41,7 @@ export default function Faq() {
                     <span className="text-sm font-black text-[#191920] sm:text-base">{item.q}</span>
                     <ChevronDown className={`h-4 w-4 shrink-0 text-[#a8853f] transition-transform ${isOpen ? "rotate-180" : ""}`} />
                   </button>
-                  <motion.div
-                    initial={false}
-                    animate={{ height: isOpen ? "auto" : 0, opacity: isOpen ? 1 : 0 }}
-                    className="overflow-hidden"
-                  >
-                    <p className="pb-4 text-sm leading-7 text-[#5d554a]">{item.a}</p>
-                  </motion.div>
+                    <p className={`text-sm leading-7 text-[#5d554a] ${isOpen ? "pb-4" : "sr-only"}`}>{item.a}</p>
                 </div>
               );
             })}

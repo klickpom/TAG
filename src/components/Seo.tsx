@@ -43,12 +43,15 @@ export default function Seo({
     document.documentElement.lang = "ar";
     document.documentElement.dir = "rtl";
     upsertMeta("name", "description", description);
+    upsertMeta("name", "author", SITE.nameAr);
+    upsertMeta("name", "geo.region", "EG-GH");
     upsertMeta("name", "geo.placename", `${SITE.cityEn}, ${SITE.regionEn}, Egypt`);
     upsertMeta("name", "geo.position", `${SITE.geo.lat};${SITE.geo.lng}`);
     upsertMeta("name", "ICBM", `${SITE.geo.lat}, ${SITE.geo.lng}`);
-    upsertMeta("name", "robots", noindex ? "noindex, nofollow" : "index, follow, max-image-preview:large");
-    upsertMeta("name", "googlebot", noindex ? "noindex, nofollow" : "index, follow");
-    upsertMeta("property", "og:type", path === "/catalog" ? "website" : "website");
+    upsertMeta("name", "robots", noindex ? "noindex, nofollow" : "index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1");
+    upsertMeta("name", "googlebot", noindex ? "noindex, nofollow" : "index, follow, max-image-preview:large");
+    upsertMeta("name", "bingbot", noindex ? "noindex, nofollow" : "index, follow");
+    upsertMeta("property", "og:type", "website");
     upsertMeta("property", "og:locale", "ar_EG");
     upsertMeta("property", "og:site_name", SITE.legalName);
     upsertMeta("property", "og:title", title);
@@ -56,11 +59,15 @@ export default function Seo({
     upsertMeta("property", "og:url", url);
     upsertMeta("property", "og:image", image);
     upsertMeta("property", "og:image:alt", title);
+    upsertMeta("property", "og:image:width", "1200");
+    upsertMeta("property", "og:image:height", "1200");
     upsertMeta("name", "twitter:card", "summary_large_image");
     upsertMeta("name", "twitter:title", title);
     upsertMeta("name", "twitter:description", description);
     upsertMeta("name", "twitter:image", image);
+    upsertMeta("name", "twitter:image:alt", title);
     upsertLink("canonical", url);
+    upsertLink("me", SITE.facebook);
   }, [title, description, url, image, noindex, path]);
 
   return (

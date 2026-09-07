@@ -1,0 +1,15 @@
+/* TEAM */
+Manufacturer: مصنع تاج / TAJ Factory
+Location: Basyoun, Gharbia, Egypt
+Contact: +20 101 084 1285
+WhatsApp: https://wa.me/201010841285
+Site: https://tag-eg.online
+Catalog: https://tag-eg.online/catalog
+
+/* THANKS */
+Customers across Egypt's 27 governorates
+
+/* SITE */
+Language: ar-EG
+Standards: HTML5, JSON-LD LocalBusiness, FAQPage, HowTo
+Last update: 2026-09-07

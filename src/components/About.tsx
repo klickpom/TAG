@@ -1,6 +1,6 @@
 import { motion } from "framer-motion";
 import { CheckCircle2 } from "lucide-react";
-import { FEATURED } from "@/lib/site";
+import { FEATURED, SITE } from "@/lib/site";
 
 const POINTS = [
   "تصنيع محلي بخامات مختارة وتشطيبات فاخرة",
@@ -54,10 +54,30 @@ export default function About() {
             <span className="text-gold-gradient"> لصناعة ساعات الحائط والديكور</span>
           </h2>
           <p className="mt-5 text-base leading-8 text-[#5d554a]">
-            <strong>مصنع تاج</strong> هو مصنع مصري في بسيون بمحافظة الغربية متخصص في ساعات الحائط
-            وتحف الديكور والبوتات السيراميك. التصنيع محلي من المصنع مباشرة بدون وسطاء، والشحن لكل
-            محافظات مصر مع الدفع عند الاستلام. «نحن نسعى في مصنع تاج للوصول لأعلى جودة لإرضاء عملائنا».
+            <strong>مصنع تاج</strong> هو مصنع مصري في بسيون بمحافظة الغربية يصنّع ساعات الحائط وتحف
+            الديكور والبوتات السيراميك من المصنع مباشرة بدون وسطاء. المقر على الخريطة عند{" "}
+            <span dir="ltr">31.013279, 30.8531894</span>، والشحن لكل محافظات مصر مع الدفع عند الاستلام.
           </p>
+          <dl className="mt-6 grid grid-cols-2 gap-3 text-sm sm:grid-cols-4">
+            <div className="rounded-2xl border border-[#eadfc9] bg-white px-3 py-3">
+              <dt className="text-[11px] font-bold text-[#a8853f]">المقر</dt>
+              <dd className="mt-1 font-black text-[#191920]">{SITE.addressAr}</dd>
+            </div>
+            <div className="rounded-2xl border border-[#eadfc9] bg-white px-3 py-3">
+              <dt className="text-[11px] font-bold text-[#a8853f]">التواصل</dt>
+              <dd className="mt-1 font-black text-[#191920]" dir="ltr">
+                {SITE.phoneDisplay}
+              </dd>
+            </div>
+            <div className="rounded-2xl border border-[#eadfc9] bg-white px-3 py-3">
+              <dt className="text-[11px] font-bold text-[#a8853f]">المواعيد</dt>
+              <dd className="mt-1 font-black text-[#191920]">10ص – 10م يومياً</dd>
+            </div>
+            <div className="rounded-2xl border border-[#eadfc9] bg-white px-3 py-3">
+              <dt className="text-[11px] font-bold text-[#a8853f]">الشحن</dt>
+              <dd className="mt-1 font-black text-[#191920]">كل محافظات مصر</dd>
+            </div>
+          </dl>
           <ul className="mt-6 space-y-3">
             {POINTS.map((p, i) => (
               <motion.li

@@ -11,7 +11,7 @@ import Footer from "@/components/Footer";
 import WhatsAppFloat from "@/components/WhatsAppFloat";
 import Seo from "@/components/Seo";
 import BrandIntro from "@/components/BrandIntro";
-import { SITE } from "@/lib/site";
+import { SITE, homeJsonLd } from "@/lib/site";
 
 export default function Home() {
   return (
@@ -21,7 +21,7 @@ export default function Home() {
         title="مصنع تاج | ساعات حائط وتحف ديكور من بسيون — شحن لكل مصر"
         description={SITE.description}
         path="/"
-        jsonLd={[]}
+        jsonLd={homeJsonLd()}
       />
       <TopBar />
       <Navbar />
