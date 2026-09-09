@@ -3,6 +3,7 @@ import Navbar from "@/components/Navbar";
 import Hero from "@/components/Hero";
 import Features from "@/components/Features";
 import About from "@/components/About";
+import Guide from "@/components/Guide";
 import Shop from "@/components/Shop";
 import Testimonials from "@/components/Testimonials";
 import Contact from "@/components/Contact";
@@ -29,6 +30,7 @@ export default function Home() {
         <Hero />
         <Features />
         <About />
+        <Guide />
         <Shop />
         <Testimonials />
         <Faq />

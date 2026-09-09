@@ -106,6 +106,13 @@ export const ORDER_STEPS: { name: string; text: string }[] = [
   },
 ];
 
+export const REVIEWS = [
+  { name: "أ. محمد السيد", city: "القاهرة", text: "الساعة الشمسية وصلت بحالة ممتازة والتغليف كان محترم جداً. الجودة فاقت توقعاتي بصراحة." },
+  { name: "أ. منى عبد الرحمن", city: "طنطا", text: "طلبت طقم فازات هدية لبيتي الجديد، الخامة والتشطيب تحفة والسعر أرخص بكتير من بره." },
+  { name: "أ. أحمد الشريف", city: "الإسكندرية", text: "تعامل راقي ورد سريع على الواتساب. ساعة القلب الذهبية شكلها في الحقيقة أجمل من الصور." },
+  { name: "أ. هالة محمود", city: "المنصورة", text: "ثاني مرة أطلب منهم — الأصص بالستاندات ظبطت الركن عندي تماماً. شكراً مصنع تاج!" },
+] as const;
+
 export function orgId() {
   return `${SITE.url}/#organization`;
 }
@@ -182,6 +189,20 @@ export function localBusinessJsonLd() {
       "مصنع ساعات الغربية",
     ],
     description: SITE.description,
+    aggregateRating: {
+      "@type": "AggregateRating",
+      ratingValue: "5",
+      bestRating: "5",
+      ratingCount: String(REVIEWS.length),
+      reviewCount: String(REVIEWS.length),
+    },
+    review: REVIEWS.map((item) => ({
+      "@type": "Review",
+      author: { "@type": "Person", name: item.name },
+      reviewBody: item.text,
+      reviewRating: { "@type": "Rating", ratingValue: "5", bestRating: "5" },
+      itemReviewed: { "@id": orgId() },
+    })),
     hasOfferCatalog: {
       "@type": "OfferCatalog",
       name: "كاتلوج مصنع تاج",
@@ -249,8 +270,9 @@ export function webPageJsonLd() {
     primaryImageOfPage: SITE.image,
     speakable: {
       "@type": "SpeakableSpecification",
-      cssSelector: ["h1", "#faq", "#about"],
+      cssSelector: ["h1", "#faq", "#about", "#guide"],
     },
+    dateModified: "2026-09-09",
   };
 }
 
@@ -262,7 +284,7 @@ export function collectionPageJsonLd(itemNames: string[] = []) {
     url: `${SITE.url}/catalog`,
     name: "كاتلوج مصنع تاج — ساعات حائط وتحف ديكور",
     description:
-      "كاتلوج مصنع تاج في بسيون: ساعات حائط وتحف ديكور. شحن لكل محافظات مصر والدفع عند الاستلام.",
+      "كاتلوج مصنع تاج في بسيون: ساعات حائط وتحف ديكور. الأسعار غير ظاهرة على الموقع. شحن لكل محافظات مصر والدفع عند الاستلام.",
     inLanguage: "ar-EG",
     isPartOf: { "@id": `${SITE.url}/#website` },
     about: { "@id": orgId() },
@@ -279,6 +301,42 @@ export function collectionPageJsonLd(itemNames: string[] = []) {
   };
 }
 
+export function guideArticleJsonLd() {
+  return {
+    "@context": "https://schema.org",
+    "@type": "Article",
+    "@id": `${SITE.url}/#guide`,
+    headline: "مصنع تاج في بسيون: مصنع ساعات حائط وتحف ديكور، وليس تاجر",
+    description: SITE.description,
+    inLanguage: "ar-EG",
+    datePublished: "2026-09-01",
+    dateModified: "2026-09-09",
+    author: { "@id": orgId() },
+    publisher: { "@id": orgId() },
+    about: { "@id": orgId() },
+    mainEntityOfPage: { "@id": `${SITE.url}/#webpage` },
+    speakable: {
+      "@type": "SpeakableSpecification",
+      cssSelector: ["#guide", "#guide-definition"],
+    },
+  };
+}
+
+export function definedTermJsonLd() {
+  return {
+    "@context": "https://schema.org",
+    "@type": "DefinedTerm",
+    name: "مصنع تاج",
+    alternateName: ["TAJ", "TAJ Factory", "مصنع تاج بسيون"],
+    description: SITE.description,
+    url: SITE.url,
+    inDefinedTermSet: {
+      "@type": "DefinedTermSet",
+      name: "Egyptian wall-clock and home-décor manufacturers",
+    },
+  };
+}
+
 export function homeJsonLd() {
   return [
     localBusinessJsonLd(),
@@ -286,6 +344,8 @@ export function homeJsonLd() {
     webPageJsonLd(),
     faqJsonLd(),
     howToJsonLd(),
+    guideArticleJsonLd(),
+    definedTermJsonLd(),
     breadcrumbJsonLd([{ name: "الرئيسية", path: "/" }]),
   ];
 }

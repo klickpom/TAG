@@ -121,7 +121,7 @@ export default function Lookbook() {
     <div className="catalog-root relative flex h-dvh w-full flex-col overflow-hidden bg-[#070708] text-[#f4ead8]">
       <Seo
         title="كاتلوج مصنع تاج | ساعات حائط وتحف ديكور من بسيون"
-        description="كاتلوج مصنع تاج في بسيون: ساعات حائط وتحف وديكور. اطلب عبر واتساب مع الشحن لكل محافظات مصر والدفع عند الاستلام."
+        description="كاتلوج مصنع تاج في بسيون: ساعات حائط وتحف وديكور. الأسعار غير ظاهرة على الموقع. اطلب عبر واتساب مع الشحن لكل محافظات مصر والدفع عند الاستلام."
         path="/catalog"
         jsonLd={[
           localBusinessJsonLd(),

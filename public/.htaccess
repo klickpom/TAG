@@ -3,18 +3,20 @@
   RewriteBase /
   RewriteRule ^api/ - [L]
   RewriteRule ^admin(/.*)?$ index.html [L,E=TAJ_NOINDEX:1]
+  RewriteRule ^catalog/?$ catalog.html [L]
   RewriteCond %{REQUEST_FILENAME} !-f
   RewriteCond %{REQUEST_FILENAME} !-d
   RewriteRule ^ index.html [L]
 </IfModule>
 
 <IfModule mod_headers.c>
-  <Files "index.html">
+  <FilesMatch "^(index|catalog)\.html$">
     Header set Cache-Control "no-cache, no-store, must-revalidate"
     Header set Pragma "no-cache"
     Header set Expires "0"
-  </Files>
+  </FilesMatch>
   Header set X-Robots-Tag "noindex, nofollow" env=TAJ_NOINDEX
+  Header add Link "<https://tag-eg.online/llms.txt>; rel=\"alternate\"; type=\"text/plain\"; title=\"LLM facts\""
 </IfModule>
 
 <IfModule mod_expires.c>

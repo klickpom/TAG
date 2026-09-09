@@ -30,6 +30,7 @@ export default function Footer() {
             {[
               ["#home", "الرئيسية"],
               ["#about", "عن المصنع"],
+              ["#guide", "دليل المصنع"],
               ["#shop", "المعرض"],
               ["/catalog", "الكاتلوج"],
               ["#reviews", "آراء العملاء"],

@@ -11,5 +11,5 @@ Customers across Egypt's 27 governorates
 
 /* SITE */
 Language: ar-EG
-Standards: HTML5, JSON-LD LocalBusiness, FAQPage, HowTo
-Last update: 2026-09-07
+Standards: HTML5, JSON-LD LocalBusiness, FAQPage, HowTo, Review, Article
+Last update: 2026-09-09
