@@ -1,0 +1,17 @@
+{
+  "version": 1,
+  "include": ["/*"],
+  "exclude": [
+    "/assets/*",
+    "/images/products/*",
+    "/images/logo.jpeg",
+    "/images/taj-logo-3d.jpg",
+    "/images/taj-mark.png",
+    "/robots.txt",
+    "/sitemap.xml",
+    "/llms.txt",
+    "/ai.txt",
+    "/humans.txt",
+    "/a8f3c1e94b2d47e0a156c8d3f0e92b17.txt"
+  ]
+}
